@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name     React Userscripts
+// @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
 // @version  1.1
 // @description A sample userscript built using react
-// @include https://*.google.com*
+// @include https://q.utoronto.ca/courses/*
 // @grant    none
 // ==/UserScript==
 
