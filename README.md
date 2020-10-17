@@ -1,20 +1,22 @@
-# react-userscripts
-Develop a Greasemonkey/Tampermonkey script using React
+# Canvas Quiz Stats
+Canvas Quiz Stats is a Greasemonkey/Tampermonkey script to allow you to download all quiz questions as well
+as all personalized versions of a specific quiz.
 
-This repository contains a stub project for developing userscript extensions with react. It uses
-`react-app-rewired` to change the webpack configuration to compile React code so that it can be
-included in a userscript.
+When you use randomized question groups on a Canvas quiz, Canvas will let you inspect an individual's quiz
+(and the unique order that they were presented questions in), but it will now let you batch-download
+all quizzes for all students. This script adds a *Quiz Stats* button that allows access to this data.
+
+# Installation
 
 In Firefox or Chrome, install [Greasemonkey](https://addons.mozilla.org/en-CA/firefox/addon/greasemonkey/) or Tampermonkey.
-You can then test the userscript by installing it [here](https://github.com/siefkenj/canvas-quiz-stats/raw/main/dist/react-userscripts.user.js).
-Navigate to [google](https://www.google.com) and you should see a react component inserted at the bottom of the page.
+You can then install the script by clicking [here](https://github.com/siefkenj/canvas-quiz-stats/raw/main/dist/react-userscripts.user.js).
 
 # Development
 
 ## Building
 
-To build `react-userscripts` you must have [Node.js](https://nodejs.org/en/download/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Then, from the `react-userscripts` directory, run
+To build `canvas-quiz-stats` you must have [Node.js](https://nodejs.org/en/download/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+Then, from the `canvas-quiz-stats` directory, run
 
 ```
 cd userscript/
