@@ -18,7 +18,13 @@ export function log(...args) {
 export function logFetch(arg) {
     const url = new URL(arg, window.location);
     log("fetching", "" + url);
-    return fetch("" + url, { credentials: "include" });
+    return fetch("" + url, {
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json+canvas-string-ids",
+        },
+    });
 }
 
 /**
@@ -36,7 +42,7 @@ export function addLocationChangeCallback(callback) {
     // Set up a `MutationObserver` to watch for changes in the URL
     let oldHref = window.location.href;
     const body = document.querySelector("body");
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver((mutations) => {
         if (mutations.some(() => oldHref !== document.location.href)) {
             oldHref = document.location.href;
             callback();

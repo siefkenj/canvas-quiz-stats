@@ -1,22 +1,79 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+    height: 40vmin;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #09d3ac;
+    color: #09d3ac;
+}
+
+.fullscreen-modal {
+    width: 95%;
+    max-width: 95% !important;
+}
+
+.query-input {
+    display: block;
+    width: 100%;
+}
+
+.question-container {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    margin-bottom: 4px;
+}
+
+.question-answer-box {
+    margin-left: 2em;
+}
+.question-option.correct {
+    color: #559900;
+}
+.question-option.multiple_answers_question::before {
+    content: "☐";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+.question-option.multiple_answers_question.correct::before {
+    content: "☒";
+    color: #559900;
+}
+
+.question-option.multiple_choice_question::before {
+    content: "◌";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+.question-option.multiple_choice_question.correct::before {
+    content: "●";
+    color: #559900;
+}
+
+.group-container {
+    margin-left: 1em;
+    margin-top: 1em;
+}
+.question-group {
+    border-left: 4px solid rgb(10, 93, 202);
+    padding-left: 1em;
+}
+
+.question-id {
+    font-weight: bold;
+    color: blue;
+    margin-bottom: 0.3em;
 }
