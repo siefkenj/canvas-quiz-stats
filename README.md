@@ -11,6 +11,12 @@ all quizzes for all students. This script adds a *Quiz Stats* button that allows
 In Firefox or Chrome, install [Greasemonkey](https://addons.mozilla.org/en-CA/firefox/addon/greasemonkey/) or Tampermonkey.
 You can then install the script by clicking [here](https://github.com/siefkenj/canvas-quiz-stats/raw/main/dist/react-userscripts.user.js).
 
+## Sideffects
+
+*Canvas Quiz Stats* loads the Bootstrap CSS, which overrides some of the settings that Canvas uses. Therefore, when you load the plugin,
+your Canvas page might look different to you. This is a temporary change that's only active when the script is loaded. To return to the
+default styling, disable *Canvas Quiz Stats* in Greasemonkey.
+
 # Development
 
 ## Building
