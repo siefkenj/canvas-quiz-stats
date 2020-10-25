@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.1
+// @version  1.2
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @grant    none
@@ -90,7 +90,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -101,7 +101,7 @@
 
 
 if (true) {
-  module.exports = __webpack_require__(35);
+  module.exports = __webpack_require__(36);
 } else {}
 
 /***/ }),
@@ -218,14 +218,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 if (false) { var throwOnDirectAccess, ReactIs; } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(51)();
+  module.exports = __webpack_require__(53)();
 }
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(34);
+module.exports = __webpack_require__(35);
 
 
 /***/ }),
@@ -283,6 +283,20 @@ function ownerDocument(node) {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @module Passage
+ */
+
+
+var Route = __webpack_require__(45);
+
+module.exports = Route;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -293,14 +307,14 @@ function qsa(element, selector) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = (!!(typeof window !== 'undefined' && window.document && window.document.createElement));
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -312,7 +326,7 @@ function _inheritsLoose(subClass, superClass) {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -340,22 +354,8 @@ if (true) {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(36);
+  module.exports = __webpack_require__(37);
 } else {}
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * @module Passage
- */
-
-
-var Route = __webpack_require__(44);
-
-module.exports = Route;
 
 /***/ }),
 /* 13 */
@@ -379,7 +379,7 @@ var react = __webpack_require__(0);
 var react_default = /*#__PURE__*/__webpack_require__.n(react);
 
 // EXTERNAL MODULE: ./node_modules/invariant/browser.js
-var browser = __webpack_require__(21);
+var browser = __webpack_require__(22);
 var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
 
 // CONCATENATED MODULE: ./node_modules/uncontrollable/esm/utils.js
@@ -500,7 +500,7 @@ function useUncontrolled(props, config) {
   }, props);
 }
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js
-var inheritsLoose = __webpack_require__(10);
+var inheritsLoose = __webpack_require__(11);
 
 // CONCATENATED MODULE: ./node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js
 /**
@@ -807,7 +807,7 @@ function uncontrollable(Component, controlledValues, methods) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _addEventListener__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16);
+/* harmony import */ var _addEventListener__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17);
 /* harmony import */ var _removeEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 
 
@@ -838,13 +838,14 @@ function removeEventListener(node, eventName, handler, options) {
 /* harmony default export */ __webpack_exports__["a"] = (removeEventListener);
 
 /***/ }),
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export optionsSupported */
 /* unused harmony export onceSupported */
-/* harmony import */ var _canUseDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
+/* harmony import */ var _canUseDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 /* eslint-disable no-return-assign */
 
 var optionsSupported = false;
@@ -899,7 +900,7 @@ function addEventListener(node, eventName, handler, options) {
 /* harmony default export */ __webpack_exports__["a"] = (addEventListener);
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -944,7 +945,6 @@ function useWillUnmount(fn) {
 }
 
 /***/ }),
-/* 18 */,
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1114,7 +1114,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(41);
+var	fixUrls = __webpack_require__(42);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1454,6 +1454,75 @@ function updateLink (link, options, obj) {
 
 "use strict";
 /**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var __DEV__ = "production" !== 'production';
+
+var warning = function warning() {};
+
+if (__DEV__) {
+  var printWarning = function printWarning(format, args) {
+    var len = arguments.length;
+    args = new Array(len > 1 ? len - 1 : 0);
+
+    for (var key = 1; key < len; key++) {
+      args[key - 1] = arguments[key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format, args) {
+    var len = arguments.length;
+    args = new Array(len > 2 ? len - 2 : 0);
+
+    for (var key = 2; key < len; key++) {
+      args[key - 2] = arguments[key];
+    }
+
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (!condition) {
+      printWarning.apply(null, [format].concat(args));
+    }
+  };
+}
+
+module.exports = warning;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
  * This source code is licensed under the MIT license found in the
@@ -1497,7 +1566,7 @@ var invariant = function invariant(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1511,7 +1580,7 @@ function contains(context, node) {
 }
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1612,7 +1681,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1647,7 +1716,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1656,7 +1725,7 @@ module.exports = {
  * @module route/visitors/create_visitor
  */
 
-var nodeTypes = Object.keys(__webpack_require__(24));
+var nodeTypes = Object.keys(__webpack_require__(25));
 /**
  * Helper for creating visitors. Take an object of node name to handler
  * mappings, returns an object with a "visit" method that can be called
@@ -1689,76 +1758,59 @@ function createVisitor(handlers) {
 module.exports = createVisitor;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 
-/**
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
 
-var __DEV__ = "production" !== 'production';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = all;
 
-var warning = function warning() {};
+var _createChainableTypeChecker = __webpack_require__(52);
 
-if (__DEV__) {
-  var printWarning = function printWarning(format, args) {
-    var len = arguments.length;
-    args = new Array(len > 1 ? len - 1 : 0);
+var _createChainableTypeChecker2 = _interopRequireDefault(_createChainableTypeChecker);
 
-    for (var key = 1; key < len; key++) {
-      args[key - 1] = arguments[key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  warning = function warning(condition, format, args) {
-    var len = arguments.length;
-    args = new Array(len > 2 ? len - 2 : 0);
-
-    for (var key = 2; key < len; key++) {
-      args[key - 2] = arguments[key];
-    }
-
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (!condition) {
-      printWarning.apply(null, [format].concat(args));
-    }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
   };
 }
 
-module.exports = warning;
+function all() {
+  for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
+    validators[_key] = arguments[_key];
+  }
+
+  function allPropTypes() {
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    var error = null;
+    validators.forEach(function (validator) {
+      if (error != null) {
+        return;
+      }
+
+      var result = validator.apply(undefined, args);
+
+      if (result != null) {
+        error = result;
+      }
+    });
+    return error;
+  }
+
+  return (0, _createChainableTypeChecker2.default)(allPropTypes);
+}
+
+module.exports = exports['default'];
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1796,7 +1848,7 @@ function useCallbackRef() {
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1839,7 +1891,7 @@ function useMounted() {
 }
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1874,7 +1926,7 @@ function usePrevious(value) {
 }
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1923,7 +1975,7 @@ function useWaitForDOMRef(ref, onResolved) {
 }
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1960,7 +2012,7 @@ function useForceUpdate() {
 }
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2009,14 +2061,14 @@ function useMergedRefs(refA, refB) {
 /* harmony default export */ __webpack_exports__["a"] = (useMergedRefs);
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(56);
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -2743,7 +2795,7 @@ try {
 }
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2757,7 +2809,7 @@ try {
  */
 
 
-var h = __webpack_require__(23),
+var h = __webpack_require__(24),
     n = "function" === typeof Symbol && Symbol.for,
     p = n ? Symbol.for("react.element") : 60103,
     q = n ? Symbol.for("react.portal") : 60106,
@@ -3165,7 +3217,7 @@ var X = {
 module.exports = Z.default || Z;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3184,8 +3236,8 @@ module.exports = Z.default || Z;
 
 
 var aa = __webpack_require__(0),
-    n = __webpack_require__(23),
-    q = __webpack_require__(37);
+    n = __webpack_require__(24),
+    q = __webpack_require__(38);
 
 function u(a) {
   for (var b = "https://reactjs.org/docs/error-decoder.html?invariant=" + a, c = 1; c < arguments.length; c++) {
@@ -10534,18 +10586,18 @@ var Dk = {
 module.exports = Ek.default || Ek;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 if (true) {
-  module.exports = __webpack_require__(38);
+  module.exports = __webpack_require__(39);
 } else {}
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10912,11 +10964,11 @@ exports.unstable_getFirstCallbackNode = function () {
 exports.unstable_Profiling = null;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(40);
+var content = __webpack_require__(41);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -10937,7 +10989,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -10950,7 +11002,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 /**
@@ -11039,11 +11091,11 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(43);
+var content = __webpack_require__(44);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -11064,7 +11116,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -11077,15 +11129,15 @@ module.exports = exports;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Parser = __webpack_require__(45),
-    RegexpVisitor = __webpack_require__(47),
-    ReverseVisitor = __webpack_require__(48);
+var Parser = __webpack_require__(46),
+    RegexpVisitor = __webpack_require__(48),
+    ReverseVisitor = __webpack_require__(49);
 
 Route.prototype = Object.create(null);
 /**
@@ -11157,7 +11209,7 @@ function Route(spec) {
 module.exports = Route;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11167,13 +11219,13 @@ module.exports = Route;
 
 /** Wrap the compiled parser with the context to create node objects */
 
-var parser = __webpack_require__(46).parser;
+var parser = __webpack_require__(47).parser;
 
-parser.yy = __webpack_require__(24);
+parser.yy = __webpack_require__(25);
 module.exports = parser;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* parser generated by jison 0.4.17 */
@@ -11996,13 +12048,13 @@ if (true) {
 }
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createVisitor = __webpack_require__(25),
+var createVisitor = __webpack_require__(26),
     escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
 /**
  * @class
@@ -12094,13 +12146,13 @@ var RegexpVisitor = createVisitor({
 module.exports = RegexpVisitor;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createVisitor = __webpack_require__(25);
+var createVisitor = __webpack_require__(26);
 /**
  * Visitor for the AST to construct a path with filled in parameters
  * @class ReverseVisitor
@@ -12162,11 +12214,11 @@ var ReverseVisitor = createVisitor({
 module.exports = ReverseVisitor;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(50);
+var content = __webpack_require__(51);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -12187,7 +12239,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -12200,7 +12252,55 @@ module.exports = exports;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createChainableTypeChecker;
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+// Mostly taken from ReactPropTypes.
+
+function createChainableTypeChecker(validate) {
+  function checkType(isRequired, props, propName, componentName, location, propFullName) {
+    var componentNameSafe = componentName || '<<anonymous>>';
+    var propFullNameSafe = propFullName || propName;
+
+    if (props[propName] == null) {
+      if (isRequired) {
+        return new Error('Required ' + location + ' `' + propFullNameSafe + '` was not specified ' + ('in `' + componentNameSafe + '`.'));
+      }
+
+      return null;
+    }
+
+    for (var _len = arguments.length, args = Array(_len > 6 ? _len - 6 : 0), _key = 6; _key < _len; _key++) {
+      args[_key - 6] = arguments[_key];
+    }
+
+    return validate.apply(undefined, [props, propName, componentNameSafe, location, propFullNameSafe].concat(args));
+  }
+
+  var chainedCheckType = checkType.bind(null, false);
+  chainedCheckType.isRequired = checkType.bind(null, true);
+  return chainedCheckType;
+}
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12212,7 +12312,7 @@ module.exports = exports;
  */
 
 
-var ReactPropTypesSecret = __webpack_require__(52);
+var ReactPropTypesSecret = __webpack_require__(54);
 
 function emptyFunction() {}
 
@@ -12269,7 +12369,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12285,7 +12385,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12311,106 +12411,6 @@ function isRequiredForA11y(validator) {
 
     return validator.apply(undefined, [props, propName, componentName, location, propFullName].concat(args));
   };
-}
-
-module.exports = exports['default'];
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = all;
-
-var _createChainableTypeChecker = __webpack_require__(55);
-
-var _createChainableTypeChecker2 = _interopRequireDefault(_createChainableTypeChecker);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    default: obj
-  };
-}
-
-function all() {
-  for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
-    validators[_key] = arguments[_key];
-  }
-
-  function allPropTypes() {
-    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
-
-    var error = null;
-    validators.forEach(function (validator) {
-      if (error != null) {
-        return;
-      }
-
-      var result = validator.apply(undefined, args);
-
-      if (result != null) {
-        error = result;
-      }
-    });
-    return error;
-  }
-
-  return (0, _createChainableTypeChecker2.default)(allPropTypes);
-}
-
-module.exports = exports['default'];
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createChainableTypeChecker;
-/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-// Mostly taken from ReactPropTypes.
-
-function createChainableTypeChecker(validate) {
-  function checkType(isRequired, props, propName, componentName, location, propFullName) {
-    var componentNameSafe = componentName || '<<anonymous>>';
-    var propFullNameSafe = propFullName || propName;
-
-    if (props[propName] == null) {
-      if (isRequired) {
-        return new Error('Required ' + location + ' `' + propFullNameSafe + '` was not specified ' + ('in `' + componentNameSafe + '`.'));
-      }
-
-      return null;
-    }
-
-    for (var _len = arguments.length, args = Array(_len > 6 ? _len - 6 : 0), _key = 6; _key < _len; _key++) {
-      args[_key - 6] = arguments[_key];
-    }
-
-    return validate.apply(undefined, [props, propName, componentNameSafe, location, propFullNameSafe].concat(args));
-  }
-
-  var chainedCheckType = checkType.bind(null, false);
-  chainedCheckType.isRequired = checkType.bind(null, true);
-  return chainedCheckType;
 }
 
 module.exports = exports['default'];
@@ -12468,11 +12468,11 @@ var react = __webpack_require__(0);
 var react_default = /*#__PURE__*/__webpack_require__.n(react);
 
 // EXTERNAL MODULE: ./node_modules/react-dom/index.js
-var react_dom = __webpack_require__(11);
+var react_dom = __webpack_require__(12);
 var react_dom_default = /*#__PURE__*/__webpack_require__.n(react_dom);
 
 // EXTERNAL MODULE: ./src/index.css
-var src = __webpack_require__(39);
+var src = __webpack_require__(40);
 
 // CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
 function _arrayWithHoles(arr) {
@@ -12538,7 +12538,7 @@ function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
 // EXTERNAL MODULE: ./src/App.css
-var App = __webpack_require__(42);
+var App = __webpack_require__(43);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
 var esm_extends = __webpack_require__(1);
@@ -12551,10 +12551,10 @@ var classnames = __webpack_require__(3);
 var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 
 // EXTERNAL MODULE: ./node_modules/dom-helpers/esm/addEventListener.js
-var addEventListener = __webpack_require__(16);
+var addEventListener = __webpack_require__(17);
 
 // EXTERNAL MODULE: ./node_modules/dom-helpers/esm/canUseDOM.js
-var canUseDOM = __webpack_require__(9);
+var canUseDOM = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./node_modules/dom-helpers/esm/ownerDocument.js
 var ownerDocument = __webpack_require__(7);
@@ -12583,13 +12583,13 @@ function scrollbarSize(recalc) {
   return scrollbarSize_size;
 }
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useCallbackRef.js
-var useCallbackRef = __webpack_require__(27);
+var useCallbackRef = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useEventCallback.js + 1 modules
 var useEventCallback = __webpack_require__(6);
 
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useWillUnmount.js + 1 modules
-var useWillUnmount = __webpack_require__(17);
+var useWillUnmount = __webpack_require__(18);
 
 // CONCATENATED MODULE: ./node_modules/dom-helpers/esm/ownerWindow.js
 
@@ -12731,17 +12731,17 @@ function activeElement(doc) {
   }
 }
 // EXTERNAL MODULE: ./node_modules/dom-helpers/esm/contains.js
-var contains = __webpack_require__(22);
+var contains = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./node_modules/prop-types/index.js
 var prop_types = __webpack_require__(4);
 var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
 
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useMounted.js
-var useMounted = __webpack_require__(28);
+var useMounted = __webpack_require__(29);
 
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/usePrevious.js
-var usePrevious = __webpack_require__(29);
+var usePrevious = __webpack_require__(30);
 
 // CONCATENATED MODULE: ./node_modules/dom-helpers/esm/hasClass.js
 function hasClass(element, className) {
@@ -13006,7 +13006,7 @@ var ModalManager_ModalManager = /*#__PURE__*/function () {
 
 /* harmony default export */ var esm_ModalManager = (ModalManager_ModalManager);
 // EXTERNAL MODULE: ./node_modules/react-overlays/esm/useWaitForDOMRef.js
-var useWaitForDOMRef = __webpack_require__(30);
+var useWaitForDOMRef = __webpack_require__(31);
 
 // CONCATENATED MODULE: ./node_modules/react-overlays/esm/Modal.js
 
@@ -13441,13 +13441,13 @@ Modal.propTypes = propTypes;
   Manager: esm_ModalManager
 }));
 // EXTERNAL MODULE: ./node_modules/warning/warning.js
-var warning = __webpack_require__(26);
+var warning = __webpack_require__(21);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js
-var inheritsLoose = __webpack_require__(10);
+var inheritsLoose = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./node_modules/dom-helpers/esm/querySelectorAll.js
-var querySelectorAll = __webpack_require__(8);
+var querySelectorAll = __webpack_require__(9);
 
 // CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/BootstrapModalManager.js
 
@@ -14551,13 +14551,13 @@ Modal_Modal.TRANSITION_DURATION = 300;
 Modal_Modal.BACKDROP_TRANSITION_DURATION = 150;
 /* harmony default export */ var react_bootstrap_esm_Modal = (Modal_Modal);
 // EXTERNAL MODULE: ./node_modules/prop-types-extra/lib/isRequiredForA11y.js
-var isRequiredForA11y = __webpack_require__(53);
+var isRequiredForA11y = __webpack_require__(55);
 
 // EXTERNAL MODULE: ./node_modules/uncontrollable/esm/index.js + 4 modules
 var esm = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./node_modules/prop-types-extra/lib/all.js
-var lib_all = __webpack_require__(54);
+var lib_all = __webpack_require__(27);
 
 // CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/NavbarContext.js
  // TODO: check
@@ -14571,10 +14571,10 @@ var CardContext_context = react_default.a.createContext(null);
 CardContext_context.displayName = 'CardContext';
 /* harmony default export */ var CardContext = (CardContext_context);
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useForceUpdate.js
-var useForceUpdate = __webpack_require__(31);
+var useForceUpdate = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/@restart/hooks/esm/useMergedRefs.js
-var useMergedRefs = __webpack_require__(32);
+var useMergedRefs = __webpack_require__(33);
 
 // CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/NavContext.js
  // TODO: check this
@@ -15345,6 +15345,57 @@ var Button = react_default.a.forwardRef(function (_ref, ref) {
 Button.displayName = 'Button';
 Button.defaultProps = Button_defaultProps;
 /* harmony default export */ var esm_Button = (Button);
+// CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/defineProperty.js
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+// CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/objectSpread2.js
+
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
 // CONCATENATED MODULE: ./src/utils.js
 /**
  * Wrapped console.log function.
@@ -15357,7 +15408,13 @@ Button.defaultProps = Button_defaultProps;
  *
  * @param {string} arg
  * @returns {Promise} - the `fetch` promise
- */function logFetch(arg){var url=new URL(arg,window.location);log("fetching",""+url);return fetch(""+url,{credentials:"include",headers:{"Content-Type":"application/json",Accept:"application/json+canvas-string-ids"}});}/**
+ */function logFetch(arg){var url=new URL(arg,window.location);log("GET request",""+url);return fetch(""+url,{credentials:"include",headers:{"Content-Type":"application/json",Accept:"application/json+canvas-string-ids"}});}/**
+ * Wrapped version of `fetch` that logs the output as it's being fetched.
+ * It also specifies the full path, because in Greasemonkey, the full path is needed.
+ *
+ * @param {string} url
+ * @returns {Promise} - the `fetch` promise
+ */function logPut(url){var body=arguments.length>1&&arguments[1]!==undefined?arguments[1]:{};url=new URL(url,window.location);log("PUT request",""+url,body);return fetch(""+url,{credentials:"include",headers:{"Content-Type":"application/json",Accept:"application/json+canvas-string-ids"},body:JSON.stringify(_objectSpread2(_objectSpread2({},body),{},{authenticity_token:getCSRFToken()})),method:"PUT"});}/**
  * Ensure `callback` is called every time window.location changes
  * Code derived from https://stackoverflow.com/questions/3522090/event-when-window-location-href-changes
  *
@@ -15366,7 +15423,7 @@ Button.defaultProps = Button_defaultProps;
  * @returns {MutationObserver} - MutationObserver that watches the URL
  */function addLocationChangeCallback(callback){// Run the callback once right at the start
 window.setTimeout(callback,0);// Set up a `MutationObserver` to watch for changes in the URL
-var oldHref=window.location.href;var body=document.querySelector("body");var observer=new MutationObserver(function(mutations){if(mutations.some(function(){return oldHref!==document.location.href;})){oldHref=document.location.href;callback();}});observer.observe(body,{childList:true,subtree:true});return observer;}/**
+var oldHref=window.location.href;var body=document.querySelector("body");var observer=new MutationObserver(function(mutations){if(mutations.some(function(){return oldHref!==document.location.href;})){oldHref=document.location.href;callback();}});observer.observe(body,{childList:true,subtree:true});return observer;}function getCSRFToken(){var csrfCookie=document.cookie.split(";").find(function(v){return v.trim().startsWith("_csrf_token=");});if(csrfCookie){return decodeURIComponent(csrfCookie.trim().slice(12));}}/**
  * Awaits for an element with the specified `selector` to be found
  * and then returns the selected dom node.
  * This is used to delay rendering a widget until its parent appears.
@@ -15427,57 +15484,6 @@ function _nonIterableSpread() {
 
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-}
-// CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/defineProperty.js
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-// CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/objectSpread2.js
-
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
 }
 // CONCATENATED MODULE: ./node_modules/babel-preset-react-app/node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js
 
@@ -15562,28 +15568,35 @@ var quiz_global_Quiz=/*#__PURE__*/function(){function Quiz(){_classCallCheck(thi
      * Fetch all the Quiz questions
      *
      * @memberof Quiz
-     */},{key:"fetchQuestions",value:function(){var _fetchQuestions=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee(){var url,groupUrl,resp,json,quizGroups,_iterator,_step,question,groupId,groupIds,resps,groupInfo,groups,_iterator2,_step2,group,ret;return regenerator_default.a.wrap(function _callee$(_context){while(1){switch(_context.prev=_context.next){case 0:// We'll assume there's not more than 1000 questions...
-url="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/questions?per_page=1000");groupUrl="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/groups/");_context.next=4;return logFetch(unescape(url));case 4:resp=_context.sent;_context.next=7;return resp.json();case 7:json=_context.sent;this.quizQuestions=json;// many of the questions could be in quiz groups, so we need to fetch data about each group.
+     */},{key:"fetchQuestions",value:function(){var _fetchQuestions=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee(){var _ref2,_ref2$asFlatList,asFlatList,url,groupUrl,resp,json,quizGroups,_iterator,_step,question,groupId,groupIds,resps,groupInfo,groups,_iterator2,_step2,group,ret,_args=arguments;return regenerator_default.a.wrap(function _callee$(_context){while(1){switch(_context.prev=_context.next){case 0:_ref2=_args.length>0&&_args[0]!==undefined?_args[0]:{},_ref2$asFlatList=_ref2.asFlatList,asFlatList=_ref2$asFlatList===void 0?false:_ref2$asFlatList;// We'll assume there's not more than 1000 questions...
+url="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/questions?per_page=1000");groupUrl="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/groups/");_context.next=5;return logFetch(unescape(url));case 5:resp=_context.sent;_context.next=8;return resp.json();case 8:json=_context.sent;this.quizQuestions=json;if(!asFlatList){_context.next=12;break;}return _context.abrupt("return",this.quizQuestions);case 12:// many of the questions could be in quiz groups, so we need to fetch data about each group.
 quizGroups={};_iterator=_createForOfIteratorHelper(this.quizQuestions);try{for(_iterator.s();!(_step=_iterator.n()).done;){question=_step.value;// There may be an "undefined"/"null" group for questions that aren't part of a group, but
 // that's okay.
 groupId=question.quiz_group_id;quizGroups[groupId]=quizGroups[groupId]||[];quizGroups[groupId].push(question);}}catch(err){_iterator.e(err);}finally{_iterator.f();}groupIds=Object.keys(quizGroups).filter(function(id){return id!=="null"&&id!=="undefined";});log("Found the following question groups",groupIds);// fetch information about the question groups
-_context.next=16;return Promise.all(groupIds.map(function(id){return logFetch(groupUrl+id);}));case 16:resps=_context.sent;_context.next=19;return Promise.all(resps.map(function(resp){return resp.json();}));case 19:groupInfo=_context.sent;groups={};_iterator2=_createForOfIteratorHelper(groupInfo);try{for(_iterator2.s();!(_step2=_iterator2.n()).done;){group=_step2.value;groups[group.id]=_objectSpread2(_objectSpread2({type:"question_group"},group),{},{questions:quizGroups[group.id]||[]});}// Assemble the groups and ungrouped questions together into one array.
-}catch(err){_iterator2.e(err);}finally{_iterator2.f();}ret=this.quizQuestions.filter(function(q){return""+q.quiz_group_id==="null"||""+q.quiz_group_id==="undefined";}).concat(Object.values(groups));ret.sort(function(a,b){return(a.position|0)-(b.position|0);});return _context.abrupt("return",ret);case 26:case"end":return _context.stop();}}},_callee,this);}));function fetchQuestions(){return _fetchQuestions.apply(this,arguments);}return fetchQuestions;}()/**
+_context.next=19;return Promise.all(groupIds.map(function(id){return logFetch(groupUrl+id);}));case 19:resps=_context.sent;_context.next=22;return Promise.all(resps.map(function(resp){return resp.json();}));case 22:groupInfo=_context.sent;groups={};_iterator2=_createForOfIteratorHelper(groupInfo);try{for(_iterator2.s();!(_step2=_iterator2.n()).done;){group=_step2.value;groups[group.id]=_objectSpread2(_objectSpread2({type:"question_group"},group),{},{questions:quizGroups[group.id]||[]});}// Assemble the groups and ungrouped questions together into one array.
+}catch(err){_iterator2.e(err);}finally{_iterator2.f();}ret=this.quizQuestions.filter(function(q){return""+q.quiz_group_id==="null"||""+q.quiz_group_id==="undefined";}).concat(Object.values(groups));ret.sort(function(a,b){return(a.position|0)-(b.position|0);});return _context.abrupt("return",ret);case 29:case"end":return _context.stop();}}},_callee,this);}));function fetchQuestions(){return _fetchQuestions.apply(this,arguments);}return fetchQuestions;}()/**
+     * Fetch the ids of all quiz submissions
+     *
+     * @memberof Quiz
+     */},{key:"fetchSubmissionIds",value:function(){var _fetchSubmissionIds=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee2(){var progressCallback,PAGE_SIZE,progress,notifyProgress,url,resp,numSubmissions,ret,numPages,page,json,submissions,_args2=arguments;return regenerator_default.a.wrap(function _callee2$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:notifyProgress=function _notifyProgress(){progressCallback(_objectSpread2({},progress));};progressCallback=_args2.length>0&&_args2[0]!==undefined?_args2[0]:function(){};PAGE_SIZE=20;progress={status:"in progress",message:"",total:null,progress:null,partialData:[]};// /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
+url="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions?include[]=user&per_page=").concat(PAGE_SIZE);resp=null;// Get the total number of submissions
+progress.message="Getting total number of submissions";notifyProgress();_context2.next=10;return this.findNumPages("/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions?per_page=1"));case 10:numSubmissions=_context2.sent;progress.message="";progress.total=numSubmissions;notifyProgress();ret=[];// Fetch in batches until we have all the data
+numPages=Math.ceil(numSubmissions/PAGE_SIZE);page=1;case 17:if(!(page<=numPages)){_context2.next=33;break;}progress.message="Fetching ".concat(page*PAGE_SIZE," of ").concat(numSubmissions);notifyProgress();_context2.next=22;return logFetch(url+"&page="+page);case 22:resp=_context2.sent;_context2.next=25;return resp.json();case 25:json=_context2.sent;submissions=combineSubmissionAndUserData(json);ret.push.apply(ret,_toConsumableArray(submissions));progress.partialData=[].concat(ret);notifyProgress();case 30:page++;_context2.next=17;break;case 33:progress.status="";notifyProgress();return _context2.abrupt("return",ret);case 36:case"end":return _context2.stop();}}},_callee2,this);}));function fetchSubmissionIds(){return _fetchSubmissionIds.apply(this,arguments);}return fetchSubmissionIds;}()},{key:"gradeSubmissions",value:function(){var _gradeSubmissions=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee3(){var submissions,questionInfo,progressCallback,BATCH_SIZE,progress,notifyProgress,url,i,slice,promises,_args3=arguments;return regenerator_default.a.wrap(function _callee3$(_context3){while(1){switch(_context3.prev=_context3.next){case 0:notifyProgress=function _notifyProgress2(){progressCallback(_objectSpread2({},progress));};submissions=_args3.length>0&&_args3[0]!==undefined?_args3[0]:[];questionInfo=_args3.length>1&&_args3[1]!==undefined?_args3[1]:{score:0,id:"1234567"};progressCallback=_args3.length>2&&_args3[2]!==undefined?_args3[2]:function(){};BATCH_SIZE=20;progress={status:"in progress",message:"",total:null,progress:null,partialData:[]};url="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions/");i=0;case 8:if(!(i<=Math.ceil(submissions.length/BATCH_SIZE))){_context3.next=18;break;}slice=submissions.slice(i*BATCH_SIZE,(i+1)*BATCH_SIZE);progress.message="Grading submissions ".concat(i*BATCH_SIZE," of ").concat(submissions.length);notifyProgress();promises=slice.map(function(submission){return logPut(url+submission.id,{quiz_submissions:[{attempt:submission.attempt,questions:_defineProperty({},questionInfo.id,{score:questionInfo.score})}]});});_context3.next=15;return Promise.all(promises);case 15:i++;_context3.next=8;break;case 18:progress.status="done";progress.message="Graded all ".concat(submissions.length," submissions");notifyProgress();case 21:case"end":return _context3.stop();}}},_callee3,this);}));function gradeSubmissions(){return _gradeSubmissions.apply(this,arguments);}return gradeSubmissions;}()/**
      * Fetch the quiz submissions
      *
      * @memberof Quiz
-     */},{key:"fetchSubmissions",value:function(){var _fetchSubmissions=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee3(){var progressCallback,PAGE_SIZE,progress,notifyProgress,url,resp,numSubmissions,ret,numPages,_loop,page,_args4=arguments;return regenerator_default.a.wrap(function _callee3$(_context4){while(1){switch(_context4.prev=_context4.next){case 0:notifyProgress=function _notifyProgress(){progressCallback(_objectSpread2({},progress));};progressCallback=_args4.length>0&&_args4[0]!==undefined?_args4[0]:function(){};PAGE_SIZE=20;progress={status:"in progress",message:"",total:null,progress:null,partialData:[]};// /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
+     */},{key:"fetchSubmissions",value:function(){var _fetchSubmissions=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee5(){var progressCallback,PAGE_SIZE,progress,notifyProgress,url,resp,numSubmissions,ret,numPages,_loop,page,_args6=arguments;return regenerator_default.a.wrap(function _callee5$(_context6){while(1){switch(_context6.prev=_context6.next){case 0:notifyProgress=function _notifyProgress3(){progressCallback(_objectSpread2({},progress));};progressCallback=_args6.length>0&&_args6[0]!==undefined?_args6[0]:function(){};PAGE_SIZE=20;progress={status:"in progress",message:"",total:null,progress:null,partialData:[]};// /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
 url="/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions?include[]=user&per_page=").concat(PAGE_SIZE);resp=null;// Get the total number of submissions
-progress.message="Getting total number of submissions";notifyProgress();_context4.next=10;return this.findNumPages("/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions?per_page=1"));case 10:numSubmissions=_context4.sent;progress.message="";progress.total=numSubmissions;notifyProgress();ret=[];// Fetch in batches until we have all the data
-numPages=Math.ceil(numSubmissions/PAGE_SIZE);_loop=/*#__PURE__*/regenerator_default.a.mark(function _loop(page){var json,submissions,detailedSubmissions,submissionsHash,combinedSubmissionData;return regenerator_default.a.wrap(function _loop$(_context3){while(1){switch(_context3.prev=_context3.next){case 0:progress.message="Fetching ".concat(page*PAGE_SIZE," of ").concat(numSubmissions);notifyProgress();_context3.next=4;return logFetch(url+"&page="+page);case 4:resp=_context3.sent;_context3.next=7;return resp.json();case 7:json=_context3.sent;submissions=combineSubmissionAndUserData(json);log("got submissions",submissions);_context3.next=12;return Promise.all(submissions.map(/*#__PURE__*/function(){var _ref2=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee2(s){var rawData;return regenerator_default.a.wrap(function _callee2$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:_context2.next=2;return logFetch("/api/v1/quiz_submissions/".concat(s.id,"/questions"));case 2:_context2.next=4;return _context2.sent.json();case 4:rawData=_context2.sent;return _context2.abrupt("return",_objectSpread2(_objectSpread2({},rawData),{},{submission_id:s.id}));case 6:case"end":return _context2.stop();}}},_callee2);}));return function(_x){return _ref2.apply(this,arguments);};}()));case 12:detailedSubmissions=_context3.sent;submissionsHash=submissionsToSubmissionsHash(detailedSubmissions);combinedSubmissionData=submissions.map(function(sub){return _objectSpread2(_objectSpread2({},sub),{},{questions:submissionsHash[sub.id]});});log("Combined submission data",combinedSubmissionData);ret.push.apply(ret,_toConsumableArray(combinedSubmissionData));progress.partialData=[].concat(ret);notifyProgress();case 19:case"end":return _context3.stop();}}},_loop);});page=1;case 18:if(!(page<=numPages)){_context4.next=23;break;}return _context4.delegateYield(_loop(page),"t0",20);case 20:page++;_context4.next=18;break;case 23:progress.status="";notifyProgress();return _context4.abrupt("return",ret);case 26:case"end":return _context4.stop();}}},_callee3,this);}));function fetchSubmissions(){return _fetchSubmissions.apply(this,arguments);}return fetchSubmissions;}()/**
+progress.message="Getting total number of submissions";notifyProgress();_context6.next=10;return this.findNumPages("/api/v1/courses/".concat(this.courseId,"/quizzes/").concat(this.quizId,"/submissions?per_page=1"));case 10:numSubmissions=_context6.sent;progress.message="";progress.total=numSubmissions;notifyProgress();ret=[];// Fetch in batches until we have all the data
+numPages=Math.ceil(numSubmissions/PAGE_SIZE);_loop=/*#__PURE__*/regenerator_default.a.mark(function _loop(page){var json,submissions,detailedSubmissions,submissionsHash,combinedSubmissionData;return regenerator_default.a.wrap(function _loop$(_context5){while(1){switch(_context5.prev=_context5.next){case 0:progress.message="Fetching ".concat(page*PAGE_SIZE," of ").concat(numSubmissions);notifyProgress();_context5.next=4;return logFetch(url+"&page="+page);case 4:resp=_context5.sent;_context5.next=7;return resp.json();case 7:json=_context5.sent;submissions=combineSubmissionAndUserData(json);log("got submissions",submissions);_context5.next=12;return Promise.all(submissions.map(/*#__PURE__*/function(){var _ref3=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee4(s){var rawData;return regenerator_default.a.wrap(function _callee4$(_context4){while(1){switch(_context4.prev=_context4.next){case 0:_context4.next=2;return logFetch("/api/v1/quiz_submissions/".concat(s.id,"/questions"));case 2:_context4.next=4;return _context4.sent.json();case 4:rawData=_context4.sent;return _context4.abrupt("return",_objectSpread2(_objectSpread2({},rawData),{},{submission_id:s.id}));case 6:case"end":return _context4.stop();}}},_callee4);}));return function(_x){return _ref3.apply(this,arguments);};}()));case 12:detailedSubmissions=_context5.sent;submissionsHash=submissionsToSubmissionsHash(detailedSubmissions);combinedSubmissionData=submissions.map(function(sub){return _objectSpread2(_objectSpread2({},sub),{},{questions:submissionsHash[sub.id]});});log("Combined submission data",combinedSubmissionData);ret.push.apply(ret,_toConsumableArray(combinedSubmissionData));progress.partialData=[].concat(ret);notifyProgress();case 19:case"end":return _context5.stop();}}},_loop);});page=1;case 18:if(!(page<=numPages)){_context6.next=23;break;}return _context6.delegateYield(_loop(page),"t0",20);case 20:page++;_context6.next=18;break;case 23:progress.status="";notifyProgress();return _context6.abrupt("return",ret);case 26:case"end":return _context6.stop();}}},_callee5,this);}));function fetchSubmissions(){return _fetchSubmissions.apply(this,arguments);}return fetchSubmissions;}()/**
      * Perform bisection to find the number of pages associated with the API
      * endpoint specified by `url`
      *
      * @param {*} url
      * @memberof Quiz
-     */},{key:"findNumPages",value:function(){var _findNumPages=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee5(url){var START_GUESS,guessPage,lowerBound,upperBound,getURL,isEmptyAt,_isEmptyAt,i,_i;return regenerator_default.a.wrap(function _callee5$(_context6){while(1){switch(_context6.prev=_context6.next){case 0:_isEmptyAt=function _isEmptyAt3(){_isEmptyAt=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee4(page){var resp,json;return regenerator_default.a.wrap(function _callee4$(_context5){while(1){switch(_context5.prev=_context5.next){case 0:_context5.next=2;return logFetch(getURL(page));case 2:resp=_context5.sent;_context5.next=5;return resp.json();case 5:json=_context5.sent;return _context5.abrupt("return",getPrimaryData(json).length===0);case 7:case"end":return _context5.stop();}}},_callee4);}));return _isEmptyAt.apply(this,arguments);};isEmptyAt=function _isEmptyAt2(_x3){return _isEmptyAt.apply(this,arguments);};getURL=function _getURL(page){if(page==null){page=guessPage;}return url+"&page="+page;};START_GUESS=1000;guessPage=START_GUESS;lowerBound=1;upperBound=1000000;i=0;case 8:if(!(i<10)){_context6.next=18;break;}_context6.next=11;return isEmptyAt(guessPage);case 11:if(!_context6.sent){_context6.next=13;break;}return _context6.abrupt("break",18);case 13:lowerBound=guessPage;guessPage*=2;case 15:i++;_context6.next=8;break;case 18:upperBound=guessPage;// Perform bisection now that we have an empty page
+     */},{key:"findNumPages",value:function(){var _findNumPages=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee7(url){var START_GUESS,guessPage,lowerBound,upperBound,getURL,isEmptyAt,_isEmptyAt,i,_i;return regenerator_default.a.wrap(function _callee7$(_context8){while(1){switch(_context8.prev=_context8.next){case 0:_isEmptyAt=function _isEmptyAt3(){_isEmptyAt=_asyncToGenerator(/*#__PURE__*/regenerator_default.a.mark(function _callee6(page){var resp,json;return regenerator_default.a.wrap(function _callee6$(_context7){while(1){switch(_context7.prev=_context7.next){case 0:_context7.next=2;return logFetch(getURL(page));case 2:resp=_context7.sent;_context7.next=5;return resp.json();case 5:json=_context7.sent;return _context7.abrupt("return",getPrimaryData(json).length===0);case 7:case"end":return _context7.stop();}}},_callee6);}));return _isEmptyAt.apply(this,arguments);};isEmptyAt=function _isEmptyAt2(_x3){return _isEmptyAt.apply(this,arguments);};getURL=function _getURL(page){if(page==null){page=guessPage;}return url+"&page="+page;};START_GUESS=1000;guessPage=START_GUESS;lowerBound=1;upperBound=1000000;i=0;case 8:if(!(i<10)){_context8.next=18;break;}_context8.next=11;return isEmptyAt(guessPage);case 11:if(!_context8.sent){_context8.next=13;break;}return _context8.abrupt("break",18);case 13:lowerBound=guessPage;guessPage*=2;case 15:i++;_context8.next=8;break;case 18:upperBound=guessPage;// Perform bisection now that we have an empty page
 _i=0;case 20:if(!(// XXX This formula is NOT right, but I cannot be bothered to figured it out right now...
-_i<2*Math.log(upperBound-lowerBound)/Math.log(2)+10)){_context6.next=34;break;}if(!(lowerBound===upperBound)){_context6.next=23;break;}return _context6.abrupt("break",34);case 23:guessPage=Math.floor(lowerBound/2+upperBound/2)|0;_context6.next=26;return isEmptyAt(guessPage);case 26:if(!_context6.sent){_context6.next=30;break;}upperBound=guessPage;_context6.next=31;break;case 30:lowerBound=guessPage;case 31:_i++;_context6.next=20;break;case 34:return _context6.abrupt("return",Math.max(lowerBound,upperBound)-1);case 35:case"end":return _context6.stop();}}},_callee5);}));function findNumPages(_x2){return _findNumPages.apply(this,arguments);}return findNumPages;}()}]);return Quiz;}();function combineSubmissionAndUserData(data){var submissions=data.quiz_submissions;var usersList=data.users;var users={};var _iterator3=_createForOfIteratorHelper(usersList),_step3;try{for(_iterator3.s();!(_step3=_iterator3.n()).done;){var user=_step3.value;users[user.id]=user;}}catch(err){_iterator3.e(err);}finally{_iterator3.f();}return submissions.map(function(s){return _objectSpread2(_objectSpread2({},s),{},{user:users[s.user_id]});});}/**
+_i<2*Math.log(upperBound-lowerBound)/Math.log(2)+10)){_context8.next=34;break;}if(!(lowerBound===upperBound)){_context8.next=23;break;}return _context8.abrupt("break",34);case 23:guessPage=Math.floor(lowerBound/2+upperBound/2)|0;_context8.next=26;return isEmptyAt(guessPage);case 26:if(!_context8.sent){_context8.next=30;break;}upperBound=guessPage;_context8.next=31;break;case 30:lowerBound=guessPage;case 31:_i++;_context8.next=20;break;case 34:return _context8.abrupt("return",Math.max(lowerBound,upperBound)-1);case 35:case"end":return _context8.stop();}}},_callee7);}));function findNumPages(_x2){return _findNumPages.apply(this,arguments);}return findNumPages;}()}]);return Quiz;}();function combineSubmissionAndUserData(data){var submissions=data.quiz_submissions;var usersList=data.users;var users={};var _iterator3=_createForOfIteratorHelper(usersList),_step3;try{for(_iterator3.s();!(_step3=_iterator3.n()).done;){var user=_step3.value;users[user.id]=user;}}catch(err){_iterator3.e(err);}finally{_iterator3.f();}return submissions.map(function(s){return _objectSpread2(_objectSpread2({},s),{},{user:users[s.user_id]});});}/**
  * Take the raw submissions data and create a hash from submission
  * id to the list of question_ids in the order that that user had them
  *
@@ -15598,7 +15611,7 @@ _i<2*Math.log(upperBound-lowerBound)/Math.log(2)+10)){_context6.next=34;break;}i
 // CONCATENATED MODULE: ./src/components/question.js
 function Question(_ref){var _ref$data=_ref.data,data=_ref$data===void 0?{}:_ref$data;var question_type=data.question_type,question_text=data.question_text,id=data.id,answers=data.answers,type=data.type;if(type==="question_group"){return/*#__PURE__*/react_default.a.createElement(QuestionGroup,{data:data});}var answerNodes=null;if(question_type!=="text_only_question"){answerNodes=/*#__PURE__*/react_default.a.createElement("div",{className:"question-answer-box"},answers.map(function(answer,i){return/*#__PURE__*/react_default.a.createElement(Answer,{data:answer,key:i,extraClass:question_type});}));}return/*#__PURE__*/react_default.a.createElement("div",{className:"question-container"},/*#__PURE__*/react_default.a.createElement("div",{className:"question-id"},id," (type: ",question_type,")"),/*#__PURE__*/react_default.a.createElement("div",{className:"question-body",dangerouslySetInnerHTML:{__html:question_text}}),answerNodes);}function QuestionGroup(_ref2){var _ref2$data=_ref2.data,data=_ref2$data===void 0?{}:_ref2$data;var question_points=data.question_points,pick_count=data.pick_count,questions=data.questions;return/*#__PURE__*/react_default.a.createElement("div",{className:"group-container"},/*#__PURE__*/react_default.a.createElement("h4",null,"Question Group (Pick ",pick_count," of ",questions.length,";"," ",question_points," points each)"),/*#__PURE__*/react_default.a.createElement("div",{className:"question-group"},questions.map(function(question,i){return/*#__PURE__*/react_default.a.createElement(Question,{data:question,key:i});})));}function Answer(_ref3){var _ref3$data=_ref3.data,data=_ref3$data===void 0?{}:_ref3$data,extraClass=_ref3.extraClass;var text=data.text,html=data.html,weight=data.weight;if(!html){html=text;}return/*#__PURE__*/react_default.a.createElement("div",{className:"question-option ".concat(extraClass," ").concat(weight>0?"correct":"incorrect"),dangerouslySetInnerHTML:{__html:html}});}
 // EXTERNAL MODULE: ./node_modules/route-parser/index.js
-var route_parser = __webpack_require__(12);
+var route_parser = __webpack_require__(8);
 var route_parser_default = /*#__PURE__*/__webpack_require__.n(route_parser);
 
 // CONCATENATED MODULE: ./src/components/view-questions.js
@@ -15616,10 +15629,220 @@ function ViewQuestions(props){var _React$useState=react_default.a.useState(false
 // /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
 function ViewSubmissions(props){var _React$useState=react_default.a.useState(false),_React$useState2=_slicedToArray(_React$useState,2),spinner=_React$useState2[0],setSpinner=_React$useState2[1];var _React$useState3=react_default.a.useState(""),_React$useState4=_slicedToArray(_React$useState3,2),result=_React$useState4[0],setResult=_React$useState4[1];var _React$useState5=react_default.a.useState({}),_React$useState6=_slicedToArray(_React$useState5,2),progress=_React$useState6[0],setProgress=_React$useState6[1];function fetchQuizSubmissions(){setSpinner(true);var route=route_parser_default()("*start/courses/:courseId/quizzes/:quizId");var match=route.match(window.location);quizGlobal.init(match);setResult(null);quizGlobal.fetchSubmissions(setProgress).then(function(q){return q;}).catch(function(e){log(e);setResult(e);}).finally(function(){return setSpinner(false);});}return/*#__PURE__*/react_default.a.createElement("div",{className:"my-2"},/*#__PURE__*/react_default.a.createElement("p",null,"When fetched, quiz submissions appear in the textbox below. They can be copy-and-pasted into a CSV document. The questions are listed by Quercus question id in the order that they appear in a given student's test."," ",/*#__PURE__*/react_default.a.createElement("i",{style:{fontFamily:"monospace"}},"end_at")," lists the time that a student's test was scheduled to finish (not the time they actually submitted)."),/*#__PURE__*/react_default.a.createElement("div",{className:"my-2"},/*#__PURE__*/react_default.a.createElement(esm_Button,{title:"Fetch all quiz submissions. This could take a while!",onClick:fetchQuizSubmissions},spinner&&/*#__PURE__*/react_default.a.createElement(esm_Spinner,{animation:"border",role:"status",className:"mr-2",size:"sm"}),"Fetch Quiz Submissions"),spinner&&progress.status&&/*#__PURE__*/react_default.a.createElement("span",{className:"mx-3"}," ","Fetching Quiz Submissions (",progress.message,")")||/*#__PURE__*/react_default.a.createElement(react_default.a.Fragment,null," This could take a while")),/*#__PURE__*/react_default.a.createElement("textarea",{style:{width:"100%"},value:result||!!progress.partialData&&formatSubmissionsAsCSV(progress.partialData)||"",rows:20,onChange:function onChange(){}}));}
 // EXTERNAL MODULE: ./node_modules/bootstrap/dist/css/bootstrap.min.css
-var bootstrap_min = __webpack_require__(49);
+var bootstrap_min = __webpack_require__(50);
 
+// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/InputGroup.js
+
+
+
+
+
+
+var InputGroupAppend = createWithBsPrefix('input-group-append');
+var InputGroupPrepend = createWithBsPrefix('input-group-prepend');
+var InputGroupText = createWithBsPrefix('input-group-text', {
+  Component: 'span'
+});
+
+var InputGroup_InputGroupCheckbox = function InputGroupCheckbox(props) {
+  return /*#__PURE__*/react_default.a.createElement(InputGroupText, null, /*#__PURE__*/react_default.a.createElement("input", Object(esm_extends["a" /* default */])({
+    type: "checkbox"
+  }, props)));
+};
+
+var InputGroup_InputGroupRadio = function InputGroupRadio(props) {
+  return /*#__PURE__*/react_default.a.createElement(InputGroupText, null, /*#__PURE__*/react_default.a.createElement("input", Object(esm_extends["a" /* default */])({
+    type: "radio"
+  }, props)));
+};
+/**
+ *
+ * @property {InputGroupAppend} Append
+ * @property {InputGroupPrepend} Prepend
+ * @property {InputGroupText} Text
+ * @property {InputGroupRadio} Radio
+ * @property {InputGroupCheckbox} Checkbox
+ */
+
+
+var InputGroup = react_default.a.forwardRef(function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix,
+      size = _ref.size,
+      className = _ref.className,
+      _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'div' : _ref$as,
+      props = Object(objectWithoutPropertiesLoose["a" /* default */])(_ref, ["bsPrefix", "size", "className", "as"]);
+
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'input-group');
+  return /*#__PURE__*/react_default.a.createElement(Component, Object(esm_extends["a" /* default */])({
+    ref: ref
+  }, props, {
+    className: classnames_default()(className, bsPrefix, size && bsPrefix + "-" + size)
+  }));
+});
+InputGroup.displayName = 'InputGroup';
+
+var InputGroupWithExtras = Object(esm_extends["a" /* default */])({}, InputGroup, {
+  Text: InputGroupText,
+  Radio: InputGroup_InputGroupRadio,
+  Checkbox: InputGroup_InputGroupCheckbox,
+  Append: InputGroupAppend,
+  Prepend: InputGroupPrepend
+});
+
+/* harmony default export */ var esm_InputGroup = (InputGroupWithExtras);
+// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Feedback.js
+
+
+
+
+
+var Feedback_propTypes = {
+  /**
+   * Specify whether the feedback is for valid or invalid fields
+   *
+   * @type {('valid'|'invalid')}
+   */
+  type: prop_types_default.a.string,
+
+  /** Display feedback as a tooltip. */
+  tooltip: prop_types_default.a.bool,
+  as: prop_types_default.a.elementType
+};
+var Feedback = react_default.a.forwardRef( // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+function (_ref, ref) {
+  var _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'div' : _ref$as,
+      className = _ref.className,
+      _ref$type = _ref.type,
+      type = _ref$type === void 0 ? 'valid' : _ref$type,
+      _ref$tooltip = _ref.tooltip,
+      tooltip = _ref$tooltip === void 0 ? false : _ref$tooltip,
+      props = Object(objectWithoutPropertiesLoose["a" /* default */])(_ref, ["as", "className", "type", "tooltip"]);
+
+  return /*#__PURE__*/react_default.a.createElement(Component, Object(esm_extends["a" /* default */])({}, props, {
+    ref: ref,
+    className: classnames_default()(className, type + "-" + (tooltip ? 'tooltip' : 'feedback'))
+  }));
+});
+Feedback.displayName = 'Feedback';
+Feedback.propTypes = Feedback_propTypes;
+/* harmony default export */ var esm_Feedback = (Feedback);
+// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormContext.js
+ // TODO
+
+var FormContext = react_default.a.createContext({
+  controlId: undefined
+});
+/* harmony default export */ var esm_FormContext = (FormContext);
+// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormControl.js
+
+
+
+
+
+
+
+
+
+var FormControl = react_default.a.forwardRef(function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix,
+      bsCustomPrefix = _ref.bsCustomPrefix,
+      type = _ref.type,
+      size = _ref.size,
+      htmlSize = _ref.htmlSize,
+      id = _ref.id,
+      className = _ref.className,
+      _ref$isValid = _ref.isValid,
+      isValid = _ref$isValid === void 0 ? false : _ref$isValid,
+      _ref$isInvalid = _ref.isInvalid,
+      isInvalid = _ref$isInvalid === void 0 ? false : _ref$isInvalid,
+      plaintext = _ref.plaintext,
+      readOnly = _ref.readOnly,
+      custom = _ref.custom,
+      _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'input' : _ref$as,
+      props = Object(objectWithoutPropertiesLoose["a" /* default */])(_ref, ["bsPrefix", "bsCustomPrefix", "type", "size", "htmlSize", "id", "className", "isValid", "isInvalid", "plaintext", "readOnly", "custom", "as"]);
+
+  var _useContext = Object(react["useContext"])(esm_FormContext),
+      controlId = _useContext.controlId;
+
+  var _ref2 = custom ? [bsCustomPrefix, 'custom'] : [bsPrefix, 'form-control'],
+      prefix = _ref2[0],
+      defaultPrefix = _ref2[1];
+
+  bsPrefix = useBootstrapPrefix(prefix, defaultPrefix);
+  var classes;
+
+  if (plaintext) {
+    var _classes;
+
+    classes = (_classes = {}, _classes[bsPrefix + "-plaintext"] = true, _classes);
+  } else if (type === 'file') {
+    var _classes2;
+
+    classes = (_classes2 = {}, _classes2[bsPrefix + "-file"] = true, _classes2);
+  } else if (type === 'range') {
+    var _classes3;
+
+    classes = (_classes3 = {}, _classes3[bsPrefix + "-range"] = true, _classes3);
+  } else if (Component === 'select' && custom) {
+    var _classes4;
+
+    classes = (_classes4 = {}, _classes4[bsPrefix + "-select"] = true, _classes4[bsPrefix + "-select-" + size] = size, _classes4);
+  } else {
+    var _classes5;
+
+    classes = (_classes5 = {}, _classes5[bsPrefix] = true, _classes5[bsPrefix + "-" + size] = size, _classes5);
+  }
+
+   false ? undefined : void 0;
+  return /*#__PURE__*/react_default.a.createElement(Component, Object(esm_extends["a" /* default */])({}, props, {
+    type: type,
+    size: htmlSize,
+    ref: ref,
+    readOnly: readOnly,
+    id: id || controlId,
+    className: classnames_default()(className, classes, isValid && "is-valid", isInvalid && "is-invalid")
+  }));
+});
+FormControl.displayName = 'FormControl';
+/* harmony default export */ var esm_FormControl = (Object.assign(FormControl, {
+  Feedback: esm_Feedback
+}));
+// CONCATENATED MODULE: ./src/components/grade-submissions.js
+// An example of a query to set the score of a specific question is:
+// fetch(
+//     "https://q.utoronto.ca/api/v1/courses/181873/quizzes/115457/submissions/3980153",
+//     {
+//         credentials: "include",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Accept: "application/json+canvas-string-ids",
+//         },
+//         method: "put",
+//         body: JSON.stringify({
+//             quiz_submissions: [
+//                 {
+//                     attempt: 1,
+//                     questions: {
+//                         1170712: {
+//                             score: 0,
+//                             comment: "Not counted towards score",
+//                         },
+//                     },
+//                 },
+//             ],
+//             authenticity_token:
+//                 "Xc4fXLY3WlbmXARvgo9udQ63Wr/i+SW+LhA3tPatKqwHrCY9x1wfYqtsMQfluCc9S/A89re0f/JdKVXHvcB46w==",
+//         }),
+//     }
+// );
+function GradeSubmissions(props){var _React$useState=react_default.a.useState(""),_React$useState2=_slicedToArray(_React$useState,2),questionId=_React$useState2[0],setQuestionId=_React$useState2[1];var _React$useState3=react_default.a.useState(false),_React$useState4=_slicedToArray(_React$useState3,2),spinner=_React$useState4[0],setSpinner=_React$useState4[1];var _React$useState5=react_default.a.useState([]),_React$useState6=_slicedToArray(_React$useState5,2),submissions=_React$useState6[0],setSubmissions=_React$useState6[1];log("the sub first",submissions);var _React$useState7=react_default.a.useState({}),_React$useState8=_slicedToArray(_React$useState7,2),progress=_React$useState8[0],setProgress=_React$useState8[1];var _React$useState9=react_default.a.useState({}),_React$useState10=_slicedToArray(_React$useState9,2),gradingProgress=_React$useState10[0],setGradingProgress=_React$useState10[1];var _React$useState11=react_default.a.useState([]),_React$useState12=_slicedToArray(_React$useState11,2),questions=_React$useState12[0],setQuestions=_React$useState12[1];var _React$useState13=react_default.a.useState("0"),_React$useState14=_slicedToArray(_React$useState13,2),points=_React$useState14[0],setPoints=_React$useState14[1];var questionsById={};var _iterator=_createForOfIteratorHelper(questions),_step;try{for(_iterator.s();!(_step=_iterator.n()).done;){var _question=_step.value;questionsById[_question.id]=_question;}// The questions are fetched when the tab is loaded. That way they can be previewed.
+}catch(err){_iterator.e(err);}finally{_iterator.f();}react_default.a.useEffect(function(){setSpinner(true);var route=route_parser_default()("*start/courses/:courseId/quizzes/:quizId");var match=route.match(window.location);quizGlobal.init(match);quizGlobal.fetchQuestions({asFlatList:true}).then(function(q){return setQuestions(q);}).catch(function(e){return setSubmissions(e);}).finally(function(){return setSpinner(false);});},[]);function fetchQuizSubmissions(){setSpinner(true);var route=route_parser_default()("*start/courses/:courseId/quizzes/:quizId");var match=route.match(window.location);quizGlobal.init(match);setSubmissions([]);quizGlobal.fetchSubmissionIds(setProgress).then(setSubmissions).catch(function(e){log(e);}).finally(function(){return setSpinner(false);});}function gradeQuizSubmissions(){setSpinner(true);var route=route_parser_default()("*start/courses/:courseId/quizzes/:quizId");var match=route.match(window.location);quizGlobal.init(match);quizGlobal.gradeSubmissions(//[{ attempt: 1, id: "3980153" }],
+submissions,{score:points,id:questionId},setGradingProgress).then(function(){}).catch(function(e){log(e);}).finally(function(){return setSpinner(false);});}var submissionSummary=(submissions||[]).length>0&&!spinner?/*#__PURE__*/react_default.a.createElement("span",{className:"mx-3"},"Found ",(submissions||[]).length," submissions"):progress.status&&/*#__PURE__*/react_default.a.createElement("span",{className:"mx-3"}," ","Fetching Quiz Submissions (",progress.message,")");var gradingSummary=gradingProgress.status&&/*#__PURE__*/react_default.a.createElement("span",{className:"mx-3"}," ","Grading Submissions (",gradingProgress.message,")");var question=questionsById[questionId];var disabled=!question||!submissions.length;return/*#__PURE__*/react_default.a.createElement("div",{className:"my-2"},/*#__PURE__*/react_default.a.createElement("p",null,"Set a uniform grade for a specific question. For example, this can be used to set a mark for essay questions without going through the speed grader. The question ID can be found from the"," ",/*#__PURE__*/react_default.a.createElement("i",null,"Quiz Questions")," tab."),/*#__PURE__*/react_default.a.createElement(esm_InputGroup,{title:"The internal Quercus ID for the question you want graded.",className:"my-2"},/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Prepend,null,/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Text,null,"Question ID")),/*#__PURE__*/react_default.a.createElement(esm_FormControl,{value:questionId,onChange:function onChange(e){return setQuestionId(e.target.value);}})),/*#__PURE__*/react_default.a.createElement("div",null,/*#__PURE__*/react_default.a.createElement("h3",null,"Question Preview"),/*#__PURE__*/react_default.a.createElement("div",{className:"ml-4"},question?/*#__PURE__*/react_default.a.createElement(Question,{data:question}):/*#__PURE__*/react_default.a.createElement("p",null,"No valid question to preview."))),/*#__PURE__*/react_default.a.createElement("div",{className:"my-2"},/*#__PURE__*/react_default.a.createElement(esm_Button,{onClick:fetchQuizSubmissions},"Fetch Submissions to be Marked"),submissionSummary),/*#__PURE__*/react_default.a.createElement(esm_InputGroup,{title:"How many points to grade all the submissions",className:"my-2"},/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Prepend,null,/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Text,null,"Set all submissions to")),/*#__PURE__*/react_default.a.createElement(esm_FormControl,{value:points,onChange:function onChange(e){return setPoints(e.target.value);}}),/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Append,null,/*#__PURE__*/react_default.a.createElement(esm_InputGroup.Text,null,"out of ",question?question.points_possible:"?"))),/*#__PURE__*/react_default.a.createElement(esm_Button,{title:"Grade all submissions",disabled:disabled,className:"mr-2",onClick:gradeQuizSubmissions},"Grade Submissions"),disabled&&"You must download the submission and specify a question before grading"," ",gradingSummary);}
 // CONCATENATED MODULE: ./src/App.js
-function App_App(){var _React$useState=react_default.a.useState(false),_React$useState2=_slicedToArray(_React$useState,2),modalOpen=_React$useState2[0],setModalOpen=_React$useState2[1];var _React$useState3=react_default.a.useState("quizQuestions"),_React$useState4=_slicedToArray(_React$useState3,2),currTab=_React$useState4[0],setCurrTab=_React$useState4[1];return/*#__PURE__*/react_default.a.createElement("div",{className:"header-bar-right"},/*#__PURE__*/react_default.a.createElement("div",{className:"header-group-left"},/*#__PURE__*/react_default.a.createElement("button",{className:"btn",onClick:function onClick(){return setModalOpen(true);}},"Quiz Stats"),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal,{show:modalOpen,dialogClassName:"fullscreen-modal",onHide:function onHide(){return setModalOpen(false);}},/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Header,{closeButton:true},/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Title,null,"Advanced Quiz Stats")),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Body,null,/*#__PURE__*/react_default.a.createElement(esm_Tabs,{id:"controlled-tab-example",activeKey:currTab,onSelect:function onSelect(k){return setCurrTab(k);}},/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"quizQuestions",title:"Quiz Questions"},/*#__PURE__*/react_default.a.createElement(ViewQuestions,null)),/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"submissions",title:"Quiz Submissions"},/*#__PURE__*/react_default.a.createElement(ViewSubmissions,null)),/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"api",title:"Query API"},/*#__PURE__*/react_default.a.createElement(QueryApi,null)))),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Footer,null,/*#__PURE__*/react_default.a.createElement(esm_Button,{variant:"secondary",onClick:function onClick(){return setModalOpen(false);}},"Close")))));}/* harmony default export */ var src_App = (App_App);
+function App_App(){var _React$useState=react_default.a.useState(false),_React$useState2=_slicedToArray(_React$useState,2),modalOpen=_React$useState2[0],setModalOpen=_React$useState2[1];var _React$useState3=react_default.a.useState("quizQuestions"),_React$useState4=_slicedToArray(_React$useState3,2),currTab=_React$useState4[0],setCurrTab=_React$useState4[1];return/*#__PURE__*/react_default.a.createElement("div",{className:"header-bar-right"},/*#__PURE__*/react_default.a.createElement("div",{className:"header-group-left"},/*#__PURE__*/react_default.a.createElement("button",{className:"btn",onClick:function onClick(){return setModalOpen(true);}},"Quiz Stats"),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal,{show:modalOpen,dialogClassName:"fullscreen-modal",onHide:function onHide(){return setModalOpen(false);}},/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Header,{closeButton:true},/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Title,null,"Advanced Quiz Stats")),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Body,null,/*#__PURE__*/react_default.a.createElement(esm_Tabs,{id:"controlled-tab-example",activeKey:currTab,onSelect:function onSelect(k){return setCurrTab(k);}},/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"quizQuestions",title:"Quiz Questions"},/*#__PURE__*/react_default.a.createElement(ViewQuestions,null)),/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"submissions",title:"Quiz Submissions"},/*#__PURE__*/react_default.a.createElement(ViewSubmissions,null)),/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"grade",title:"Grade a Question"},/*#__PURE__*/react_default.a.createElement(GradeSubmissions,null)),/*#__PURE__*/react_default.a.createElement(esm_Tab,{eventKey:"api",title:"Query API"},/*#__PURE__*/react_default.a.createElement(QueryApi,null)))),/*#__PURE__*/react_default.a.createElement(react_bootstrap_esm_Modal.Footer,null,/*#__PURE__*/react_default.a.createElement(esm_Button,{variant:"secondary",onClick:function onClick(){return setModalOpen(false);}},"Close")))));}/* harmony default export */ var src_App = (App_App);
 // CONCATENATED MODULE: ./src/index.js
 log("React script has successfully started");// Do required initial work. Gets called every time the URL changes,
 // so that elements can be re-inserted as a user navigates a page with
