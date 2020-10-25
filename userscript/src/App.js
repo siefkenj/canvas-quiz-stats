@@ -7,6 +7,7 @@ import { ViewQuestions } from "./components/view-questions";
 import { ViewSubmissions } from "./components/view-submissions";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import { GradeSubmissions } from "./components/grade-submissions";
 
 function App() {
     const [modalOpen, setModalOpen] = React.useState(false);
@@ -44,6 +45,9 @@ function App() {
                                 title="Quiz Submissions"
                             >
                                 <ViewSubmissions />
+                            </Tab>
+                            <Tab eventKey="grade" title="Grade a Question">
+                                <GradeSubmissions />
                             </Tab>
                             <Tab eventKey="api" title="Query API">
                                 <QueryApi />

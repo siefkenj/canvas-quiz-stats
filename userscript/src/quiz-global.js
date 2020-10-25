@@ -1,4 +1,4 @@
-import { logFetch, log } from "./utils";
+import { logFetch, log, logPut } from "./utils";
 
 class Quiz {
     init({ courseId, quizId }) {
@@ -11,7 +11,7 @@ class Quiz {
      *
      * @memberof Quiz
      */
-    async fetchQuestions() {
+    async fetchQuestions({ asFlatList = false } = {}) {
         // We'll assume there's not more than 1000 questions...
         const url = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/questions?per_page=1000`;
         const groupUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/groups/`;
@@ -20,6 +20,9 @@ class Quiz {
         const json = await resp.json();
         this.quizQuestions = json;
 
+        if (asFlatList) {
+            return this.quizQuestions;
+        }
         // many of the questions could be in quiz groups, so we need to fetch data about each group.
         const quizGroups = {};
         for (const question of this.quizQuestions) {
@@ -61,6 +64,110 @@ class Quiz {
         ret.sort((a, b) => (a.position | 0) - (b.position | 0));
 
         return ret;
+    }
+
+    /**
+     * Fetch the ids of all quiz submissions
+     *
+     * @memberof Quiz
+     */
+    async fetchSubmissionIds(progressCallback = () => {}) {
+        const PAGE_SIZE = 20;
+        const progress = {
+            status: "in progress",
+            message: "",
+            total: null,
+            progress: null,
+            partialData: [],
+        };
+        function notifyProgress() {
+            progressCallback({ ...progress });
+        }
+        // /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
+        const url = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
+        let resp = null;
+
+        // Get the total number of submissions
+        progress.message = "Getting total number of submissions";
+        notifyProgress();
+        const numSubmissions = await this.findNumPages(
+            `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?per_page=1`
+        );
+        progress.message = "";
+        progress.total = numSubmissions;
+        notifyProgress();
+
+        const ret = [];
+        // Fetch in batches until we have all the data
+        const numPages = Math.ceil(numSubmissions / PAGE_SIZE);
+        for (let page = 1; page <= numPages; page++) {
+            progress.message = `Fetching ${
+                page * PAGE_SIZE
+            } of ${numSubmissions}`;
+            notifyProgress();
+
+            resp = await logFetch(url + "&page=" + page);
+            const json = await resp.json();
+
+            const submissions = combineSubmissionAndUserData(json);
+            ret.push(...submissions);
+            progress.partialData = [...ret];
+            notifyProgress();
+        }
+
+        progress.status = "";
+        notifyProgress();
+
+        return ret;
+    }
+
+    async gradeSubmissions(
+        submissions = [],
+        questionInfo = { score: 0, id: "1234567" },
+        progressCallback = () => {}
+    ) {
+        const BATCH_SIZE = 20;
+        const progress = {
+            status: "in progress",
+            message: "",
+            total: null,
+            progress: null,
+            partialData: [],
+        };
+        function notifyProgress() {
+            progressCallback({ ...progress });
+        }
+        const url = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions/`;
+
+        for (let i = 0; i <= Math.ceil(submissions.length / BATCH_SIZE); i++) {
+            const slice = submissions.slice(
+                i * BATCH_SIZE,
+                (i + 1) * BATCH_SIZE
+            );
+            progress.message = `Grading submissions ${i * BATCH_SIZE} of ${
+                submissions.length
+            }`;
+            notifyProgress();
+            const promises = slice.map((submission) =>
+                logPut(url + submission.id, {
+                    quiz_submissions: [
+                        {
+                            attempt: submission.attempt,
+                            questions: {
+                                [questionInfo.id]: {
+                                    score: questionInfo.score,
+                                },
+                            },
+                        },
+                    ],
+                })
+            );
+            await Promise.all(promises);
+        }
+
+        progress.status = "done";
+        progress.message = `Graded all ${submissions.length} submissions`;
+        notifyProgress();
     }
 
     /**
@@ -218,9 +325,7 @@ function submissionsToSubmissionsHash(data) {
     for (const submission of data) {
         const questions = [...submission.quiz_submission_questions];
         questions.sort((a, b) => a.position - b.position);
-        ret[submission.submission_id] = questions.map(
-            (q) => q.id
-        );
+        ret[submission.submission_id] = questions.map((q) => q.id);
     }
 
     return ret;

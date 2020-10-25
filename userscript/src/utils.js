@@ -17,13 +17,34 @@ export function log(...args) {
  */
 export function logFetch(arg) {
     const url = new URL(arg, window.location);
-    log("fetching", "" + url);
+    log("GET request", "" + url);
     return fetch("" + url, {
         credentials: "include",
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json+canvas-string-ids",
         },
+    });
+}
+
+/**
+ * Wrapped version of `fetch` that logs the output as it's being fetched.
+ * It also specifies the full path, because in Greasemonkey, the full path is needed.
+ *
+ * @param {string} url
+ * @returns {Promise} - the `fetch` promise
+ */
+export function logPut(url, body = {}) {
+    url = new URL(url, window.location);
+    log("PUT request", "" + url, body);
+    return fetch("" + url, {
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json+canvas-string-ids",
+        },
+        body: JSON.stringify({ ...body, authenticity_token: getCSRFToken() }),
+        method: "PUT",
     });
 }
 
@@ -51,6 +72,15 @@ export function addLocationChangeCallback(callback) {
 
     observer.observe(body, { childList: true, subtree: true });
     return observer;
+}
+
+export function getCSRFToken() {
+    const csrfCookie = document.cookie
+        .split(";")
+        .find((v) => v.trim().startsWith("_csrf_token="));
+    if (csrfCookie) {
+        return decodeURIComponent(csrfCookie.trim().slice(12));
+    }
 }
 
 /**
