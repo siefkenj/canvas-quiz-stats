@@ -3,6 +3,7 @@ import { Button, Spinner } from "react-bootstrap";
 import { quizGlobal } from "../quiz-global";
 import { Question } from "./question";
 import RouteParser from "route-parser";
+import FileSaver from "file-saver";
 
 // An example of a query to get details of a specific quiz
 // https://q.utoronto.ca/api/v1/quiz_submissions/3791304/questions
@@ -43,6 +44,15 @@ export function ViewQuestions(props) {
         }
     }
 
+    function download() {
+        FileSaver.saveAs(
+            new Blob([JSON.stringify(questions, null, 4)], {
+                type: "application/json",
+            }),
+            "quiz-questions.json"
+        );
+    }
+
     return (
         <div className="my-2">
             {spinner && (
@@ -54,7 +64,10 @@ export function ViewQuestions(props) {
             <div style={{ whiteSpace: "pre" }}>{result}</div>
             <h4>
                 Displaying {numQuestions} questions{" "}
-                <Button onClick={print}>Make Printable</Button>
+                <Button onClick={print} className="mr-2">
+                    Make Printable
+                </Button>
+                <Button onClick={download}>Download Questions</Button>
             </h4>
             <div ref={divRef}>
                 {questions.map((question, i) => (

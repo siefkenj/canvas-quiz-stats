@@ -119,3 +119,32 @@ export async function awaitElement(selector) {
         delayedProbe();
     });
 }
+
+export function quizHtmlToOrder(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    // Question groups have a `data-group-id` attribute. Questions have a `id="question_XXXXXX"`
+    // attribute. We want to find them both, because they're all interleaved.
+    const nodes = doc.querySelectorAll(
+        "div[data-group-id], div.question[id^='question_']"
+    );
+    let seen = {};
+    const ids = Array.from(nodes)
+        .map((node) => {
+            let attr = node.getAttribute("id");
+            if (attr.match(/question_(\d+)/)) {
+                return attr.match(/question_(\d+)/)[1];
+            } else {
+                return node.getAttribute("data-group-id");
+            }
+        })
+        // Make sure each id only appears once
+        .filter((id) => {
+            if (seen[id]) {
+                return false;
+            }
+            seen[id] = true;
+            return true;
+        });
+    return ids;
+}

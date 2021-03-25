@@ -1,4 +1,4 @@
-import { logFetch, log, logPut } from "./utils";
+import { logFetch, log, logPut, quizHtmlToOrder } from "./utils";
 
 class Quiz {
     init({ courseId, quizId }) {
@@ -15,6 +15,7 @@ class Quiz {
         // We'll assume there's not more than 1000 questions...
         const url = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/questions?per_page=1000`;
         const groupUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/groups/`;
+        const editUrl = `/courses/${this.courseId}/quizzes/${this.quizId}/edit`;
 
         const resp = await logFetch(unescape(url));
         const json = await resp.json();
@@ -38,6 +39,10 @@ class Quiz {
         );
         log("Found the following question groups", groupIds);
 
+        // Since the `position` attribute is wrong in the JSON data returned from Canvas,
+        // we need to extract the question order directly from the html
+        const editFetchResp = logFetch(editUrl);
+
         // fetch information about the question groups
         const resps = await Promise.all(
             groupIds.map((id) => logFetch(groupUrl + id))
@@ -52,7 +57,10 @@ class Quiz {
             };
         }
 
-        // Assemble the groups and ungrouped questions together into one array.
+        const editPageContents = await (await editFetchResp).text();
+        const questionOder = quizHtmlToOrder(editPageContents);
+
+        // Assemble the groups and un-grouped questions together into one array.
         const ret = this.quizQuestions
             .filter(
                 (q) =>
@@ -61,6 +69,9 @@ class Quiz {
             )
             .concat(Object.values(groups));
 
+        ret.forEach((item) => {
+            item.position = questionOder.indexOf(item.id);
+        });
         ret.sort((a, b) => (a.position | 0) - (b.position | 0));
 
         return ret;
