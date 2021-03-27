@@ -120,6 +120,16 @@ export async function awaitElement(selector) {
     });
 }
 
+/**
+ * Take the html of a quiz edit page and return a list of question/group ids
+ * in the same order that they appear in the page.
+ *
+ * An edit url might look like `/courses/${this.courseId}/quizzes/${this.quizId}/edit`
+ *
+ * @export
+ * @param {*} html
+ * @returns
+ */
 export function quizHtmlToOrder(html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
@@ -147,4 +157,73 @@ export function quizHtmlToOrder(html) {
             return true;
         });
     return ids;
+}
+
+/**
+ * Turn a question list into a flat hash of questions by their id.
+ * If there are questions inside a question group, they are extracted.
+ *
+ * @export
+ * @param {*} questions
+ * @returns
+ */
+export function quizQuestionsToHash(questions) {
+    const ret = {};
+
+    for (const q of questions) {
+        if (q.type === "question_group") {
+            for (const innerQ of q.questions) {
+                ret[innerQ.id] = innerQ;
+            }
+        } else {
+            ret[q.id] = q;
+        }
+    }
+    return ret;
+}
+
+/**
+ * Given a answer from a `submission_data` array and
+ * a hash of question ids -> questions, normalize the answers.
+ *
+ * @export
+ * @param {*} answer
+ * @param {*} questionHash
+ * @returns
+ */
+export function processSubmittedAnswer(answer, questionHash) {
+    const question = questionHash[answer.question_id];
+    if (question == null) {
+        log("WARNING. Could not find question for answer", answer);
+        return { question_id: question.id, answers: answer };
+    }
+    let ret;
+    switch (question.question_type) {
+        case "essay_question":
+            return { question_id: question.id, answers: [answer.text] };
+        case "multiple_answers_question":
+            // Multiple answer question responses are recorded in fields like
+            // {
+            //      answer_XXXXX: "0",
+            //      answer_YYYYY: "1"
+            // }
+            // where XXXXX and YYYYY are choice ids and "0"/"1" indicate whether
+            // they selected that choice.
+            ret = [];
+            for (const [key, val] of Object.entries(answer)) {
+                if (key.startsWith("answer_")) {
+                    if (+val > 0) {
+                        ret.push(key.slice(7));
+                    }
+                }
+            }
+            return { question_id: question.id, answers: ret };
+        case "multiple_choice_question":
+            return { question_id: question.id, answers: [answer.answer_id] };
+        case "text_only_question":
+            return null;
+        default:
+            log("WARNING. Unknown question type", question.question_type);
+            return { question_id: question.id, answers: answer };
+    }
 }

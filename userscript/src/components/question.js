@@ -7,7 +7,10 @@ export function Question({ data = {} }) {
         return <QuestionGroup data={data} />;
     }
     let answerNodes = null;
-    if (question_type !== "text_only_question") {
+    if (
+        question_type !== "text_only_question" &&
+        question_type !== "essay_question"
+    ) {
         answerNodes = (
             <div className="question-answer-box">
                 {answers.map((answer, i) => (

@@ -9,7 +9,7 @@ import FileSaver from "file-saver";
 // https://q.utoronto.ca/api/v1/quiz_submissions/3791304/questions
 // /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
 
-export function ViewQuestions(props) {
+export function ViewQuestions() {
     const [spinner, setSpinner] = React.useState(false);
     const [result, setResult] = React.useState("");
     const [questions, setQuestions] = React.useState([]);

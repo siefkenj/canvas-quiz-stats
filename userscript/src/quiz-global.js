@@ -1,4 +1,11 @@
-import { logFetch, log, logPut, quizHtmlToOrder } from "./utils";
+import {
+    logFetch,
+    log,
+    logPut,
+    quizHtmlToOrder,
+    quizQuestionsToHash,
+    processSubmittedAnswer,
+} from "./utils";
 
 class Quiz {
     init({ courseId, quizId }) {
@@ -179,6 +186,189 @@ class Quiz {
         progress.status = "done";
         progress.message = `Graded all ${submissions.length} submissions`;
         notifyProgress();
+    }
+
+    /**
+     * Fetch the quiz submissions and answers that students gave
+     *
+     * @memberof Quiz
+     */
+    async fetchSubmissionsWithAnswers(progressCallback = () => {}) {
+        const ret = {};
+        // When this is set to 0, all submissions are fetched otherwise,
+        // fetching is limited to the specified number.
+        const FETCH_LIMIT_OVERRIDE = 0;
+        const PAGE_SIZE = FETCH_LIMIT_OVERRIDE || 20;
+        // We are doing two parallel progress operations,
+        // so we need two parallel progress states.
+        const progressA = {
+            status: "in progress",
+            message: "",
+            total: null,
+            progress: null,
+            partialData: [],
+        };
+        const progressB = {
+            status: "in progress",
+            message: "",
+            total: null,
+            progress: null,
+            partialData: [],
+        };
+        function notifyProgress() {
+            // There are two operations going on at the same time,
+            // so we need to keep two trackers of progress.
+            const progress = { ...progressA };
+            progress.status = progressA.status || progressB.status;
+            progress.message = [progressA.message, progressB.message]
+                .filter((x) => x)
+                .join("; ");
+            progress.total =
+                (progressA.total != null
+                    ? progressA.total + (progressB.total || 0)
+                    : null) ||
+                (progressB.total != null
+                    ? progressB.total + (progressA.total || 0)
+                    : null);
+            progress.progress =
+                (progressA.progress != null
+                    ? progressA.progress + (progressB.progress || 0)
+                    : null) ||
+                (progressB.progress != null
+                    ? progressB.progress + (progressA.progress || 0)
+                    : null);
+            progressCallback({ ...progress });
+        }
+        // /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
+        const quizUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}`;
+        const quizVersionUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
+        let resp = null;
+
+        progressA.message = "Fetching Quiz Details";
+        notifyProgress();
+
+        // We need to get the assignment_id from the quiz object.
+        resp = await logFetch(quizUrl);
+        const quizData = await resp.json();
+        const assignmentId = quizData["assignment_id"];
+        log("Quiz", this.quizId, "has assignment id", assignmentId);
+        const quizQuestions = await this.fetchQuestions();
+        const questionHash = quizQuestionsToHash(quizQuestions);
+
+        const getQuizSubmittedAnswers = async () => {
+            const answersUrl = `/api/v1/courses/${this.courseId}/assignments/${assignmentId}/submissions?include[]=user&include[]=submission_history&per_page=${PAGE_SIZE}`;
+
+            const numSubmissions =
+                FETCH_LIMIT_OVERRIDE ||
+                (await this.findNumPages(
+                    `/api/v1/courses/${this.courseId}/assignments/${assignmentId}/submissions?per_page=1`
+                ));
+
+            // Fetch in batches until we have all the data
+            const numPages = Math.ceil(numSubmissions / PAGE_SIZE);
+            for (let page = 1; page <= numPages; page++) {
+                progressA.message = `Fetching ${
+                    page * PAGE_SIZE
+                } of ${numSubmissions}`;
+                notifyProgress();
+
+                resp = await logFetch(answersUrl + "&page=" + page);
+                const userAnswers = await resp.json();
+
+                for (const submission of userAnswers) {
+                    const utorid = submission.user.sis_user_id;
+                    ret[utorid] = ret[utorid] || {};
+                    ret[utorid].user = {
+                        utorid,
+                        id: submission.user.integration_id,
+                    };
+                    ret[utorid].workflow_state = submission.workflow_state;
+                    ret[utorid].answers =
+                        submission.submission_history[0].submission_data || [];
+                    ret[utorid].answers = ret[utorid].answers
+                        .map((answer) =>
+                            processSubmittedAnswer(answer, questionHash)
+                        )
+                        // Any `null` answers don't belong
+                        .filter((x) => x);
+                }
+            }
+
+            progressA.status = "";
+            notifyProgress();
+
+            return ret;
+        };
+
+        const getQuizVersions = async () => {
+            // Get the total number of submissions
+            progressB.message = "Getting total number of submissions";
+            notifyProgress();
+            const numSubmissions =
+                FETCH_LIMIT_OVERRIDE ||
+                (await this.findNumPages(
+                    `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?per_page=1`
+                ));
+            progressB.message = "";
+            progressB.total = numSubmissions;
+            notifyProgress();
+
+            // Fetch in batches until we have all the data
+            const numPages = Math.ceil(numSubmissions / PAGE_SIZE);
+            for (let page = 1; page <= numPages; page++) {
+                progressB.message = `Fetching ${
+                    page * PAGE_SIZE
+                } of ${numSubmissions}`;
+                notifyProgress();
+
+                resp = await logFetch(quizVersionUrl + "&page=" + page);
+                const json = await resp.json();
+
+                const submissions = combineSubmissionAndUserData(json);
+
+                const detailedSubmissions = await Promise.all(
+                    submissions.map(async (s) => {
+                        const rawData = await (
+                            await logFetch(
+                                `/api/v1/quiz_submissions/${s.id}/questions`
+                            )
+                        ).json();
+
+                        return { ...rawData, submission_id: s.id };
+                    })
+                );
+                const submissionsHash = submissionsToSubmissionsHash(
+                    detailedSubmissions
+                );
+                const combinedSubmissionData = submissions.map((sub) => ({
+                    ...sub,
+                    questions: submissionsHash[sub.id],
+                }));
+                log("Combined submission data", combinedSubmissionData);
+
+                for (const submission of combinedSubmissionData) {
+                    const utorid = submission.user.sis_user_id;
+                    ret[utorid] = ret[utorid] || {};
+                    ret[utorid].questions = submission.questions;
+                }
+
+                notifyProgress();
+            }
+
+            progressB.status = "";
+            notifyProgress();
+
+            return ret;
+        };
+
+        await Promise.all([getQuizSubmittedAnswers(), getQuizVersions()]);
+        const fullData = {
+            quizQuestions,
+            quizSubmissions: Object.values(ret),
+        };
+
+        console.log("OUTING", fullData);
+        return fullData;
     }
 
     /**
