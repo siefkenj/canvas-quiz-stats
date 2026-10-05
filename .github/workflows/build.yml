@@ -1,0 +1,40 @@
+name: Build
+
+# Rebuild the userscript from source and make sure it matches the committed `dist/`.
+# This fails if source files were not committed (the build breaks), if `dist/` was
+# not rebuilt after changing the source, or if `package-lock.json` is out of sync.
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: userscript
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: userscript/package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build
+              run: npm run build
+
+            - name: Check that dist/ matches the build
+              run: |
+                  if [ -n "$(git status --porcelain -- ../dist)" ]; then
+                      echo "::error::dist/ is out of date with the source. Run 'npm run build' in userscript/ and commit the result."
+                      git status --short -- ../dist
+                      git diff -- ../dist
+                      exit 1
+                  fi

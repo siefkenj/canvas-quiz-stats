@@ -10618,11 +10618,11 @@
     return data;
   }
   const quizGlobal = new Quiz();
-  function Question({ data = {} }) {
-    const { question_type, question_text, id: id2, answers, type } = data;
-    if (type === "question_group") {
+  function Question({ data }) {
+    if (data.type === "question_group") {
       return /* @__PURE__ */ React.createElement(QuestionGroup, { data });
     }
+    const { question_type, question_text, id: id2, answers } = data;
     let answerNodes = null;
     if (question_type !== "text_only_question" && question_type !== "essay_question") {
       answerNodes = /* @__PURE__ */ React.createElement("div", { className: "question-answer-box" }, answers.map((answer, i) => /* @__PURE__ */ React.createElement(Answer, { data: answer, key: i, extraClass: question_type })));
@@ -10635,11 +10635,11 @@
       }
     ), answerNodes);
   }
-  function QuestionGroup({ data = {} }) {
+  function QuestionGroup({ data }) {
     const { question_points, pick_count, questions } = data;
     return /* @__PURE__ */ React.createElement("div", { className: "group-container" }, /* @__PURE__ */ React.createElement("h4", null, "Question Group (Pick ", pick_count, " of ", questions.length, ";", " ", question_points, " points each)"), /* @__PURE__ */ React.createElement("div", { className: "question-group" }, questions.map((question, i) => /* @__PURE__ */ React.createElement(Question, { data: question, key: i }))));
   }
-  function Answer({ data = {}, extraClass }) {
+  function Answer({ data, extraClass }) {
     let { text, html, weight } = data;
     if (!html) {
       html = text;
@@ -11426,7 +11426,7 @@
     const [result, setResult] = React.useState("");
     const [questions, setQuestions] = React.useState([]);
     const divRef = React.useRef(null);
-    const numQuestions = questions.map((x2) => x2.questions ? x2.questions.length : 1).reduce((a, b) => a + b, 0);
+    const numQuestions = questions.map((x2) => x2.type === "question_group" ? x2.questions.length : 1).reduce((a, b) => a + b, 0);
     React.useEffect(() => {
       setSpinner(true);
       const route2 = RouteParser("*start/courses/:courseId/quizzes/:quizId");
