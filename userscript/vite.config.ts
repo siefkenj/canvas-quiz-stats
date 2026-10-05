@@ -66,7 +66,11 @@ const bundlePlugin: PluginOption = {
                 // This may mess the source map :-(
                 chunk.code = addHeader(chunk.code);
 
-                // Inject the CSS into the bundle
+                // Inject the CSS into the bundle. (`src/index.tsx` imports its CSS with
+                // `?inline` and injects it itself, so normally there is none.)
+                if (!css) {
+                    continue;
+                }
                 chunk.code += `;\n(function(){
                     const el = document.createElement("style");
                     el.innerText = ${JSON.stringify(css)};

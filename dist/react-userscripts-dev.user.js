@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats Dev
-// @version  1.1
+// @version  1.5
 // @description Development mode for React Userscripts.
 // @include https://q.utoronto.ca/courses/*
+// @include https://www.gradescope.ca/*
+// @include https://www.gradescope.com/*
 // @grant    none
 // ==/UserScript==
 

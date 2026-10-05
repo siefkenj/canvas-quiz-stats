@@ -85,6 +85,27 @@ export function addLocationChangeCallback(callback: () => void) {
     return observer;
 }
 
+/**
+ * Add a stylesheet with the contents `css` to the page.
+ *
+ * @export
+ * @param {string} css
+ */
+export function injectStyles(css: string) {
+    const el = document.createElement("style");
+    el.textContent = css;
+    if (document.head) {
+        document.head.appendChild(el);
+    } else {
+        // When run at `document-start`, there is no <head> yet
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => document.head.appendChild(el),
+            { once: true }
+        );
+    }
+}
+
 export function getCSRFToken() {
     const csrfCookie = document.cookie
         .split(";")

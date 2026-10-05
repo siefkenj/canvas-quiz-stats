@@ -1,6 +1,4 @@
 import React from "react";
-import "./App.css";
-import "./namespaced-bootstrap.css";
 import { Modal, Button, Tab, Tabs } from "react-bootstrap";
 
 import { QueryApi } from "./components/query-api";
