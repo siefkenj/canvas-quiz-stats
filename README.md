@@ -11,6 +11,19 @@ all quizzes for all students. This script adds a *Quiz Stats* button that allows
 In Firefox or Chrome, install [Greasemonkey](https://addons.mozilla.org/en-CA/firefox/addon/greasemonkey/) or Tampermonkey.
 You can then install the script by clicking [here](https://github.com/siefkenj/canvas-quiz-stats/raw/main/dist/react-userscripts.user.js).
 
+## Gradescope in Canvas
+
+When Gradescope is opened through Canvas, it runs inside a frame, so Ctrl+clicking a Gradescope link
+normally opens the bare Gradescope page outside of Canvas. *Canvas Quiz Stats* makes links inside
+Gradescope point back to Canvas instead, so Ctrl+click, middle-click, "Copy link", etc. open the page
+*inside* Canvas. Plain clicks behave as usual.
+
+These links look like `<canvas page>#gs=<Gradescope URL>`. Opening one launches Gradescope from Canvas
+as usual and then shows the given page. The Canvas address bar is kept in this form as you browse, so
+reloading or bookmarking returns you to the same Gradescope page.
+
+The script must be allowed to run in frames (the default in Greasemonkey/Tampermonkey).
+
 ## Sideffects
 
 *Canvas Quiz Stats* loads the Bootstrap CSS, which overrides some of the settings that Canvas uses. Therefore, when you load the plugin,

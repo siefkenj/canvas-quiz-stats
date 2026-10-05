@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.4
+// @version  1.5
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
+// @include https://www.gradescope.ca/*
+// @include https://www.gradescope.com/*
 // @grant    none
 // ==/UserScript==
 
@@ -7526,6 +7528,9418 @@
     createRoot = m.createRoot;
     m.hydrateRoot;
   }
+  const indexCss = 'body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",\n    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",\n    monospace;\n}\n';
+  const appCss = '.App {\n    text-align: center;\n}\n\n.App-logo {\n    height: 40vmin;\n}\n\n.App-header {\n    background-color: #282c34;\n    min-height: 100vh;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    font-size: calc(10px + 2vmin);\n    color: white;\n}\n\n.App-link {\n    color: #09d3ac;\n}\n\n.fullscreen-modal {\n    width: 95%;\n    max-width: 95% !important;\n}\n\n.query-input {\n    display: block;\n    width: 100%;\n}\n\n.question-container {\n    border-top: 1px solid black;\n    border-bottom: 1px solid black;\n    margin-bottom: 4px;\n}\n\n.question-answer-box {\n    margin-left: 2em;\n}\n.question-option.correct {\n    color: #559900;\n}\n.question-option.multiple_answers_question::before {\n    content: "☐";\n    font-weight: bold;\n    margin-right: 0.5em;\n}\n.question-option.multiple_answers_question.correct::before {\n    content: "☒";\n    color: #559900;\n}\n\n.question-option.multiple_choice_question::before {\n    content: "◌";\n    font-weight: bold;\n    margin-right: 0.5em;\n}\n.question-option.multiple_choice_question.correct::before {\n    content: "●";\n    color: #559900;\n}\n\n.group-container {\n    margin-left: 1em;\n    margin-top: 1em;\n}\n.question-group {\n    border-left: 4px solid rgb(10, 93, 202);\n    padding-left: 1em;\n}\n\n.question-id {\n    font-weight: bold;\n    color: blue;\n    margin-bottom: 0.3em;\n}\n';
+  const bootstrapCss = `#canvas-quiz-stats {
+  /*!
+ * Bootstrap v4.5.3 (https://getbootstrap.com/)
+ * Copyright 2011-2020 The Bootstrap Authors
+ * Copyright 2011-2020 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+ */
+  /*# sourceMappingURL=bootstrap.css.map */
+}
+#canvas-quiz-stats :root {
+  --blue: #007bff;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #e83e8c;
+  --red: #dc3545;
+  --orange: #fd7e14;
+  --yellow: #ffc107;
+  --green: #28a745;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+#canvas-quiz-stats *,
+#canvas-quiz-stats *::before,
+#canvas-quiz-stats *::after {
+  box-sizing: border-box;
+}
+#canvas-quiz-stats html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+#canvas-quiz-stats article,
+#canvas-quiz-stats aside,
+#canvas-quiz-stats figcaption,
+#canvas-quiz-stats figure,
+#canvas-quiz-stats footer,
+#canvas-quiz-stats header,
+#canvas-quiz-stats hgroup,
+#canvas-quiz-stats main,
+#canvas-quiz-stats nav,
+#canvas-quiz-stats section {
+  display: block;
+}
+#canvas-quiz-stats body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+#canvas-quiz-stats [tabindex="-1"]:focus:not(:focus-visible) {
+  outline: 0 !important;
+}
+#canvas-quiz-stats hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+#canvas-quiz-stats h1,
+#canvas-quiz-stats h2,
+#canvas-quiz-stats h3,
+#canvas-quiz-stats h4,
+#canvas-quiz-stats h5,
+#canvas-quiz-stats h6 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+#canvas-quiz-stats p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+#canvas-quiz-stats abbr[title],
+#canvas-quiz-stats abbr[data-original-title] {
+  text-decoration: underline;
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+  cursor: help;
+  border-bottom: 0;
+  -webkit-text-decoration-skip-ink: none;
+  text-decoration-skip-ink: none;
+}
+#canvas-quiz-stats address {
+  margin-bottom: 1rem;
+  font-style: normal;
+  line-height: inherit;
+}
+#canvas-quiz-stats ol,
+#canvas-quiz-stats ul,
+#canvas-quiz-stats dl {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+#canvas-quiz-stats ol ol,
+#canvas-quiz-stats ul ul,
+#canvas-quiz-stats ol ul,
+#canvas-quiz-stats ul ol {
+  margin-bottom: 0;
+}
+#canvas-quiz-stats dt {
+  font-weight: 700;
+}
+#canvas-quiz-stats dd {
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+}
+#canvas-quiz-stats blockquote {
+  margin: 0 0 1rem;
+}
+#canvas-quiz-stats b,
+#canvas-quiz-stats strong {
+  font-weight: bolder;
+}
+#canvas-quiz-stats small {
+  font-size: 80%;
+}
+#canvas-quiz-stats sub,
+#canvas-quiz-stats sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+#canvas-quiz-stats sub {
+  bottom: -0.25em;
+}
+#canvas-quiz-stats sup {
+  top: -0.5em;
+}
+#canvas-quiz-stats a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+}
+#canvas-quiz-stats a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+#canvas-quiz-stats a:not([href]):not([class]) {
+  color: inherit;
+  text-decoration: none;
+}
+#canvas-quiz-stats a:not([href]):not([class]):hover {
+  color: inherit;
+  text-decoration: none;
+}
+#canvas-quiz-stats pre,
+#canvas-quiz-stats code,
+#canvas-quiz-stats kbd,
+#canvas-quiz-stats samp {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 1em;
+}
+#canvas-quiz-stats pre {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  overflow: auto;
+  -ms-overflow-style: scrollbar;
+}
+#canvas-quiz-stats figure {
+  margin: 0 0 1rem;
+}
+#canvas-quiz-stats img {
+  vertical-align: middle;
+  border-style: none;
+}
+#canvas-quiz-stats svg {
+  overflow: hidden;
+  vertical-align: middle;
+}
+#canvas-quiz-stats table {
+  border-collapse: collapse;
+}
+#canvas-quiz-stats caption {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  color: #6c757d;
+  text-align: left;
+  caption-side: bottom;
+}
+#canvas-quiz-stats th {
+  text-align: inherit;
+  text-align: -webkit-match-parent;
+}
+#canvas-quiz-stats label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+#canvas-quiz-stats button {
+  border-radius: 0;
+}
+#canvas-quiz-stats button:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+#canvas-quiz-stats input,
+#canvas-quiz-stats button,
+#canvas-quiz-stats select,
+#canvas-quiz-stats optgroup,
+#canvas-quiz-stats textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+#canvas-quiz-stats button,
+#canvas-quiz-stats input {
+  overflow: visible;
+}
+#canvas-quiz-stats button,
+#canvas-quiz-stats select {
+  text-transform: none;
+}
+#canvas-quiz-stats [role="button"] {
+  cursor: pointer;
+}
+#canvas-quiz-stats select {
+  word-wrap: normal;
+}
+#canvas-quiz-stats button,
+#canvas-quiz-stats [type="button"],
+#canvas-quiz-stats [type="reset"],
+#canvas-quiz-stats [type="submit"] {
+  -webkit-appearance: button;
+}
+#canvas-quiz-stats button:not(:disabled),
+#canvas-quiz-stats [type="button"]:not(:disabled),
+#canvas-quiz-stats [type="reset"]:not(:disabled),
+#canvas-quiz-stats [type="submit"]:not(:disabled) {
+  cursor: pointer;
+}
+#canvas-quiz-stats button::-moz-focus-inner,
+#canvas-quiz-stats [type="button"]::-moz-focus-inner,
+#canvas-quiz-stats [type="reset"]::-moz-focus-inner,
+#canvas-quiz-stats [type="submit"]::-moz-focus-inner {
+  padding: 0;
+  border-style: none;
+}
+#canvas-quiz-stats input[type="radio"],
+#canvas-quiz-stats input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+#canvas-quiz-stats textarea {
+  overflow: auto;
+  resize: vertical;
+}
+#canvas-quiz-stats fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+#canvas-quiz-stats legend {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  line-height: inherit;
+  color: inherit;
+  white-space: normal;
+}
+#canvas-quiz-stats progress {
+  vertical-align: baseline;
+}
+#canvas-quiz-stats [type="number"]::-webkit-inner-spin-button,
+#canvas-quiz-stats [type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+#canvas-quiz-stats [type="search"] {
+  outline-offset: -2px;
+  -webkit-appearance: none;
+}
+#canvas-quiz-stats [type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+#canvas-quiz-stats ::-webkit-file-upload-button {
+  font: inherit;
+  -webkit-appearance: button;
+}
+#canvas-quiz-stats output {
+  display: inline-block;
+}
+#canvas-quiz-stats summary {
+  display: list-item;
+  cursor: pointer;
+}
+#canvas-quiz-stats template {
+  display: none;
+}
+#canvas-quiz-stats [hidden] {
+  display: none !important;
+}
+#canvas-quiz-stats h1,
+#canvas-quiz-stats h2,
+#canvas-quiz-stats h3,
+#canvas-quiz-stats h4,
+#canvas-quiz-stats h5,
+#canvas-quiz-stats h6,
+#canvas-quiz-stats .h1,
+#canvas-quiz-stats .h2,
+#canvas-quiz-stats .h3,
+#canvas-quiz-stats .h4,
+#canvas-quiz-stats .h5,
+#canvas-quiz-stats .h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+#canvas-quiz-stats h1,
+#canvas-quiz-stats .h1 {
+  font-size: 2.5rem;
+}
+#canvas-quiz-stats h2,
+#canvas-quiz-stats .h2 {
+  font-size: 2rem;
+}
+#canvas-quiz-stats h3,
+#canvas-quiz-stats .h3 {
+  font-size: 1.75rem;
+}
+#canvas-quiz-stats h4,
+#canvas-quiz-stats .h4 {
+  font-size: 1.5rem;
+}
+#canvas-quiz-stats h5,
+#canvas-quiz-stats .h5 {
+  font-size: 1.25rem;
+}
+#canvas-quiz-stats h6,
+#canvas-quiz-stats .h6 {
+  font-size: 1rem;
+}
+#canvas-quiz-stats .lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+#canvas-quiz-stats .display-1 {
+  font-size: 6rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+#canvas-quiz-stats .display-2 {
+  font-size: 5.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+#canvas-quiz-stats .display-3 {
+  font-size: 4.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+#canvas-quiz-stats .display-4 {
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+#canvas-quiz-stats hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+#canvas-quiz-stats small,
+#canvas-quiz-stats .small {
+  font-size: 80%;
+  font-weight: 400;
+}
+#canvas-quiz-stats mark,
+#canvas-quiz-stats .mark {
+  padding: 0.2em;
+  background-color: #fcf8e3;
+}
+#canvas-quiz-stats .list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+#canvas-quiz-stats .list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+#canvas-quiz-stats .list-inline-item {
+  display: inline-block;
+}
+#canvas-quiz-stats .list-inline-item:not(:last-child) {
+  margin-right: 0.5rem;
+}
+#canvas-quiz-stats .initialism {
+  font-size: 90%;
+  text-transform: uppercase;
+}
+#canvas-quiz-stats .blockquote {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+#canvas-quiz-stats .blockquote-footer {
+  display: block;
+  font-size: 80%;
+  color: #6c757d;
+}
+#canvas-quiz-stats .blockquote-footer::before {
+  content: "\\2014\\00A0";
+}
+#canvas-quiz-stats .img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+#canvas-quiz-stats .img-thumbnail {
+  padding: 0.25rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  max-width: 100%;
+  height: auto;
+}
+#canvas-quiz-stats .figure {
+  display: inline-block;
+}
+#canvas-quiz-stats .figure-img {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+#canvas-quiz-stats .figure-caption {
+  font-size: 90%;
+  color: #6c757d;
+}
+#canvas-quiz-stats code {
+  font-size: 87.5%;
+  color: #e83e8c;
+  word-wrap: break-word;
+}
+#canvas-quiz-stats a > code {
+  color: inherit;
+}
+#canvas-quiz-stats kbd {
+  padding: 0.2rem 0.4rem;
+  font-size: 87.5%;
+  color: #fff;
+  background-color: #212529;
+  border-radius: 0.2rem;
+}
+#canvas-quiz-stats kbd kbd {
+  padding: 0;
+  font-size: 100%;
+  font-weight: 700;
+}
+#canvas-quiz-stats pre {
+  display: block;
+  font-size: 87.5%;
+  color: #212529;
+}
+#canvas-quiz-stats pre code {
+  font-size: inherit;
+  color: inherit;
+  word-break: normal;
+}
+#canvas-quiz-stats .pre-scrollable {
+  max-height: 340px;
+  overflow-y: scroll;
+}
+#canvas-quiz-stats .container,
+#canvas-quiz-stats .container-fluid,
+#canvas-quiz-stats .container-sm,
+#canvas-quiz-stats .container-md,
+#canvas-quiz-stats .container-lg,
+#canvas-quiz-stats .container-xl {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .container,
+  #canvas-quiz-stats .container-sm {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .container,
+  #canvas-quiz-stats .container-sm,
+  #canvas-quiz-stats .container-md {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .container,
+  #canvas-quiz-stats .container-sm,
+  #canvas-quiz-stats .container-md,
+  #canvas-quiz-stats .container-lg {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .container,
+  #canvas-quiz-stats .container-sm,
+  #canvas-quiz-stats .container-md,
+  #canvas-quiz-stats .container-lg,
+  #canvas-quiz-stats .container-xl {
+    max-width: 1140px;
+  }
+}
+#canvas-quiz-stats .row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+#canvas-quiz-stats .no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+}
+#canvas-quiz-stats .no-gutters > .col,
+#canvas-quiz-stats .no-gutters > [class*="col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
+#canvas-quiz-stats .col-1,
+#canvas-quiz-stats .col-2,
+#canvas-quiz-stats .col-3,
+#canvas-quiz-stats .col-4,
+#canvas-quiz-stats .col-5,
+#canvas-quiz-stats .col-6,
+#canvas-quiz-stats .col-7,
+#canvas-quiz-stats .col-8,
+#canvas-quiz-stats .col-9,
+#canvas-quiz-stats .col-10,
+#canvas-quiz-stats .col-11,
+#canvas-quiz-stats .col-12,
+#canvas-quiz-stats .col,
+#canvas-quiz-stats .col-auto,
+#canvas-quiz-stats .col-sm-1,
+#canvas-quiz-stats .col-sm-2,
+#canvas-quiz-stats .col-sm-3,
+#canvas-quiz-stats .col-sm-4,
+#canvas-quiz-stats .col-sm-5,
+#canvas-quiz-stats .col-sm-6,
+#canvas-quiz-stats .col-sm-7,
+#canvas-quiz-stats .col-sm-8,
+#canvas-quiz-stats .col-sm-9,
+#canvas-quiz-stats .col-sm-10,
+#canvas-quiz-stats .col-sm-11,
+#canvas-quiz-stats .col-sm-12,
+#canvas-quiz-stats .col-sm,
+#canvas-quiz-stats .col-sm-auto,
+#canvas-quiz-stats .col-md-1,
+#canvas-quiz-stats .col-md-2,
+#canvas-quiz-stats .col-md-3,
+#canvas-quiz-stats .col-md-4,
+#canvas-quiz-stats .col-md-5,
+#canvas-quiz-stats .col-md-6,
+#canvas-quiz-stats .col-md-7,
+#canvas-quiz-stats .col-md-8,
+#canvas-quiz-stats .col-md-9,
+#canvas-quiz-stats .col-md-10,
+#canvas-quiz-stats .col-md-11,
+#canvas-quiz-stats .col-md-12,
+#canvas-quiz-stats .col-md,
+#canvas-quiz-stats .col-md-auto,
+#canvas-quiz-stats .col-lg-1,
+#canvas-quiz-stats .col-lg-2,
+#canvas-quiz-stats .col-lg-3,
+#canvas-quiz-stats .col-lg-4,
+#canvas-quiz-stats .col-lg-5,
+#canvas-quiz-stats .col-lg-6,
+#canvas-quiz-stats .col-lg-7,
+#canvas-quiz-stats .col-lg-8,
+#canvas-quiz-stats .col-lg-9,
+#canvas-quiz-stats .col-lg-10,
+#canvas-quiz-stats .col-lg-11,
+#canvas-quiz-stats .col-lg-12,
+#canvas-quiz-stats .col-lg,
+#canvas-quiz-stats .col-lg-auto,
+#canvas-quiz-stats .col-xl-1,
+#canvas-quiz-stats .col-xl-2,
+#canvas-quiz-stats .col-xl-3,
+#canvas-quiz-stats .col-xl-4,
+#canvas-quiz-stats .col-xl-5,
+#canvas-quiz-stats .col-xl-6,
+#canvas-quiz-stats .col-xl-7,
+#canvas-quiz-stats .col-xl-8,
+#canvas-quiz-stats .col-xl-9,
+#canvas-quiz-stats .col-xl-10,
+#canvas-quiz-stats .col-xl-11,
+#canvas-quiz-stats .col-xl-12,
+#canvas-quiz-stats .col-xl,
+#canvas-quiz-stats .col-xl-auto {
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+#canvas-quiz-stats .col {
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  max-width: 100%;
+}
+#canvas-quiz-stats .row-cols-1 > * {
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+#canvas-quiz-stats .row-cols-2 > * {
+  -ms-flex: 0 0 50%;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+#canvas-quiz-stats .row-cols-3 > * {
+  -ms-flex: 0 0 33.333333%;
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+}
+#canvas-quiz-stats .row-cols-4 > * {
+  -ms-flex: 0 0 25%;
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+#canvas-quiz-stats .row-cols-5 > * {
+  -ms-flex: 0 0 20%;
+  flex: 0 0 20%;
+  max-width: 20%;
+}
+#canvas-quiz-stats .row-cols-6 > * {
+  -ms-flex: 0 0 16.666667%;
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
+}
+#canvas-quiz-stats .col-auto {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+}
+#canvas-quiz-stats .col-1 {
+  -ms-flex: 0 0 8.333333%;
+  flex: 0 0 8.333333%;
+  max-width: 8.333333%;
+}
+#canvas-quiz-stats .col-2 {
+  -ms-flex: 0 0 16.666667%;
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
+}
+#canvas-quiz-stats .col-3 {
+  -ms-flex: 0 0 25%;
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+#canvas-quiz-stats .col-4 {
+  -ms-flex: 0 0 33.333333%;
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+}
+#canvas-quiz-stats .col-5 {
+  -ms-flex: 0 0 41.666667%;
+  flex: 0 0 41.666667%;
+  max-width: 41.666667%;
+}
+#canvas-quiz-stats .col-6 {
+  -ms-flex: 0 0 50%;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+#canvas-quiz-stats .col-7 {
+  -ms-flex: 0 0 58.333333%;
+  flex: 0 0 58.333333%;
+  max-width: 58.333333%;
+}
+#canvas-quiz-stats .col-8 {
+  -ms-flex: 0 0 66.666667%;
+  flex: 0 0 66.666667%;
+  max-width: 66.666667%;
+}
+#canvas-quiz-stats .col-9 {
+  -ms-flex: 0 0 75%;
+  flex: 0 0 75%;
+  max-width: 75%;
+}
+#canvas-quiz-stats .col-10 {
+  -ms-flex: 0 0 83.333333%;
+  flex: 0 0 83.333333%;
+  max-width: 83.333333%;
+}
+#canvas-quiz-stats .col-11 {
+  -ms-flex: 0 0 91.666667%;
+  flex: 0 0 91.666667%;
+  max-width: 91.666667%;
+}
+#canvas-quiz-stats .col-12 {
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+#canvas-quiz-stats .order-first {
+  -ms-flex-order: -1;
+  order: -1;
+}
+#canvas-quiz-stats .order-last {
+  -ms-flex-order: 13;
+  order: 13;
+}
+#canvas-quiz-stats .order-0 {
+  -ms-flex-order: 0;
+  order: 0;
+}
+#canvas-quiz-stats .order-1 {
+  -ms-flex-order: 1;
+  order: 1;
+}
+#canvas-quiz-stats .order-2 {
+  -ms-flex-order: 2;
+  order: 2;
+}
+#canvas-quiz-stats .order-3 {
+  -ms-flex-order: 3;
+  order: 3;
+}
+#canvas-quiz-stats .order-4 {
+  -ms-flex-order: 4;
+  order: 4;
+}
+#canvas-quiz-stats .order-5 {
+  -ms-flex-order: 5;
+  order: 5;
+}
+#canvas-quiz-stats .order-6 {
+  -ms-flex-order: 6;
+  order: 6;
+}
+#canvas-quiz-stats .order-7 {
+  -ms-flex-order: 7;
+  order: 7;
+}
+#canvas-quiz-stats .order-8 {
+  -ms-flex-order: 8;
+  order: 8;
+}
+#canvas-quiz-stats .order-9 {
+  -ms-flex-order: 9;
+  order: 9;
+}
+#canvas-quiz-stats .order-10 {
+  -ms-flex-order: 10;
+  order: 10;
+}
+#canvas-quiz-stats .order-11 {
+  -ms-flex-order: 11;
+  order: 11;
+}
+#canvas-quiz-stats .order-12 {
+  -ms-flex-order: 12;
+  order: 12;
+}
+#canvas-quiz-stats .offset-1 {
+  margin-left: 8.333333%;
+}
+#canvas-quiz-stats .offset-2 {
+  margin-left: 16.666667%;
+}
+#canvas-quiz-stats .offset-3 {
+  margin-left: 25%;
+}
+#canvas-quiz-stats .offset-4 {
+  margin-left: 33.333333%;
+}
+#canvas-quiz-stats .offset-5 {
+  margin-left: 41.666667%;
+}
+#canvas-quiz-stats .offset-6 {
+  margin-left: 50%;
+}
+#canvas-quiz-stats .offset-7 {
+  margin-left: 58.333333%;
+}
+#canvas-quiz-stats .offset-8 {
+  margin-left: 66.666667%;
+}
+#canvas-quiz-stats .offset-9 {
+  margin-left: 75%;
+}
+#canvas-quiz-stats .offset-10 {
+  margin-left: 83.333333%;
+}
+#canvas-quiz-stats .offset-11 {
+  margin-left: 91.666667%;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .col-sm {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-sm-1 > * {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-sm-2 > * {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .row-cols-sm-3 > * {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .row-cols-sm-4 > * {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .row-cols-sm-5 > * {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+  #canvas-quiz-stats .row-cols-sm-6 > * {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-sm-auto {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .col-sm-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+  #canvas-quiz-stats .col-sm-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-sm-3 {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .col-sm-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .col-sm-5 {
+    -ms-flex: 0 0 41.666667%;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+  #canvas-quiz-stats .col-sm-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .col-sm-7 {
+    -ms-flex: 0 0 58.333333%;
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+  }
+  #canvas-quiz-stats .col-sm-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+  }
+  #canvas-quiz-stats .col-sm-9 {
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+  #canvas-quiz-stats .col-sm-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+  }
+  #canvas-quiz-stats .col-sm-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
+  #canvas-quiz-stats .col-sm-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .order-sm-first {
+    -ms-flex-order: -1;
+    order: -1;
+  }
+  #canvas-quiz-stats .order-sm-last {
+    -ms-flex-order: 13;
+    order: 13;
+  }
+  #canvas-quiz-stats .order-sm-0 {
+    -ms-flex-order: 0;
+    order: 0;
+  }
+  #canvas-quiz-stats .order-sm-1 {
+    -ms-flex-order: 1;
+    order: 1;
+  }
+  #canvas-quiz-stats .order-sm-2 {
+    -ms-flex-order: 2;
+    order: 2;
+  }
+  #canvas-quiz-stats .order-sm-3 {
+    -ms-flex-order: 3;
+    order: 3;
+  }
+  #canvas-quiz-stats .order-sm-4 {
+    -ms-flex-order: 4;
+    order: 4;
+  }
+  #canvas-quiz-stats .order-sm-5 {
+    -ms-flex-order: 5;
+    order: 5;
+  }
+  #canvas-quiz-stats .order-sm-6 {
+    -ms-flex-order: 6;
+    order: 6;
+  }
+  #canvas-quiz-stats .order-sm-7 {
+    -ms-flex-order: 7;
+    order: 7;
+  }
+  #canvas-quiz-stats .order-sm-8 {
+    -ms-flex-order: 8;
+    order: 8;
+  }
+  #canvas-quiz-stats .order-sm-9 {
+    -ms-flex-order: 9;
+    order: 9;
+  }
+  #canvas-quiz-stats .order-sm-10 {
+    -ms-flex-order: 10;
+    order: 10;
+  }
+  #canvas-quiz-stats .order-sm-11 {
+    -ms-flex-order: 11;
+    order: 11;
+  }
+  #canvas-quiz-stats .order-sm-12 {
+    -ms-flex-order: 12;
+    order: 12;
+  }
+  #canvas-quiz-stats .offset-sm-0 {
+    margin-left: 0;
+  }
+  #canvas-quiz-stats .offset-sm-1 {
+    margin-left: 8.333333%;
+  }
+  #canvas-quiz-stats .offset-sm-2 {
+    margin-left: 16.666667%;
+  }
+  #canvas-quiz-stats .offset-sm-3 {
+    margin-left: 25%;
+  }
+  #canvas-quiz-stats .offset-sm-4 {
+    margin-left: 33.333333%;
+  }
+  #canvas-quiz-stats .offset-sm-5 {
+    margin-left: 41.666667%;
+  }
+  #canvas-quiz-stats .offset-sm-6 {
+    margin-left: 50%;
+  }
+  #canvas-quiz-stats .offset-sm-7 {
+    margin-left: 58.333333%;
+  }
+  #canvas-quiz-stats .offset-sm-8 {
+    margin-left: 66.666667%;
+  }
+  #canvas-quiz-stats .offset-sm-9 {
+    margin-left: 75%;
+  }
+  #canvas-quiz-stats .offset-sm-10 {
+    margin-left: 83.333333%;
+  }
+  #canvas-quiz-stats .offset-sm-11 {
+    margin-left: 91.666667%;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .col-md {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-md-1 > * {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-md-2 > * {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .row-cols-md-3 > * {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .row-cols-md-4 > * {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .row-cols-md-5 > * {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+  #canvas-quiz-stats .row-cols-md-6 > * {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-md-auto {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .col-md-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+  #canvas-quiz-stats .col-md-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-md-3 {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .col-md-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .col-md-5 {
+    -ms-flex: 0 0 41.666667%;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+  #canvas-quiz-stats .col-md-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .col-md-7 {
+    -ms-flex: 0 0 58.333333%;
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+  }
+  #canvas-quiz-stats .col-md-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+  }
+  #canvas-quiz-stats .col-md-9 {
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+  #canvas-quiz-stats .col-md-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+  }
+  #canvas-quiz-stats .col-md-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
+  #canvas-quiz-stats .col-md-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .order-md-first {
+    -ms-flex-order: -1;
+    order: -1;
+  }
+  #canvas-quiz-stats .order-md-last {
+    -ms-flex-order: 13;
+    order: 13;
+  }
+  #canvas-quiz-stats .order-md-0 {
+    -ms-flex-order: 0;
+    order: 0;
+  }
+  #canvas-quiz-stats .order-md-1 {
+    -ms-flex-order: 1;
+    order: 1;
+  }
+  #canvas-quiz-stats .order-md-2 {
+    -ms-flex-order: 2;
+    order: 2;
+  }
+  #canvas-quiz-stats .order-md-3 {
+    -ms-flex-order: 3;
+    order: 3;
+  }
+  #canvas-quiz-stats .order-md-4 {
+    -ms-flex-order: 4;
+    order: 4;
+  }
+  #canvas-quiz-stats .order-md-5 {
+    -ms-flex-order: 5;
+    order: 5;
+  }
+  #canvas-quiz-stats .order-md-6 {
+    -ms-flex-order: 6;
+    order: 6;
+  }
+  #canvas-quiz-stats .order-md-7 {
+    -ms-flex-order: 7;
+    order: 7;
+  }
+  #canvas-quiz-stats .order-md-8 {
+    -ms-flex-order: 8;
+    order: 8;
+  }
+  #canvas-quiz-stats .order-md-9 {
+    -ms-flex-order: 9;
+    order: 9;
+  }
+  #canvas-quiz-stats .order-md-10 {
+    -ms-flex-order: 10;
+    order: 10;
+  }
+  #canvas-quiz-stats .order-md-11 {
+    -ms-flex-order: 11;
+    order: 11;
+  }
+  #canvas-quiz-stats .order-md-12 {
+    -ms-flex-order: 12;
+    order: 12;
+  }
+  #canvas-quiz-stats .offset-md-0 {
+    margin-left: 0;
+  }
+  #canvas-quiz-stats .offset-md-1 {
+    margin-left: 8.333333%;
+  }
+  #canvas-quiz-stats .offset-md-2 {
+    margin-left: 16.666667%;
+  }
+  #canvas-quiz-stats .offset-md-3 {
+    margin-left: 25%;
+  }
+  #canvas-quiz-stats .offset-md-4 {
+    margin-left: 33.333333%;
+  }
+  #canvas-quiz-stats .offset-md-5 {
+    margin-left: 41.666667%;
+  }
+  #canvas-quiz-stats .offset-md-6 {
+    margin-left: 50%;
+  }
+  #canvas-quiz-stats .offset-md-7 {
+    margin-left: 58.333333%;
+  }
+  #canvas-quiz-stats .offset-md-8 {
+    margin-left: 66.666667%;
+  }
+  #canvas-quiz-stats .offset-md-9 {
+    margin-left: 75%;
+  }
+  #canvas-quiz-stats .offset-md-10 {
+    margin-left: 83.333333%;
+  }
+  #canvas-quiz-stats .offset-md-11 {
+    margin-left: 91.666667%;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .col-lg {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-lg-1 > * {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-lg-2 > * {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .row-cols-lg-3 > * {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .row-cols-lg-4 > * {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .row-cols-lg-5 > * {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+  #canvas-quiz-stats .row-cols-lg-6 > * {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-lg-auto {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .col-lg-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+  #canvas-quiz-stats .col-lg-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-lg-3 {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .col-lg-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .col-lg-5 {
+    -ms-flex: 0 0 41.666667%;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+  #canvas-quiz-stats .col-lg-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .col-lg-7 {
+    -ms-flex: 0 0 58.333333%;
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+  }
+  #canvas-quiz-stats .col-lg-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+  }
+  #canvas-quiz-stats .col-lg-9 {
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+  #canvas-quiz-stats .col-lg-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+  }
+  #canvas-quiz-stats .col-lg-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
+  #canvas-quiz-stats .col-lg-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .order-lg-first {
+    -ms-flex-order: -1;
+    order: -1;
+  }
+  #canvas-quiz-stats .order-lg-last {
+    -ms-flex-order: 13;
+    order: 13;
+  }
+  #canvas-quiz-stats .order-lg-0 {
+    -ms-flex-order: 0;
+    order: 0;
+  }
+  #canvas-quiz-stats .order-lg-1 {
+    -ms-flex-order: 1;
+    order: 1;
+  }
+  #canvas-quiz-stats .order-lg-2 {
+    -ms-flex-order: 2;
+    order: 2;
+  }
+  #canvas-quiz-stats .order-lg-3 {
+    -ms-flex-order: 3;
+    order: 3;
+  }
+  #canvas-quiz-stats .order-lg-4 {
+    -ms-flex-order: 4;
+    order: 4;
+  }
+  #canvas-quiz-stats .order-lg-5 {
+    -ms-flex-order: 5;
+    order: 5;
+  }
+  #canvas-quiz-stats .order-lg-6 {
+    -ms-flex-order: 6;
+    order: 6;
+  }
+  #canvas-quiz-stats .order-lg-7 {
+    -ms-flex-order: 7;
+    order: 7;
+  }
+  #canvas-quiz-stats .order-lg-8 {
+    -ms-flex-order: 8;
+    order: 8;
+  }
+  #canvas-quiz-stats .order-lg-9 {
+    -ms-flex-order: 9;
+    order: 9;
+  }
+  #canvas-quiz-stats .order-lg-10 {
+    -ms-flex-order: 10;
+    order: 10;
+  }
+  #canvas-quiz-stats .order-lg-11 {
+    -ms-flex-order: 11;
+    order: 11;
+  }
+  #canvas-quiz-stats .order-lg-12 {
+    -ms-flex-order: 12;
+    order: 12;
+  }
+  #canvas-quiz-stats .offset-lg-0 {
+    margin-left: 0;
+  }
+  #canvas-quiz-stats .offset-lg-1 {
+    margin-left: 8.333333%;
+  }
+  #canvas-quiz-stats .offset-lg-2 {
+    margin-left: 16.666667%;
+  }
+  #canvas-quiz-stats .offset-lg-3 {
+    margin-left: 25%;
+  }
+  #canvas-quiz-stats .offset-lg-4 {
+    margin-left: 33.333333%;
+  }
+  #canvas-quiz-stats .offset-lg-5 {
+    margin-left: 41.666667%;
+  }
+  #canvas-quiz-stats .offset-lg-6 {
+    margin-left: 50%;
+  }
+  #canvas-quiz-stats .offset-lg-7 {
+    margin-left: 58.333333%;
+  }
+  #canvas-quiz-stats .offset-lg-8 {
+    margin-left: 66.666667%;
+  }
+  #canvas-quiz-stats .offset-lg-9 {
+    margin-left: 75%;
+  }
+  #canvas-quiz-stats .offset-lg-10 {
+    margin-left: 83.333333%;
+  }
+  #canvas-quiz-stats .offset-lg-11 {
+    margin-left: 91.666667%;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .col-xl {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-xl-1 > * {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .row-cols-xl-2 > * {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .row-cols-xl-3 > * {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .row-cols-xl-4 > * {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .row-cols-xl-5 > * {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+  #canvas-quiz-stats .row-cols-xl-6 > * {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-xl-auto {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .col-xl-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+  #canvas-quiz-stats .col-xl-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+  #canvas-quiz-stats .col-xl-3 {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  #canvas-quiz-stats .col-xl-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+  #canvas-quiz-stats .col-xl-5 {
+    -ms-flex: 0 0 41.666667%;
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+  #canvas-quiz-stats .col-xl-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  #canvas-quiz-stats .col-xl-7 {
+    -ms-flex: 0 0 58.333333%;
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+  }
+  #canvas-quiz-stats .col-xl-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+  }
+  #canvas-quiz-stats .col-xl-9 {
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+  #canvas-quiz-stats .col-xl-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+  }
+  #canvas-quiz-stats .col-xl-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
+  #canvas-quiz-stats .col-xl-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #canvas-quiz-stats .order-xl-first {
+    -ms-flex-order: -1;
+    order: -1;
+  }
+  #canvas-quiz-stats .order-xl-last {
+    -ms-flex-order: 13;
+    order: 13;
+  }
+  #canvas-quiz-stats .order-xl-0 {
+    -ms-flex-order: 0;
+    order: 0;
+  }
+  #canvas-quiz-stats .order-xl-1 {
+    -ms-flex-order: 1;
+    order: 1;
+  }
+  #canvas-quiz-stats .order-xl-2 {
+    -ms-flex-order: 2;
+    order: 2;
+  }
+  #canvas-quiz-stats .order-xl-3 {
+    -ms-flex-order: 3;
+    order: 3;
+  }
+  #canvas-quiz-stats .order-xl-4 {
+    -ms-flex-order: 4;
+    order: 4;
+  }
+  #canvas-quiz-stats .order-xl-5 {
+    -ms-flex-order: 5;
+    order: 5;
+  }
+  #canvas-quiz-stats .order-xl-6 {
+    -ms-flex-order: 6;
+    order: 6;
+  }
+  #canvas-quiz-stats .order-xl-7 {
+    -ms-flex-order: 7;
+    order: 7;
+  }
+  #canvas-quiz-stats .order-xl-8 {
+    -ms-flex-order: 8;
+    order: 8;
+  }
+  #canvas-quiz-stats .order-xl-9 {
+    -ms-flex-order: 9;
+    order: 9;
+  }
+  #canvas-quiz-stats .order-xl-10 {
+    -ms-flex-order: 10;
+    order: 10;
+  }
+  #canvas-quiz-stats .order-xl-11 {
+    -ms-flex-order: 11;
+    order: 11;
+  }
+  #canvas-quiz-stats .order-xl-12 {
+    -ms-flex-order: 12;
+    order: 12;
+  }
+  #canvas-quiz-stats .offset-xl-0 {
+    margin-left: 0;
+  }
+  #canvas-quiz-stats .offset-xl-1 {
+    margin-left: 8.333333%;
+  }
+  #canvas-quiz-stats .offset-xl-2 {
+    margin-left: 16.666667%;
+  }
+  #canvas-quiz-stats .offset-xl-3 {
+    margin-left: 25%;
+  }
+  #canvas-quiz-stats .offset-xl-4 {
+    margin-left: 33.333333%;
+  }
+  #canvas-quiz-stats .offset-xl-5 {
+    margin-left: 41.666667%;
+  }
+  #canvas-quiz-stats .offset-xl-6 {
+    margin-left: 50%;
+  }
+  #canvas-quiz-stats .offset-xl-7 {
+    margin-left: 58.333333%;
+  }
+  #canvas-quiz-stats .offset-xl-8 {
+    margin-left: 66.666667%;
+  }
+  #canvas-quiz-stats .offset-xl-9 {
+    margin-left: 75%;
+  }
+  #canvas-quiz-stats .offset-xl-10 {
+    margin-left: 83.333333%;
+  }
+  #canvas-quiz-stats .offset-xl-11 {
+    margin-left: 91.666667%;
+  }
+}
+#canvas-quiz-stats .table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+#canvas-quiz-stats .table th,
+#canvas-quiz-stats .table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+#canvas-quiz-stats .table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+#canvas-quiz-stats .table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+#canvas-quiz-stats .table-sm th,
+#canvas-quiz-stats .table-sm td {
+  padding: 0.3rem;
+}
+#canvas-quiz-stats .table-bordered {
+  border: 1px solid #dee2e6;
+}
+#canvas-quiz-stats .table-bordered th,
+#canvas-quiz-stats .table-bordered td {
+  border: 1px solid #dee2e6;
+}
+#canvas-quiz-stats .table-bordered thead th,
+#canvas-quiz-stats .table-bordered thead td {
+  border-bottom-width: 2px;
+}
+#canvas-quiz-stats .table-borderless th,
+#canvas-quiz-stats .table-borderless td,
+#canvas-quiz-stats .table-borderless thead th,
+#canvas-quiz-stats .table-borderless tbody + tbody {
+  border: 0;
+}
+#canvas-quiz-stats .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+#canvas-quiz-stats .table-hover tbody tr:hover {
+  color: #212529;
+  background-color: rgba(0, 0, 0, 0.075);
+}
+#canvas-quiz-stats .table-primary,
+#canvas-quiz-stats .table-primary > th,
+#canvas-quiz-stats .table-primary > td {
+  background-color: #b8daff;
+}
+#canvas-quiz-stats .table-primary th,
+#canvas-quiz-stats .table-primary td,
+#canvas-quiz-stats .table-primary thead th,
+#canvas-quiz-stats .table-primary tbody + tbody {
+  border-color: #7abaff;
+}
+#canvas-quiz-stats .table-hover .table-primary:hover {
+  background-color: #9fcdff;
+}
+#canvas-quiz-stats .table-hover .table-primary:hover > td,
+#canvas-quiz-stats .table-hover .table-primary:hover > th {
+  background-color: #9fcdff;
+}
+#canvas-quiz-stats .table-secondary,
+#canvas-quiz-stats .table-secondary > th,
+#canvas-quiz-stats .table-secondary > td {
+  background-color: #d6d8db;
+}
+#canvas-quiz-stats .table-secondary th,
+#canvas-quiz-stats .table-secondary td,
+#canvas-quiz-stats .table-secondary thead th,
+#canvas-quiz-stats .table-secondary tbody + tbody {
+  border-color: #b3b7bb;
+}
+#canvas-quiz-stats .table-hover .table-secondary:hover {
+  background-color: #c8cbcf;
+}
+#canvas-quiz-stats .table-hover .table-secondary:hover > td,
+#canvas-quiz-stats .table-hover .table-secondary:hover > th {
+  background-color: #c8cbcf;
+}
+#canvas-quiz-stats .table-success,
+#canvas-quiz-stats .table-success > th,
+#canvas-quiz-stats .table-success > td {
+  background-color: #c3e6cb;
+}
+#canvas-quiz-stats .table-success th,
+#canvas-quiz-stats .table-success td,
+#canvas-quiz-stats .table-success thead th,
+#canvas-quiz-stats .table-success tbody + tbody {
+  border-color: #8fd19e;
+}
+#canvas-quiz-stats .table-hover .table-success:hover {
+  background-color: #b1dfbb;
+}
+#canvas-quiz-stats .table-hover .table-success:hover > td,
+#canvas-quiz-stats .table-hover .table-success:hover > th {
+  background-color: #b1dfbb;
+}
+#canvas-quiz-stats .table-info,
+#canvas-quiz-stats .table-info > th,
+#canvas-quiz-stats .table-info > td {
+  background-color: #bee5eb;
+}
+#canvas-quiz-stats .table-info th,
+#canvas-quiz-stats .table-info td,
+#canvas-quiz-stats .table-info thead th,
+#canvas-quiz-stats .table-info tbody + tbody {
+  border-color: #86cfda;
+}
+#canvas-quiz-stats .table-hover .table-info:hover {
+  background-color: #abdde5;
+}
+#canvas-quiz-stats .table-hover .table-info:hover > td,
+#canvas-quiz-stats .table-hover .table-info:hover > th {
+  background-color: #abdde5;
+}
+#canvas-quiz-stats .table-warning,
+#canvas-quiz-stats .table-warning > th,
+#canvas-quiz-stats .table-warning > td {
+  background-color: #ffeeba;
+}
+#canvas-quiz-stats .table-warning th,
+#canvas-quiz-stats .table-warning td,
+#canvas-quiz-stats .table-warning thead th,
+#canvas-quiz-stats .table-warning tbody + tbody {
+  border-color: #ffdf7e;
+}
+#canvas-quiz-stats .table-hover .table-warning:hover {
+  background-color: #ffe8a1;
+}
+#canvas-quiz-stats .table-hover .table-warning:hover > td,
+#canvas-quiz-stats .table-hover .table-warning:hover > th {
+  background-color: #ffe8a1;
+}
+#canvas-quiz-stats .table-danger,
+#canvas-quiz-stats .table-danger > th,
+#canvas-quiz-stats .table-danger > td {
+  background-color: #f5c6cb;
+}
+#canvas-quiz-stats .table-danger th,
+#canvas-quiz-stats .table-danger td,
+#canvas-quiz-stats .table-danger thead th,
+#canvas-quiz-stats .table-danger tbody + tbody {
+  border-color: #ed969e;
+}
+#canvas-quiz-stats .table-hover .table-danger:hover {
+  background-color: #f1b0b7;
+}
+#canvas-quiz-stats .table-hover .table-danger:hover > td,
+#canvas-quiz-stats .table-hover .table-danger:hover > th {
+  background-color: #f1b0b7;
+}
+#canvas-quiz-stats .table-light,
+#canvas-quiz-stats .table-light > th,
+#canvas-quiz-stats .table-light > td {
+  background-color: #fdfdfe;
+}
+#canvas-quiz-stats .table-light th,
+#canvas-quiz-stats .table-light td,
+#canvas-quiz-stats .table-light thead th,
+#canvas-quiz-stats .table-light tbody + tbody {
+  border-color: #fbfcfc;
+}
+#canvas-quiz-stats .table-hover .table-light:hover {
+  background-color: #ececf6;
+}
+#canvas-quiz-stats .table-hover .table-light:hover > td,
+#canvas-quiz-stats .table-hover .table-light:hover > th {
+  background-color: #ececf6;
+}
+#canvas-quiz-stats .table-dark,
+#canvas-quiz-stats .table-dark > th,
+#canvas-quiz-stats .table-dark > td {
+  background-color: #c6c8ca;
+}
+#canvas-quiz-stats .table-dark th,
+#canvas-quiz-stats .table-dark td,
+#canvas-quiz-stats .table-dark thead th,
+#canvas-quiz-stats .table-dark tbody + tbody {
+  border-color: #95999c;
+}
+#canvas-quiz-stats .table-hover .table-dark:hover {
+  background-color: #b9bbbe;
+}
+#canvas-quiz-stats .table-hover .table-dark:hover > td,
+#canvas-quiz-stats .table-hover .table-dark:hover > th {
+  background-color: #b9bbbe;
+}
+#canvas-quiz-stats .table-active,
+#canvas-quiz-stats .table-active > th,
+#canvas-quiz-stats .table-active > td {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+#canvas-quiz-stats .table-hover .table-active:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+#canvas-quiz-stats .table-hover .table-active:hover > td,
+#canvas-quiz-stats .table-hover .table-active:hover > th {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+#canvas-quiz-stats .table .thead-dark th {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #454d55;
+}
+#canvas-quiz-stats .table .thead-light th {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+#canvas-quiz-stats .table-dark {
+  color: #fff;
+  background-color: #343a40;
+}
+#canvas-quiz-stats .table-dark th,
+#canvas-quiz-stats .table-dark td,
+#canvas-quiz-stats .table-dark thead th {
+  border-color: #454d55;
+}
+#canvas-quiz-stats .table-dark.table-bordered {
+  border: 0;
+}
+#canvas-quiz-stats .table-dark.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+#canvas-quiz-stats .table-dark.table-hover tbody tr:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.075);
+}
+@media (max-width: 575.98px) {
+  #canvas-quiz-stats .table-responsive-sm {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #canvas-quiz-stats .table-responsive-sm > .table-bordered {
+    border: 0;
+  }
+}
+@media (max-width: 767.98px) {
+  #canvas-quiz-stats .table-responsive-md {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #canvas-quiz-stats .table-responsive-md > .table-bordered {
+    border: 0;
+  }
+}
+@media (max-width: 991.98px) {
+  #canvas-quiz-stats .table-responsive-lg {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #canvas-quiz-stats .table-responsive-lg > .table-bordered {
+    border: 0;
+  }
+}
+@media (max-width: 1199.98px) {
+  #canvas-quiz-stats .table-responsive-xl {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #canvas-quiz-stats .table-responsive-xl > .table-bordered {
+    border: 0;
+  }
+}
+#canvas-quiz-stats .table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#canvas-quiz-stats .table-responsive > .table-bordered {
+  border: 0;
+}
+#canvas-quiz-stats .form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .form-control {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .form-control::-ms-expand {
+  background-color: transparent;
+  border: 0;
+}
+#canvas-quiz-stats .form-control:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #495057;
+}
+#canvas-quiz-stats .form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .form-control::-webkit-input-placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+#canvas-quiz-stats .form-control::-moz-placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+#canvas-quiz-stats .form-control:-ms-input-placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+#canvas-quiz-stats .form-control::-ms-input-placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+#canvas-quiz-stats .form-control::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+#canvas-quiz-stats .form-control:disabled,
+#canvas-quiz-stats .form-control[readonly] {
+  background-color: #e9ecef;
+  opacity: 1;
+}
+#canvas-quiz-stats input[type="date"].form-control,
+#canvas-quiz-stats input[type="time"].form-control,
+#canvas-quiz-stats input[type="datetime-local"].form-control,
+#canvas-quiz-stats input[type="month"].form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+#canvas-quiz-stats select.form-control:focus::-ms-value {
+  color: #495057;
+  background-color: #fff;
+}
+#canvas-quiz-stats .form-control-file,
+#canvas-quiz-stats .form-control-range {
+  display: block;
+  width: 100%;
+}
+#canvas-quiz-stats .col-form-label {
+  padding-top: calc(0.375rem + 1px);
+  padding-bottom: calc(0.375rem + 1px);
+  margin-bottom: 0;
+  font-size: inherit;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .col-form-label-lg {
+  padding-top: calc(0.5rem + 1px);
+  padding-bottom: calc(0.5rem + 1px);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .col-form-label-sm {
+  padding-top: calc(0.25rem + 1px);
+  padding-bottom: calc(0.25rem + 1px);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .form-control-plaintext {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0;
+  margin-bottom: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #212529;
+  background-color: transparent;
+  border: solid transparent;
+  border-width: 1px 0;
+}
+#canvas-quiz-stats .form-control-plaintext.form-control-sm,
+#canvas-quiz-stats .form-control-plaintext.form-control-lg {
+  padding-right: 0;
+  padding-left: 0;
+}
+#canvas-quiz-stats .form-control-sm {
+  height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+#canvas-quiz-stats .form-control-lg {
+  height: calc(1.5em + 1rem + 2px);
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+}
+#canvas-quiz-stats select.form-control[size],
+#canvas-quiz-stats select.form-control[multiple] {
+  height: auto;
+}
+#canvas-quiz-stats textarea.form-control {
+  height: auto;
+}
+#canvas-quiz-stats .form-group {
+  margin-bottom: 1rem;
+}
+#canvas-quiz-stats .form-text {
+  display: block;
+  margin-top: 0.25rem;
+}
+#canvas-quiz-stats .form-row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-left: -5px;
+}
+#canvas-quiz-stats .form-row > .col,
+#canvas-quiz-stats .form-row > [class*="col-"] {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+#canvas-quiz-stats .form-check {
+  position: relative;
+  display: block;
+  padding-left: 1.25rem;
+}
+#canvas-quiz-stats .form-check-input {
+  position: absolute;
+  margin-top: 0.3rem;
+  margin-left: -1.25rem;
+}
+#canvas-quiz-stats .form-check-input[disabled] ~ .form-check-label,
+#canvas-quiz-stats .form-check-input:disabled ~ .form-check-label {
+  color: #6c757d;
+}
+#canvas-quiz-stats .form-check-label {
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .form-check-inline {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-left: 0;
+  margin-right: 0.75rem;
+}
+#canvas-quiz-stats .form-check-inline .form-check-input {
+  position: static;
+  margin-top: 0;
+  margin-right: 0.3125rem;
+  margin-left: 0;
+}
+#canvas-quiz-stats .valid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #28a745;
+}
+#canvas-quiz-stats .valid-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 5;
+  display: none;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #fff;
+  background-color: rgba(40, 167, 69, 0.9);
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .was-validated :valid ~ .valid-feedback,
+#canvas-quiz-stats .was-validated :valid ~ .valid-tooltip,
+#canvas-quiz-stats .is-valid ~ .valid-feedback,
+#canvas-quiz-stats .is-valid ~ .valid-tooltip {
+  display: block;
+}
+#canvas-quiz-stats .was-validated .form-control:valid,
+#canvas-quiz-stats .form-control.is-valid {
+  border-color: #28a745;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+#canvas-quiz-stats .was-validated .form-control:valid:focus,
+#canvas-quiz-stats .form-control.is-valid:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated textarea.form-control:valid,
+#canvas-quiz-stats textarea.form-control.is-valid {
+  padding-right: calc(1.5em + 0.75rem);
+  background-position: top calc(0.375em + 0.1875rem) right calc(0.375em + 0.1875rem);
+}
+#canvas-quiz-stats .was-validated .custom-select:valid,
+#canvas-quiz-stats .custom-select.is-valid {
+  border-color: #28a745;
+  padding-right: calc(0.75em + 2.3125rem);
+  background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center / 8px 10px, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e") #fff no-repeat center right 1.75rem/calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+#canvas-quiz-stats .was-validated .custom-select:valid:focus,
+#canvas-quiz-stats .custom-select.is-valid:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated .form-check-input:valid ~ .form-check-label,
+#canvas-quiz-stats .form-check-input.is-valid ~ .form-check-label {
+  color: #28a745;
+}
+#canvas-quiz-stats .was-validated .form-check-input:valid ~ .valid-feedback,
+#canvas-quiz-stats .was-validated .form-check-input:valid ~ .valid-tooltip,
+#canvas-quiz-stats .form-check-input.is-valid ~ .valid-feedback,
+#canvas-quiz-stats .form-check-input.is-valid ~ .valid-tooltip {
+  display: block;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:valid ~ .custom-control-label,
+#canvas-quiz-stats .custom-control-input.is-valid ~ .custom-control-label {
+  color: #28a745;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:valid ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-valid ~ .custom-control-label::before {
+  border-color: #28a745;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:valid:checked ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-valid:checked ~ .custom-control-label::before {
+  border-color: #34ce57;
+  background-color: #34ce57;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:valid:focus ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-valid:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-valid:focus:not(:checked) ~ .custom-control-label::before {
+  border-color: #28a745;
+}
+#canvas-quiz-stats .was-validated .custom-file-input:valid ~ .custom-file-label,
+#canvas-quiz-stats .custom-file-input.is-valid ~ .custom-file-label {
+  border-color: #28a745;
+}
+#canvas-quiz-stats .was-validated .custom-file-input:valid:focus ~ .custom-file-label,
+#canvas-quiz-stats .custom-file-input.is-valid:focus ~ .custom-file-label {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+#canvas-quiz-stats .invalid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+#canvas-quiz-stats .invalid-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 5;
+  display: none;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #fff;
+  background-color: rgba(220, 53, 69, 0.9);
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .was-validated :invalid ~ .invalid-feedback,
+#canvas-quiz-stats .was-validated :invalid ~ .invalid-tooltip,
+#canvas-quiz-stats .is-invalid ~ .invalid-feedback,
+#canvas-quiz-stats .is-invalid ~ .invalid-tooltip {
+  display: block;
+}
+#canvas-quiz-stats .was-validated .form-control:invalid,
+#canvas-quiz-stats .form-control.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+#canvas-quiz-stats .was-validated .form-control:invalid:focus,
+#canvas-quiz-stats .form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated textarea.form-control:invalid,
+#canvas-quiz-stats textarea.form-control.is-invalid {
+  padding-right: calc(1.5em + 0.75rem);
+  background-position: top calc(0.375em + 0.1875rem) right calc(0.375em + 0.1875rem);
+}
+#canvas-quiz-stats .was-validated .custom-select:invalid,
+#canvas-quiz-stats .custom-select.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(0.75em + 2.3125rem);
+  background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center / 8px 10px, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e") #fff no-repeat center right 1.75rem/calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+#canvas-quiz-stats .was-validated .custom-select:invalid:focus,
+#canvas-quiz-stats .custom-select.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .form-check-label,
+#canvas-quiz-stats .form-check-input.is-invalid ~ .form-check-label {
+  color: #dc3545;
+}
+#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .invalid-feedback,
+#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .invalid-tooltip,
+#canvas-quiz-stats .form-check-input.is-invalid ~ .invalid-feedback,
+#canvas-quiz-stats .form-check-input.is-invalid ~ .invalid-tooltip {
+  display: block;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:invalid ~ .custom-control-label,
+#canvas-quiz-stats .custom-control-input.is-invalid ~ .custom-control-label {
+  color: #dc3545;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:invalid ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-invalid ~ .custom-control-label::before {
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:invalid:checked ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-invalid:checked ~ .custom-control-label::before {
+  border-color: #e4606d;
+  background-color: #e4606d;
+}
+#canvas-quiz-stats .was-validated .custom-control-input:invalid:focus ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-invalid:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+#canvas-quiz-stats .was-validated .custom-control-input:invalid:focus:not(:checked) ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input.is-invalid:focus:not(:checked) ~ .custom-control-label::before {
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .was-validated .custom-file-input:invalid ~ .custom-file-label,
+#canvas-quiz-stats .custom-file-input.is-invalid ~ .custom-file-label {
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .was-validated .custom-file-input:invalid:focus ~ .custom-file-label,
+#canvas-quiz-stats .custom-file-input.is-invalid:focus ~ .custom-file-label {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+#canvas-quiz-stats .form-inline {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-align: center;
+  align-items: center;
+}
+#canvas-quiz-stats .form-inline .form-check {
+  width: 100%;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .form-inline label {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+  #canvas-quiz-stats .form-inline .form-group {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  #canvas-quiz-stats .form-inline .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
+  #canvas-quiz-stats .form-inline .form-control-plaintext {
+    display: inline-block;
+  }
+  #canvas-quiz-stats .form-inline .input-group,
+  #canvas-quiz-stats .form-inline .custom-select {
+    width: auto;
+  }
+  #canvas-quiz-stats .form-inline .form-check {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: auto;
+    padding-left: 0;
+  }
+  #canvas-quiz-stats .form-inline .form-check-input {
+    position: relative;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-right: 0.25rem;
+    margin-left: 0;
+  }
+  #canvas-quiz-stats .form-inline .custom-control {
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+  #canvas-quiz-stats .form-inline .custom-control-label {
+    margin-bottom: 0;
+  }
+}
+#canvas-quiz-stats .btn {
+  display: inline-block;
+  font-weight: 400;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .btn {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .btn:hover {
+  color: #212529;
+  text-decoration: none;
+}
+#canvas-quiz-stats .btn:focus,
+#canvas-quiz-stats .btn.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .btn.disabled,
+#canvas-quiz-stats .btn:disabled {
+  opacity: 0.65;
+}
+#canvas-quiz-stats .btn:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+#canvas-quiz-stats a.btn.disabled,
+#canvas-quiz-stats fieldset:disabled a.btn {
+  pointer-events: none;
+}
+#canvas-quiz-stats .btn-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .btn-primary:hover {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+#canvas-quiz-stats .btn-primary:focus,
+#canvas-quiz-stats .btn-primary.focus {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+}
+#canvas-quiz-stats .btn-primary.disabled,
+#canvas-quiz-stats .btn-primary:disabled {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #0062cc;
+  border-color: #005cbf;
+}
+#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+}
+#canvas-quiz-stats .btn-secondary {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+#canvas-quiz-stats .btn-secondary:hover {
+  color: #fff;
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+#canvas-quiz-stats .btn-secondary:focus,
+#canvas-quiz-stats .btn-secondary.focus {
+  color: #fff;
+  background-color: #5a6268;
+  border-color: #545b62;
+  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+}
+#canvas-quiz-stats .btn-secondary.disabled,
+#canvas-quiz-stats .btn-secondary:disabled {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-secondary.dropdown-toggle {
+  color: #fff;
+  background-color: #545b62;
+  border-color: #4e555b;
+}
+#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-secondary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+}
+#canvas-quiz-stats .btn-success {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+#canvas-quiz-stats .btn-success:hover {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+#canvas-quiz-stats .btn-success:focus,
+#canvas-quiz-stats .btn-success.focus {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+  box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
+}
+#canvas-quiz-stats .btn-success.disabled,
+#canvas-quiz-stats .btn-success:disabled {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-success.dropdown-toggle {
+  color: #fff;
+  background-color: #1e7e34;
+  border-color: #1c7430;
+}
+#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
+}
+#canvas-quiz-stats .btn-info {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+#canvas-quiz-stats .btn-info:hover {
+  color: #fff;
+  background-color: #138496;
+  border-color: #117a8b;
+}
+#canvas-quiz-stats .btn-info:focus,
+#canvas-quiz-stats .btn-info.focus {
+  color: #fff;
+  background-color: #138496;
+  border-color: #117a8b;
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+#canvas-quiz-stats .btn-info.disabled,
+#canvas-quiz-stats .btn-info:disabled {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-info.dropdown-toggle {
+  color: #fff;
+  background-color: #117a8b;
+  border-color: #10707f;
+}
+#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-info.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+#canvas-quiz-stats .btn-warning {
+  color: #212529;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+#canvas-quiz-stats .btn-warning:hover {
+  color: #212529;
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+#canvas-quiz-stats .btn-warning:focus,
+#canvas-quiz-stats .btn-warning.focus {
+  color: #212529;
+  background-color: #e0a800;
+  border-color: #d39e00;
+  box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);
+}
+#canvas-quiz-stats .btn-warning.disabled,
+#canvas-quiz-stats .btn-warning:disabled {
+  color: #212529;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-warning.dropdown-toggle {
+  color: #212529;
+  background-color: #d39e00;
+  border-color: #c69500;
+}
+#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-warning.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);
+}
+#canvas-quiz-stats .btn-danger {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .btn-danger:hover {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+#canvas-quiz-stats .btn-danger:focus,
+#canvas-quiz-stats .btn-danger.focus {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
+  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
+}
+#canvas-quiz-stats .btn-danger.disabled,
+#canvas-quiz-stats .btn-danger:disabled {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-danger.dropdown-toggle {
+  color: #fff;
+  background-color: #bd2130;
+  border-color: #b21f2d;
+}
+#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-danger.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
+}
+#canvas-quiz-stats .btn-light {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+#canvas-quiz-stats .btn-light:hover {
+  color: #212529;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+#canvas-quiz-stats .btn-light:focus,
+#canvas-quiz-stats .btn-light.focus {
+  color: #212529;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+  box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
+}
+#canvas-quiz-stats .btn-light.disabled,
+#canvas-quiz-stats .btn-light:disabled {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-light.dropdown-toggle {
+  color: #212529;
+  background-color: #dae0e5;
+  border-color: #d3d9df;
+}
+#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-light.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
+}
+#canvas-quiz-stats .btn-dark {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+#canvas-quiz-stats .btn-dark:hover {
+  color: #fff;
+  background-color: #23272b;
+  border-color: #1d2124;
+}
+#canvas-quiz-stats .btn-dark:focus,
+#canvas-quiz-stats .btn-dark.focus {
+  color: #fff;
+  background-color: #23272b;
+  border-color: #1d2124;
+  box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);
+}
+#canvas-quiz-stats .btn-dark.disabled,
+#canvas-quiz-stats .btn-dark:disabled {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-dark.dropdown-toggle {
+  color: #fff;
+  background-color: #1d2124;
+  border-color: #171a1d;
+}
+#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-dark.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);
+}
+#canvas-quiz-stats .btn-outline-primary {
+  color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .btn-outline-primary:hover {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .btn-outline-primary:focus,
+#canvas-quiz-stats .btn-outline-primary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .btn-outline-primary.disabled,
+#canvas-quiz-stats .btn-outline-primary:disabled {
+  color: #007bff;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+#canvas-quiz-stats .btn-outline-secondary:hover {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+#canvas-quiz-stats .btn-outline-secondary:focus,
+#canvas-quiz-stats .btn-outline-secondary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+#canvas-quiz-stats .btn-outline-secondary.disabled,
+#canvas-quiz-stats .btn-outline-secondary:disabled {
+  color: #6c757d;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-secondary.dropdown-toggle {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-secondary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+#canvas-quiz-stats .btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+#canvas-quiz-stats .btn-outline-success:hover {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+#canvas-quiz-stats .btn-outline-success:focus,
+#canvas-quiz-stats .btn-outline-success.focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+#canvas-quiz-stats .btn-outline-success.disabled,
+#canvas-quiz-stats .btn-outline-success:disabled {
+  color: #28a745;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-success.dropdown-toggle {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+#canvas-quiz-stats .btn-outline-info {
+  color: #17a2b8;
+  border-color: #17a2b8;
+}
+#canvas-quiz-stats .btn-outline-info:hover {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+#canvas-quiz-stats .btn-outline-info:focus,
+#canvas-quiz-stats .btn-outline-info.focus {
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+#canvas-quiz-stats .btn-outline-info.disabled,
+#canvas-quiz-stats .btn-outline-info:disabled {
+  color: #17a2b8;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-info.dropdown-toggle {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-info.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+#canvas-quiz-stats .btn-outline-warning {
+  color: #ffc107;
+  border-color: #ffc107;
+}
+#canvas-quiz-stats .btn-outline-warning:hover {
+  color: #212529;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+#canvas-quiz-stats .btn-outline-warning:focus,
+#canvas-quiz-stats .btn-outline-warning.focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+}
+#canvas-quiz-stats .btn-outline-warning.disabled,
+#canvas-quiz-stats .btn-outline-warning:disabled {
+  color: #ffc107;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-warning.dropdown-toggle {
+  color: #212529;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-warning.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+}
+#canvas-quiz-stats .btn-outline-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .btn-outline-danger:hover {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .btn-outline-danger:focus,
+#canvas-quiz-stats .btn-outline-danger.focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+#canvas-quiz-stats .btn-outline-danger.disabled,
+#canvas-quiz-stats .btn-outline-danger:disabled {
+  color: #dc3545;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-danger.dropdown-toggle {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-danger.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+#canvas-quiz-stats .btn-outline-light {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+#canvas-quiz-stats .btn-outline-light:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+#canvas-quiz-stats .btn-outline-light:focus,
+#canvas-quiz-stats .btn-outline-light.focus {
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+#canvas-quiz-stats .btn-outline-light.disabled,
+#canvas-quiz-stats .btn-outline-light:disabled {
+  color: #f8f9fa;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-light.dropdown-toggle {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-light.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+#canvas-quiz-stats .btn-outline-dark {
+  color: #343a40;
+  border-color: #343a40;
+}
+#canvas-quiz-stats .btn-outline-dark:hover {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+#canvas-quiz-stats .btn-outline-dark:focus,
+#canvas-quiz-stats .btn-outline-dark.focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+#canvas-quiz-stats .btn-outline-dark.disabled,
+#canvas-quiz-stats .btn-outline-dark:disabled {
+  color: #343a40;
+  background-color: transparent;
+}
+#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled):active,
+#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled).active,
+#canvas-quiz-stats .show > .btn-outline-dark.dropdown-toggle {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled):active:focus,
+#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled).active:focus,
+#canvas-quiz-stats .show > .btn-outline-dark.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+#canvas-quiz-stats .btn-link {
+  font-weight: 400;
+  color: #007bff;
+  text-decoration: none;
+}
+#canvas-quiz-stats .btn-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+#canvas-quiz-stats .btn-link:focus,
+#canvas-quiz-stats .btn-link.focus {
+  text-decoration: underline;
+}
+#canvas-quiz-stats .btn-link:disabled,
+#canvas-quiz-stats .btn-link.disabled {
+  color: #6c757d;
+  pointer-events: none;
+}
+#canvas-quiz-stats .btn-lg,
+#canvas-quiz-stats .btn-group-lg > .btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+}
+#canvas-quiz-stats .btn-sm,
+#canvas-quiz-stats .btn-group-sm > .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+#canvas-quiz-stats .btn-block {
+  display: block;
+  width: 100%;
+}
+#canvas-quiz-stats .btn-block + .btn-block {
+  margin-top: 0.5rem;
+}
+#canvas-quiz-stats input[type="submit"].btn-block,
+#canvas-quiz-stats input[type="reset"].btn-block,
+#canvas-quiz-stats input[type="button"].btn-block {
+  width: 100%;
+}
+#canvas-quiz-stats .fade {
+  transition: opacity 0.15s linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .fade {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .fade:not(.show) {
+  opacity: 0;
+}
+#canvas-quiz-stats .collapse:not(.show) {
+  display: none;
+}
+#canvas-quiz-stats .collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .collapsing {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .dropup,
+#canvas-quiz-stats .dropright,
+#canvas-quiz-stats .dropdown,
+#canvas-quiz-stats .dropleft {
+  position: relative;
+}
+#canvas-quiz-stats .dropdown-toggle {
+  white-space: nowrap;
+}
+#canvas-quiz-stats .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+#canvas-quiz-stats .dropdown-toggle:empty::after {
+  margin-left: 0;
+}
+#canvas-quiz-stats .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .dropdown-menu-left {
+  right: auto;
+  left: 0;
+}
+#canvas-quiz-stats .dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .dropdown-menu-sm-left {
+    right: auto;
+    left: 0;
+  }
+  #canvas-quiz-stats .dropdown-menu-sm-right {
+    right: 0;
+    left: auto;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .dropdown-menu-md-left {
+    right: auto;
+    left: 0;
+  }
+  #canvas-quiz-stats .dropdown-menu-md-right {
+    right: 0;
+    left: auto;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .dropdown-menu-lg-left {
+    right: auto;
+    left: 0;
+  }
+  #canvas-quiz-stats .dropdown-menu-lg-right {
+    right: 0;
+    left: auto;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .dropdown-menu-xl-left {
+    right: auto;
+    left: 0;
+  }
+  #canvas-quiz-stats .dropdown-menu-xl-right {
+    right: 0;
+    left: auto;
+  }
+}
+#canvas-quiz-stats .dropup .dropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.125rem;
+}
+#canvas-quiz-stats .dropup .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0.3em solid;
+  border-left: 0.3em solid transparent;
+}
+#canvas-quiz-stats .dropup .dropdown-toggle:empty::after {
+  margin-left: 0;
+}
+#canvas-quiz-stats .dropright .dropdown-menu {
+  top: 0;
+  right: auto;
+  left: 100%;
+  margin-top: 0;
+  margin-left: 0.125rem;
+}
+#canvas-quiz-stats .dropright .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid transparent;
+  border-right: 0;
+  border-bottom: 0.3em solid transparent;
+  border-left: 0.3em solid;
+}
+#canvas-quiz-stats .dropright .dropdown-toggle:empty::after {
+  margin-left: 0;
+}
+#canvas-quiz-stats .dropright .dropdown-toggle::after {
+  vertical-align: 0;
+}
+#canvas-quiz-stats .dropleft .dropdown-menu {
+  top: 0;
+  right: 100%;
+  left: auto;
+  margin-top: 0;
+  margin-right: 0.125rem;
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle::after {
+  display: none;
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle::before {
+  display: inline-block;
+  margin-right: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid transparent;
+  border-right: 0.3em solid;
+  border-bottom: 0.3em solid transparent;
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle:empty::after {
+  margin-left: 0;
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle::before {
+  vertical-align: 0;
+}
+#canvas-quiz-stats .dropdown-menu[x-placement^="top"],
+#canvas-quiz-stats .dropdown-menu[x-placement^="right"],
+#canvas-quiz-stats .dropdown-menu[x-placement^="bottom"],
+#canvas-quiz-stats .dropdown-menu[x-placement^="left"] {
+  right: auto;
+  bottom: auto;
+}
+#canvas-quiz-stats .dropdown-divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid #e9ecef;
+}
+#canvas-quiz-stats .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+#canvas-quiz-stats .dropdown-item:hover,
+#canvas-quiz-stats .dropdown-item:focus {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+#canvas-quiz-stats .dropdown-item.active,
+#canvas-quiz-stats .dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: #007bff;
+}
+#canvas-quiz-stats .dropdown-item.disabled,
+#canvas-quiz-stats .dropdown-item:disabled {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: transparent;
+}
+#canvas-quiz-stats .dropdown-menu.show {
+  display: block;
+}
+#canvas-quiz-stats .dropdown-header {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  white-space: nowrap;
+}
+#canvas-quiz-stats .dropdown-item-text {
+  display: block;
+  padding: 0.25rem 1.5rem;
+  color: #212529;
+}
+#canvas-quiz-stats .btn-group,
+#canvas-quiz-stats .btn-group-vertical {
+  position: relative;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: middle;
+}
+#canvas-quiz-stats .btn-group > .btn,
+#canvas-quiz-stats .btn-group-vertical > .btn {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+#canvas-quiz-stats .btn-group > .btn:hover,
+#canvas-quiz-stats .btn-group-vertical > .btn:hover {
+  z-index: 1;
+}
+#canvas-quiz-stats .btn-group > .btn:focus,
+#canvas-quiz-stats .btn-group > .btn:active,
+#canvas-quiz-stats .btn-group > .btn.active,
+#canvas-quiz-stats .btn-group-vertical > .btn:focus,
+#canvas-quiz-stats .btn-group-vertical > .btn:active,
+#canvas-quiz-stats .btn-group-vertical > .btn.active {
+  z-index: 1;
+}
+#canvas-quiz-stats .btn-toolbar {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+#canvas-quiz-stats .btn-toolbar .input-group {
+  width: auto;
+}
+#canvas-quiz-stats .btn-group > .btn:not(:first-child),
+#canvas-quiz-stats .btn-group > .btn-group:not(:first-child) {
+  margin-left: -1px;
+}
+#canvas-quiz-stats .btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+#canvas-quiz-stats .btn-group > .btn-group:not(:last-child) > .btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#canvas-quiz-stats .btn-group > .btn:not(:first-child),
+#canvas-quiz-stats .btn-group > .btn-group:not(:first-child) > .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .dropdown-toggle-split {
+  padding-right: 0.5625rem;
+  padding-left: 0.5625rem;
+}
+#canvas-quiz-stats .dropdown-toggle-split::after,
+#canvas-quiz-stats .dropup .dropdown-toggle-split::after,
+#canvas-quiz-stats .dropright .dropdown-toggle-split::after {
+  margin-left: 0;
+}
+#canvas-quiz-stats .dropleft .dropdown-toggle-split::before {
+  margin-right: 0;
+}
+#canvas-quiz-stats .btn-sm + .dropdown-toggle-split,
+#canvas-quiz-stats .btn-group-sm > .btn + .dropdown-toggle-split {
+  padding-right: 0.375rem;
+  padding-left: 0.375rem;
+}
+#canvas-quiz-stats .btn-lg + .dropdown-toggle-split,
+#canvas-quiz-stats .btn-group-lg > .btn + .dropdown-toggle-split {
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+#canvas-quiz-stats .btn-group-vertical {
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+#canvas-quiz-stats .btn-group-vertical > .btn,
+#canvas-quiz-stats .btn-group-vertical > .btn-group {
+  width: 100%;
+}
+#canvas-quiz-stats .btn-group-vertical > .btn:not(:first-child),
+#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:first-child) {
+  margin-top: -1px;
+}
+#canvas-quiz-stats .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle),
+#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:last-child) > .btn {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .btn-group-vertical > .btn:not(:first-child),
+#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:first-child) > .btn {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#canvas-quiz-stats .btn-group-toggle > .btn,
+#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn {
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .btn-group-toggle > .btn input[type="radio"],
+#canvas-quiz-stats .btn-group-toggle > .btn input[type="checkbox"],
+#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn input[type="radio"],
+#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+#canvas-quiz-stats .input-group {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  width: 100%;
+}
+#canvas-quiz-stats .input-group > .form-control,
+#canvas-quiz-stats .input-group > .form-control-plaintext,
+#canvas-quiz-stats .input-group > .custom-select,
+#canvas-quiz-stats .input-group > .custom-file {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .input-group > .form-control + .form-control,
+#canvas-quiz-stats .input-group > .form-control + .custom-select,
+#canvas-quiz-stats .input-group > .form-control + .custom-file,
+#canvas-quiz-stats .input-group > .form-control-plaintext + .form-control,
+#canvas-quiz-stats .input-group > .form-control-plaintext + .custom-select,
+#canvas-quiz-stats .input-group > .form-control-plaintext + .custom-file,
+#canvas-quiz-stats .input-group > .custom-select + .form-control,
+#canvas-quiz-stats .input-group > .custom-select + .custom-select,
+#canvas-quiz-stats .input-group > .custom-select + .custom-file,
+#canvas-quiz-stats .input-group > .custom-file + .form-control,
+#canvas-quiz-stats .input-group > .custom-file + .custom-select,
+#canvas-quiz-stats .input-group > .custom-file + .custom-file {
+  margin-left: -1px;
+}
+#canvas-quiz-stats .input-group > .form-control:focus,
+#canvas-quiz-stats .input-group > .custom-select:focus,
+#canvas-quiz-stats .input-group > .custom-file .custom-file-input:focus ~ .custom-file-label {
+  z-index: 3;
+}
+#canvas-quiz-stats .input-group > .custom-file .custom-file-input:focus {
+  z-index: 4;
+}
+#canvas-quiz-stats .input-group > .form-control:not(:last-child),
+#canvas-quiz-stats .input-group > .custom-select:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#canvas-quiz-stats .input-group > .form-control:not(:first-child),
+#canvas-quiz-stats .input-group > .custom-select:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .input-group > .custom-file {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+}
+#canvas-quiz-stats .input-group > .custom-file:not(:last-child) .custom-file-label,
+#canvas-quiz-stats .input-group > .custom-file:not(:last-child) .custom-file-label::after {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#canvas-quiz-stats .input-group > .custom-file:not(:first-child) .custom-file-label {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .input-group-prepend,
+#canvas-quiz-stats .input-group-append {
+  display: -ms-flexbox;
+  display: flex;
+}
+#canvas-quiz-stats .input-group-prepend .btn,
+#canvas-quiz-stats .input-group-append .btn {
+  position: relative;
+  z-index: 2;
+}
+#canvas-quiz-stats .input-group-prepend .btn:focus,
+#canvas-quiz-stats .input-group-append .btn:focus {
+  z-index: 3;
+}
+#canvas-quiz-stats .input-group-prepend .btn + .btn,
+#canvas-quiz-stats .input-group-prepend .btn + .input-group-text,
+#canvas-quiz-stats .input-group-prepend .input-group-text + .input-group-text,
+#canvas-quiz-stats .input-group-prepend .input-group-text + .btn,
+#canvas-quiz-stats .input-group-append .btn + .btn,
+#canvas-quiz-stats .input-group-append .btn + .input-group-text,
+#canvas-quiz-stats .input-group-append .input-group-text + .input-group-text,
+#canvas-quiz-stats .input-group-append .input-group-text + .btn {
+  margin-left: -1px;
+}
+#canvas-quiz-stats .input-group-prepend {
+  margin-right: -1px;
+}
+#canvas-quiz-stats .input-group-append {
+  margin-left: -1px;
+}
+#canvas-quiz-stats .input-group-text {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .input-group-text input[type="radio"],
+#canvas-quiz-stats .input-group-text input[type="checkbox"] {
+  margin-top: 0;
+}
+#canvas-quiz-stats .input-group-lg > .form-control:not(textarea),
+#canvas-quiz-stats .input-group-lg > .custom-select {
+  height: calc(1.5em + 1rem + 2px);
+}
+#canvas-quiz-stats .input-group-lg > .form-control,
+#canvas-quiz-stats .input-group-lg > .custom-select,
+#canvas-quiz-stats .input-group-lg > .input-group-prepend > .input-group-text,
+#canvas-quiz-stats .input-group-lg > .input-group-append > .input-group-text,
+#canvas-quiz-stats .input-group-lg > .input-group-prepend > .btn,
+#canvas-quiz-stats .input-group-lg > .input-group-append > .btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+}
+#canvas-quiz-stats .input-group-sm > .form-control:not(textarea),
+#canvas-quiz-stats .input-group-sm > .custom-select {
+  height: calc(1.5em + 0.5rem + 2px);
+}
+#canvas-quiz-stats .input-group-sm > .form-control,
+#canvas-quiz-stats .input-group-sm > .custom-select,
+#canvas-quiz-stats .input-group-sm > .input-group-prepend > .input-group-text,
+#canvas-quiz-stats .input-group-sm > .input-group-append > .input-group-text,
+#canvas-quiz-stats .input-group-sm > .input-group-prepend > .btn,
+#canvas-quiz-stats .input-group-sm > .input-group-append > .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+#canvas-quiz-stats .input-group-lg > .custom-select,
+#canvas-quiz-stats .input-group-sm > .custom-select {
+  padding-right: 1.75rem;
+}
+#canvas-quiz-stats .input-group > .input-group-prepend > .btn,
+#canvas-quiz-stats .input-group > .input-group-prepend > .input-group-text,
+#canvas-quiz-stats .input-group > .input-group-append:not(:last-child) > .btn,
+#canvas-quiz-stats .input-group > .input-group-append:not(:last-child) > .input-group-text,
+#canvas-quiz-stats .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+#canvas-quiz-stats .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#canvas-quiz-stats .input-group > .input-group-append > .btn,
+#canvas-quiz-stats .input-group > .input-group-append > .input-group-text,
+#canvas-quiz-stats .input-group > .input-group-prepend:not(:first-child) > .btn,
+#canvas-quiz-stats .input-group > .input-group-prepend:not(:first-child) > .input-group-text,
+#canvas-quiz-stats .input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+#canvas-quiz-stats .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .custom-control {
+  position: relative;
+  z-index: 1;
+  display: block;
+  min-height: 1.5rem;
+  padding-left: 1.5rem;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
+}
+#canvas-quiz-stats .custom-control-inline {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin-right: 1rem;
+}
+#canvas-quiz-stats .custom-control-input {
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  width: 1rem;
+  height: 1.25rem;
+  opacity: 0;
+}
+#canvas-quiz-stats .custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #007bff;
+  background-color: #007bff;
+}
+#canvas-quiz-stats .custom-control-input:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+  border-color: #80bdff;
+}
+#canvas-quiz-stats .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+  color: #fff;
+  background-color: #b3d7ff;
+  border-color: #b3d7ff;
+}
+#canvas-quiz-stats .custom-control-input[disabled] ~ .custom-control-label,
+#canvas-quiz-stats .custom-control-input:disabled ~ .custom-control-label {
+  color: #6c757d;
+}
+#canvas-quiz-stats .custom-control-input[disabled] ~ .custom-control-label::before,
+#canvas-quiz-stats .custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: #e9ecef;
+}
+#canvas-quiz-stats .custom-control-label {
+  position: relative;
+  margin-bottom: 0;
+  vertical-align: top;
+}
+#canvas-quiz-stats .custom-control-label::before {
+  position: absolute;
+  top: 0.25rem;
+  left: -1.5rem;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  content: "";
+  background-color: #fff;
+  border: #adb5bd solid 1px;
+}
+#canvas-quiz-stats .custom-control-label::after {
+  position: absolute;
+  top: 0.25rem;
+  left: -1.5rem;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  content: "";
+  background: no-repeat 50% / 50% 50%;
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-label::before {
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
+  border-color: #007bff;
+  background-color: #007bff;
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .custom-checkbox .custom-control-input:disabled:indeterminate ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .custom-radio .custom-control-label::before {
+  border-radius: 50%;
+}
+#canvas-quiz-stats .custom-radio .custom-control-input:checked ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .custom-radio .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .custom-switch {
+  padding-left: 2.25rem;
+}
+#canvas-quiz-stats .custom-switch .custom-control-label::before {
+  left: -2.25rem;
+  width: 1.75rem;
+  pointer-events: all;
+  border-radius: 0.5rem;
+}
+#canvas-quiz-stats .custom-switch .custom-control-label::after {
+  top: calc(0.25rem + 2px);
+  left: calc(-2.25rem + 2px);
+  width: calc(1rem - 4px);
+  height: calc(1rem - 4px);
+  background-color: #adb5bd;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-transform 0.15s ease-in-out;
+  transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-transform 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .custom-switch .custom-control-label::after {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+  background-color: #fff;
+  -webkit-transform: translateX(0.75rem);
+  transform: translateX(0.75rem);
+}
+#canvas-quiz-stats .custom-switch .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .custom-select {
+  display: inline-block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  vertical-align: middle;
+  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center / 8px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+#canvas-quiz-stats .custom-select:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-select:focus::-ms-value {
+  color: #495057;
+  background-color: #fff;
+}
+#canvas-quiz-stats .custom-select[multiple],
+#canvas-quiz-stats .custom-select[size]:not([size="1"]) {
+  height: auto;
+  padding-right: 0.75rem;
+  background-image: none;
+}
+#canvas-quiz-stats .custom-select:disabled {
+  color: #6c757d;
+  background-color: #e9ecef;
+}
+#canvas-quiz-stats .custom-select::-ms-expand {
+  display: none;
+}
+#canvas-quiz-stats .custom-select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #495057;
+}
+#canvas-quiz-stats .custom-select-sm {
+  height: calc(1.5em + 0.5rem + 2px);
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  font-size: 0.875rem;
+}
+#canvas-quiz-stats .custom-select-lg {
+  height: calc(1.5em + 1rem + 2px);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  font-size: 1.25rem;
+}
+#canvas-quiz-stats .custom-file {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .custom-file-input {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  margin: 0;
+  opacity: 0;
+}
+#canvas-quiz-stats .custom-file-input:focus ~ .custom-file-label {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-file-input[disabled] ~ .custom-file-label,
+#canvas-quiz-stats .custom-file-input:disabled ~ .custom-file-label {
+  background-color: #e9ecef;
+}
+#canvas-quiz-stats .custom-file-input:lang(en) ~ .custom-file-label::after {
+  content: "Browse";
+}
+#canvas-quiz-stats .custom-file-input ~ .custom-file-label[data-browse]::after {
+  content: attr(data-browse);
+}
+#canvas-quiz-stats .custom-file-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .custom-file-label::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: block;
+  height: calc(1.5em + 0.75rem);
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+  color: #495057;
+  content: "Browse";
+  background-color: #e9ecef;
+  border-left: inherit;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+#canvas-quiz-stats .custom-range {
+  width: 100%;
+  height: 1.4rem;
+  padding: 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+#canvas-quiz-stats .custom-range:focus {
+  outline: none;
+}
+#canvas-quiz-stats .custom-range:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-range:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-range:focus::-ms-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .custom-range::-moz-focus-outer {
+  border: 0;
+}
+#canvas-quiz-stats .custom-range::-webkit-slider-thumb {
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.25rem;
+  background-color: #007bff;
+  border: 0;
+  border-radius: 1rem;
+  -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  -webkit-appearance: none;
+  appearance: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .custom-range::-webkit-slider-thumb {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+#canvas-quiz-stats .custom-range::-webkit-slider-thumb:active {
+  background-color: #b3d7ff;
+}
+#canvas-quiz-stats .custom-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 0.5rem;
+  color: transparent;
+  cursor: pointer;
+  background-color: #dee2e6;
+  border-color: transparent;
+  border-radius: 1rem;
+}
+#canvas-quiz-stats .custom-range::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  background-color: #007bff;
+  border: 0;
+  border-radius: 1rem;
+  -moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  -moz-appearance: none;
+  appearance: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .custom-range::-moz-range-thumb {
+    -moz-transition: none;
+    transition: none;
+  }
+}
+#canvas-quiz-stats .custom-range::-moz-range-thumb:active {
+  background-color: #b3d7ff;
+}
+#canvas-quiz-stats .custom-range::-moz-range-track {
+  width: 100%;
+  height: 0.5rem;
+  color: transparent;
+  cursor: pointer;
+  background-color: #dee2e6;
+  border-color: transparent;
+  border-radius: 1rem;
+}
+#canvas-quiz-stats .custom-range::-ms-thumb {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0;
+  margin-right: 0.2rem;
+  margin-left: 0.2rem;
+  background-color: #007bff;
+  border: 0;
+  border-radius: 1rem;
+  -ms-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  appearance: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .custom-range::-ms-thumb {
+    -ms-transition: none;
+    transition: none;
+  }
+}
+#canvas-quiz-stats .custom-range::-ms-thumb:active {
+  background-color: #b3d7ff;
+}
+#canvas-quiz-stats .custom-range::-ms-track {
+  width: 100%;
+  height: 0.5rem;
+  color: transparent;
+  cursor: pointer;
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 0.5rem;
+}
+#canvas-quiz-stats .custom-range::-ms-fill-lower {
+  background-color: #dee2e6;
+  border-radius: 1rem;
+}
+#canvas-quiz-stats .custom-range::-ms-fill-upper {
+  margin-right: 15px;
+  background-color: #dee2e6;
+  border-radius: 1rem;
+}
+#canvas-quiz-stats .custom-range:disabled::-webkit-slider-thumb {
+  background-color: #adb5bd;
+}
+#canvas-quiz-stats .custom-range:disabled::-webkit-slider-runnable-track {
+  cursor: default;
+}
+#canvas-quiz-stats .custom-range:disabled::-moz-range-thumb {
+  background-color: #adb5bd;
+}
+#canvas-quiz-stats .custom-range:disabled::-moz-range-track {
+  cursor: default;
+}
+#canvas-quiz-stats .custom-range:disabled::-ms-thumb {
+  background-color: #adb5bd;
+}
+#canvas-quiz-stats .custom-control-label::before,
+#canvas-quiz-stats .custom-file-label,
+#canvas-quiz-stats .custom-select {
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .custom-control-label::before,
+  #canvas-quiz-stats .custom-file-label,
+  #canvas-quiz-stats .custom-select {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+#canvas-quiz-stats .nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+#canvas-quiz-stats .nav-link:hover,
+#canvas-quiz-stats .nav-link:focus {
+  text-decoration: none;
+}
+#canvas-quiz-stats .nav-link.disabled {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: default;
+}
+#canvas-quiz-stats .nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+}
+#canvas-quiz-stats .nav-tabs .nav-item {
+  margin-bottom: -1px;
+}
+#canvas-quiz-stats .nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+#canvas-quiz-stats .nav-tabs .nav-link:hover,
+#canvas-quiz-stats .nav-tabs .nav-link:focus {
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+#canvas-quiz-stats .nav-tabs .nav-link.disabled {
+  color: #6c757d;
+  background-color: transparent;
+  border-color: transparent;
+}
+#canvas-quiz-stats .nav-tabs .nav-link.active,
+#canvas-quiz-stats .nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+#canvas-quiz-stats .nav-tabs .dropdown-menu {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#canvas-quiz-stats .nav-pills .nav-link {
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .nav-pills .nav-link.active,
+#canvas-quiz-stats .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #007bff;
+}
+#canvas-quiz-stats .nav-fill > .nav-link,
+#canvas-quiz-stats .nav-fill .nav-item {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  text-align: center;
+}
+#canvas-quiz-stats .nav-justified > .nav-link,
+#canvas-quiz-stats .nav-justified .nav-item {
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  text-align: center;
+}
+#canvas-quiz-stats .tab-content > .tab-pane {
+  display: none;
+}
+#canvas-quiz-stats .tab-content > .active {
+  display: block;
+}
+#canvas-quiz-stats .navbar {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+}
+#canvas-quiz-stats .navbar .container,
+#canvas-quiz-stats .navbar .container-fluid,
+#canvas-quiz-stats .navbar .container-sm,
+#canvas-quiz-stats .navbar .container-md,
+#canvas-quiz-stats .navbar .container-lg,
+#canvas-quiz-stats .navbar .container-xl {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+#canvas-quiz-stats .navbar-brand {
+  display: inline-block;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+#canvas-quiz-stats .navbar-brand:hover,
+#canvas-quiz-stats .navbar-brand:focus {
+  text-decoration: none;
+}
+#canvas-quiz-stats .navbar-nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+#canvas-quiz-stats .navbar-nav .nav-link {
+  padding-right: 0;
+  padding-left: 0;
+}
+#canvas-quiz-stats .navbar-nav .dropdown-menu {
+  position: static;
+  float: none;
+}
+#canvas-quiz-stats .navbar-text {
+  display: inline-block;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+#canvas-quiz-stats .navbar-collapse {
+  -ms-flex-preferred-size: 100%;
+  flex-basis: 100%;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  -ms-flex-align: center;
+  align-items: center;
+}
+#canvas-quiz-stats .navbar-toggler {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .navbar-toggler:hover,
+#canvas-quiz-stats .navbar-toggler:focus {
+  text-decoration: none;
+}
+#canvas-quiz-stats .navbar-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  content: "";
+  background: no-repeat center center;
+  background-size: 100% 100%;
+}
+@media (max-width: 575.98px) {
+  #canvas-quiz-stats .navbar-expand-sm > .container,
+  #canvas-quiz-stats .navbar-expand-sm > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-sm > .container-sm,
+  #canvas-quiz-stats .navbar-expand-sm > .container-md,
+  #canvas-quiz-stats .navbar-expand-sm > .container-lg,
+  #canvas-quiz-stats .navbar-expand-sm > .container-xl {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .navbar-expand-sm {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+  #canvas-quiz-stats .navbar-expand-sm .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .navbar-expand-sm .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+  #canvas-quiz-stats .navbar-expand-sm .navbar-nav .nav-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  #canvas-quiz-stats .navbar-expand-sm > .container,
+  #canvas-quiz-stats .navbar-expand-sm > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-sm > .container-sm,
+  #canvas-quiz-stats .navbar-expand-sm > .container-md,
+  #canvas-quiz-stats .navbar-expand-sm > .container-lg,
+  #canvas-quiz-stats .navbar-expand-sm > .container-xl {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+  #canvas-quiz-stats .navbar-expand-sm .navbar-collapse {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+  }
+  #canvas-quiz-stats .navbar-expand-sm .navbar-toggler {
+    display: none;
+  }
+}
+@media (max-width: 767.98px) {
+  #canvas-quiz-stats .navbar-expand-md > .container,
+  #canvas-quiz-stats .navbar-expand-md > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-md > .container-sm,
+  #canvas-quiz-stats .navbar-expand-md > .container-md,
+  #canvas-quiz-stats .navbar-expand-md > .container-lg,
+  #canvas-quiz-stats .navbar-expand-md > .container-xl {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .navbar-expand-md {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+  #canvas-quiz-stats .navbar-expand-md .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .navbar-expand-md .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+  #canvas-quiz-stats .navbar-expand-md .navbar-nav .nav-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  #canvas-quiz-stats .navbar-expand-md > .container,
+  #canvas-quiz-stats .navbar-expand-md > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-md > .container-sm,
+  #canvas-quiz-stats .navbar-expand-md > .container-md,
+  #canvas-quiz-stats .navbar-expand-md > .container-lg,
+  #canvas-quiz-stats .navbar-expand-md > .container-xl {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+  #canvas-quiz-stats .navbar-expand-md .navbar-collapse {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+  }
+  #canvas-quiz-stats .navbar-expand-md .navbar-toggler {
+    display: none;
+  }
+}
+@media (max-width: 991.98px) {
+  #canvas-quiz-stats .navbar-expand-lg > .container,
+  #canvas-quiz-stats .navbar-expand-lg > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-lg > .container-sm,
+  #canvas-quiz-stats .navbar-expand-lg > .container-md,
+  #canvas-quiz-stats .navbar-expand-lg > .container-lg,
+  #canvas-quiz-stats .navbar-expand-lg > .container-xl {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .navbar-expand-lg {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+  #canvas-quiz-stats .navbar-expand-lg .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+  #canvas-quiz-stats .navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  #canvas-quiz-stats .navbar-expand-lg > .container,
+  #canvas-quiz-stats .navbar-expand-lg > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-lg > .container-sm,
+  #canvas-quiz-stats .navbar-expand-lg > .container-md,
+  #canvas-quiz-stats .navbar-expand-lg > .container-lg,
+  #canvas-quiz-stats .navbar-expand-lg > .container-xl {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+  #canvas-quiz-stats .navbar-expand-lg .navbar-collapse {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+  }
+  #canvas-quiz-stats .navbar-expand-lg .navbar-toggler {
+    display: none;
+  }
+}
+@media (max-width: 1199.98px) {
+  #canvas-quiz-stats .navbar-expand-xl > .container,
+  #canvas-quiz-stats .navbar-expand-xl > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-xl > .container-sm,
+  #canvas-quiz-stats .navbar-expand-xl > .container-md,
+  #canvas-quiz-stats .navbar-expand-xl > .container-lg,
+  #canvas-quiz-stats .navbar-expand-xl > .container-xl {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .navbar-expand-xl {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+  #canvas-quiz-stats .navbar-expand-xl .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .navbar-expand-xl .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+  #canvas-quiz-stats .navbar-expand-xl .navbar-nav .nav-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  #canvas-quiz-stats .navbar-expand-xl > .container,
+  #canvas-quiz-stats .navbar-expand-xl > .container-fluid,
+  #canvas-quiz-stats .navbar-expand-xl > .container-sm,
+  #canvas-quiz-stats .navbar-expand-xl > .container-md,
+  #canvas-quiz-stats .navbar-expand-xl > .container-lg,
+  #canvas-quiz-stats .navbar-expand-xl > .container-xl {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+  #canvas-quiz-stats .navbar-expand-xl .navbar-collapse {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+  }
+  #canvas-quiz-stats .navbar-expand-xl .navbar-toggler {
+    display: none;
+  }
+}
+#canvas-quiz-stats .navbar-expand {
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+#canvas-quiz-stats .navbar-expand > .container,
+#canvas-quiz-stats .navbar-expand > .container-fluid,
+#canvas-quiz-stats .navbar-expand > .container-sm,
+#canvas-quiz-stats .navbar-expand > .container-md,
+#canvas-quiz-stats .navbar-expand > .container-lg,
+#canvas-quiz-stats .navbar-expand > .container-xl {
+  padding-right: 0;
+  padding-left: 0;
+}
+#canvas-quiz-stats .navbar-expand .navbar-nav {
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+#canvas-quiz-stats .navbar-expand .navbar-nav .dropdown-menu {
+  position: absolute;
+}
+#canvas-quiz-stats .navbar-expand .navbar-nav .nav-link {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+#canvas-quiz-stats .navbar-expand > .container,
+#canvas-quiz-stats .navbar-expand > .container-fluid,
+#canvas-quiz-stats .navbar-expand > .container-sm,
+#canvas-quiz-stats .navbar-expand > .container-md,
+#canvas-quiz-stats .navbar-expand > .container-lg,
+#canvas-quiz-stats .navbar-expand > .container-xl {
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+#canvas-quiz-stats .navbar-expand .navbar-collapse {
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -ms-flex-preferred-size: auto;
+  flex-basis: auto;
+}
+#canvas-quiz-stats .navbar-expand .navbar-toggler {
+  display: none;
+}
+#canvas-quiz-stats .navbar-light .navbar-brand {
+  color: rgba(0, 0, 0, 0.9);
+}
+#canvas-quiz-stats .navbar-light .navbar-brand:hover,
+#canvas-quiz-stats .navbar-light .navbar-brand:focus {
+  color: rgba(0, 0, 0, 0.9);
+}
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link {
+  color: rgba(0, 0, 0, 0.5);
+}
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link:hover,
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link:focus {
+  color: rgba(0, 0, 0, 0.7);
+}
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.disabled {
+  color: rgba(0, 0, 0, 0.3);
+}
+#canvas-quiz-stats .navbar-light .navbar-nav .show > .nav-link,
+#canvas-quiz-stats .navbar-light .navbar-nav .active > .nav-link,
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.show,
+#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.active {
+  color: rgba(0, 0, 0, 0.9);
+}
+#canvas-quiz-stats .navbar-light .navbar-toggler {
+  color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+#canvas-quiz-stats .navbar-light .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .navbar-light .navbar-text {
+  color: rgba(0, 0, 0, 0.5);
+}
+#canvas-quiz-stats .navbar-light .navbar-text a {
+  color: rgba(0, 0, 0, 0.9);
+}
+#canvas-quiz-stats .navbar-light .navbar-text a:hover,
+#canvas-quiz-stats .navbar-light .navbar-text a:focus {
+  color: rgba(0, 0, 0, 0.9);
+}
+#canvas-quiz-stats .navbar-dark .navbar-brand {
+  color: #fff;
+}
+#canvas-quiz-stats .navbar-dark .navbar-brand:hover,
+#canvas-quiz-stats .navbar-dark .navbar-brand:focus {
+  color: #fff;
+}
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.5);
+}
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link:hover,
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link:focus {
+  color: rgba(255, 255, 255, 0.75);
+}
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.disabled {
+  color: rgba(255, 255, 255, 0.25);
+}
+#canvas-quiz-stats .navbar-dark .navbar-nav .show > .nav-link,
+#canvas-quiz-stats .navbar-dark .navbar-nav .active > .nav-link,
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.show,
+#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.active {
+  color: #fff;
+}
+#canvas-quiz-stats .navbar-dark .navbar-toggler {
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+#canvas-quiz-stats .navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .navbar-dark .navbar-text {
+  color: rgba(255, 255, 255, 0.5);
+}
+#canvas-quiz-stats .navbar-dark .navbar-text a {
+  color: #fff;
+}
+#canvas-quiz-stats .navbar-dark .navbar-text a:hover,
+#canvas-quiz-stats .navbar-dark .navbar-text a:focus {
+  color: #fff;
+}
+#canvas-quiz-stats .card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .card > hr {
+  margin-right: 0;
+  margin-left: 0;
+}
+#canvas-quiz-stats .card > .list-group {
+  border-top: inherit;
+  border-bottom: inherit;
+}
+#canvas-quiz-stats .card > .list-group:first-child {
+  border-top-width: 0;
+  border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card > .list-group:last-child {
+  border-bottom-width: 0;
+  border-bottom-right-radius: calc(0.25rem - 1px);
+  border-bottom-left-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card > .card-header + .list-group,
+#canvas-quiz-stats .card > .list-group + .card-footer {
+  border-top: 0;
+}
+#canvas-quiz-stats .card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+#canvas-quiz-stats .card-title {
+  margin-bottom: 0.75rem;
+}
+#canvas-quiz-stats .card-subtitle {
+  margin-top: -0.375rem;
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .card-text:last-child {
+  margin-bottom: 0;
+}
+#canvas-quiz-stats .card-link:hover {
+  text-decoration: none;
+}
+#canvas-quiz-stats .card-link + .card-link {
+  margin-left: 1.25rem;
+}
+#canvas-quiz-stats .card-header {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+#canvas-quiz-stats .card-header:first-child {
+  border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+}
+#canvas-quiz-stats .card-footer {
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+#canvas-quiz-stats .card-footer:last-child {
+  border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card-header-tabs {
+  margin-right: -0.625rem;
+  margin-bottom: -0.75rem;
+  margin-left: -0.625rem;
+  border-bottom: 0;
+}
+#canvas-quiz-stats .card-header-pills {
+  margin-right: -0.625rem;
+  margin-left: -0.625rem;
+}
+#canvas-quiz-stats .card-img-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1.25rem;
+  border-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card-img,
+#canvas-quiz-stats .card-img-top,
+#canvas-quiz-stats .card-img-bottom {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 100%;
+}
+#canvas-quiz-stats .card-img,
+#canvas-quiz-stats .card-img-top {
+  border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card-img,
+#canvas-quiz-stats .card-img-bottom {
+  border-bottom-right-radius: calc(0.25rem - 1px);
+  border-bottom-left-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .card-deck .card {
+  margin-bottom: 15px;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .card-deck {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  #canvas-quiz-stats .card-deck .card {
+    -ms-flex: 1 0 0%;
+    flex: 1 0 0%;
+    margin-right: 15px;
+    margin-bottom: 0;
+    margin-left: 15px;
+  }
+}
+#canvas-quiz-stats .card-group > .card {
+  margin-bottom: 15px;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .card-group {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+  }
+  #canvas-quiz-stats .card-group > .card {
+    -ms-flex: 1 0 0%;
+    flex: 1 0 0%;
+    margin-bottom: 0;
+  }
+  #canvas-quiz-stats .card-group > .card + .card {
+    margin-left: 0;
+    border-left: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-img-top,
+  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-header {
+    border-top-right-radius: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-img-bottom,
+  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-footer {
+    border-bottom-right-radius: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-img-top,
+  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-header {
+    border-top-left-radius: 0;
+  }
+  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-img-bottom,
+  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-footer {
+    border-bottom-left-radius: 0;
+  }
+}
+#canvas-quiz-stats .card-columns .card {
+  margin-bottom: 0.75rem;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .card-columns {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+    -webkit-column-gap: 1.25rem;
+    -moz-column-gap: 1.25rem;
+    column-gap: 1.25rem;
+    orphans: 1;
+    widows: 1;
+  }
+  #canvas-quiz-stats .card-columns .card {
+    display: inline-block;
+    width: 100%;
+  }
+}
+#canvas-quiz-stats .accordion {
+  overflow-anchor: none;
+}
+#canvas-quiz-stats .accordion > .card {
+  overflow: hidden;
+}
+#canvas-quiz-stats .accordion > .card:not(:last-of-type) {
+  border-bottom: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .accordion > .card:not(:first-of-type) {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#canvas-quiz-stats .accordion > .card > .card-header {
+  border-radius: 0;
+  margin-bottom: -1px;
+}
+#canvas-quiz-stats .breadcrumb {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .breadcrumb-item {
+  display: -ms-flexbox;
+  display: flex;
+}
+#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item {
+  padding-left: 0.5rem;
+}
+#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item::before {
+  display: inline-block;
+  padding-right: 0.5rem;
+  color: #6c757d;
+  content: "/";
+}
+#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item:hover::before {
+  text-decoration: underline;
+}
+#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item:hover::before {
+  text-decoration: none;
+}
+#canvas-quiz-stats .breadcrumb-item.active {
+  color: #6c757d;
+}
+#canvas-quiz-stats .pagination {
+  display: -ms-flexbox;
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .page-link {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+#canvas-quiz-stats .page-link:hover {
+  z-index: 2;
+  color: #0056b3;
+  text-decoration: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+#canvas-quiz-stats .page-link:focus {
+  z-index: 3;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#canvas-quiz-stats .page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+#canvas-quiz-stats .page-item:last-child .page-link {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+#canvas-quiz-stats .page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: auto;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+#canvas-quiz-stats .pagination-lg .page-link {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .pagination-lg .page-item:first-child .page-link {
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+}
+#canvas-quiz-stats .pagination-lg .page-item:last-child .page-link {
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
+}
+#canvas-quiz-stats .pagination-sm .page-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .pagination-sm .page-item:first-child .page-link {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+}
+#canvas-quiz-stats .pagination-sm .page-item:last-child .page-link {
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+}
+#canvas-quiz-stats .badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .badge {
+    transition: none;
+  }
+}
+#canvas-quiz-stats a.badge:hover,
+#canvas-quiz-stats a.badge:focus {
+  text-decoration: none;
+}
+#canvas-quiz-stats .badge:empty {
+  display: none;
+}
+#canvas-quiz-stats .btn .badge {
+  position: relative;
+  top: -1px;
+}
+#canvas-quiz-stats .badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+#canvas-quiz-stats .badge-primary {
+  color: #fff;
+  background-color: #007bff;
+}
+#canvas-quiz-stats a.badge-primary:hover,
+#canvas-quiz-stats a.badge-primary:focus {
+  color: #fff;
+  background-color: #0062cc;
+}
+#canvas-quiz-stats a.badge-primary:focus,
+#canvas-quiz-stats a.badge-primary.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+#canvas-quiz-stats .badge-secondary {
+  color: #fff;
+  background-color: #6c757d;
+}
+#canvas-quiz-stats a.badge-secondary:hover,
+#canvas-quiz-stats a.badge-secondary:focus {
+  color: #fff;
+  background-color: #545b62;
+}
+#canvas-quiz-stats a.badge-secondary:focus,
+#canvas-quiz-stats a.badge-secondary.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+#canvas-quiz-stats .badge-success {
+  color: #fff;
+  background-color: #28a745;
+}
+#canvas-quiz-stats a.badge-success:hover,
+#canvas-quiz-stats a.badge-success:focus {
+  color: #fff;
+  background-color: #1e7e34;
+}
+#canvas-quiz-stats a.badge-success:focus,
+#canvas-quiz-stats a.badge-success.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+#canvas-quiz-stats .badge-info {
+  color: #fff;
+  background-color: #17a2b8;
+}
+#canvas-quiz-stats a.badge-info:hover,
+#canvas-quiz-stats a.badge-info:focus {
+  color: #fff;
+  background-color: #117a8b;
+}
+#canvas-quiz-stats a.badge-info:focus,
+#canvas-quiz-stats a.badge-info.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+#canvas-quiz-stats .badge-warning {
+  color: #212529;
+  background-color: #ffc107;
+}
+#canvas-quiz-stats a.badge-warning:hover,
+#canvas-quiz-stats a.badge-warning:focus {
+  color: #212529;
+  background-color: #d39e00;
+}
+#canvas-quiz-stats a.badge-warning:focus,
+#canvas-quiz-stats a.badge-warning.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+}
+#canvas-quiz-stats .badge-danger {
+  color: #fff;
+  background-color: #dc3545;
+}
+#canvas-quiz-stats a.badge-danger:hover,
+#canvas-quiz-stats a.badge-danger:focus {
+  color: #fff;
+  background-color: #bd2130;
+}
+#canvas-quiz-stats a.badge-danger:focus,
+#canvas-quiz-stats a.badge-danger.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+#canvas-quiz-stats .badge-light {
+  color: #212529;
+  background-color: #f8f9fa;
+}
+#canvas-quiz-stats a.badge-light:hover,
+#canvas-quiz-stats a.badge-light:focus {
+  color: #212529;
+  background-color: #dae0e5;
+}
+#canvas-quiz-stats a.badge-light:focus,
+#canvas-quiz-stats a.badge-light.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+#canvas-quiz-stats .badge-dark {
+  color: #fff;
+  background-color: #343a40;
+}
+#canvas-quiz-stats a.badge-dark:hover,
+#canvas-quiz-stats a.badge-dark:focus {
+  color: #fff;
+  background-color: #1d2124;
+}
+#canvas-quiz-stats a.badge-dark:focus,
+#canvas-quiz-stats a.badge-dark.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+#canvas-quiz-stats .jumbotron {
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .jumbotron {
+    padding: 4rem 2rem;
+  }
+}
+#canvas-quiz-stats .jumbotron-fluid {
+  padding-right: 0;
+  padding-left: 0;
+  border-radius: 0;
+}
+#canvas-quiz-stats .alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .alert-heading {
+  color: inherit;
+}
+#canvas-quiz-stats .alert-link {
+  font-weight: 700;
+}
+#canvas-quiz-stats .alert-dismissible {
+  padding-right: 4rem;
+}
+#canvas-quiz-stats .alert-dismissible .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0.75rem 1.25rem;
+  color: inherit;
+}
+#canvas-quiz-stats .alert-primary {
+  color: #004085;
+  background-color: #cce5ff;
+  border-color: #b8daff;
+}
+#canvas-quiz-stats .alert-primary hr {
+  border-top-color: #9fcdff;
+}
+#canvas-quiz-stats .alert-primary .alert-link {
+  color: #002752;
+}
+#canvas-quiz-stats .alert-secondary {
+  color: #383d41;
+  background-color: #e2e3e5;
+  border-color: #d6d8db;
+}
+#canvas-quiz-stats .alert-secondary hr {
+  border-top-color: #c8cbcf;
+}
+#canvas-quiz-stats .alert-secondary .alert-link {
+  color: #202326;
+}
+#canvas-quiz-stats .alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+#canvas-quiz-stats .alert-success hr {
+  border-top-color: #b1dfbb;
+}
+#canvas-quiz-stats .alert-success .alert-link {
+  color: #0b2e13;
+}
+#canvas-quiz-stats .alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+#canvas-quiz-stats .alert-info hr {
+  border-top-color: #abdde5;
+}
+#canvas-quiz-stats .alert-info .alert-link {
+  color: #062c33;
+}
+#canvas-quiz-stats .alert-warning {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+}
+#canvas-quiz-stats .alert-warning hr {
+  border-top-color: #ffe8a1;
+}
+#canvas-quiz-stats .alert-warning .alert-link {
+  color: #533f03;
+}
+#canvas-quiz-stats .alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+#canvas-quiz-stats .alert-danger hr {
+  border-top-color: #f1b0b7;
+}
+#canvas-quiz-stats .alert-danger .alert-link {
+  color: #491217;
+}
+#canvas-quiz-stats .alert-light {
+  color: #818182;
+  background-color: #fefefe;
+  border-color: #fdfdfe;
+}
+#canvas-quiz-stats .alert-light hr {
+  border-top-color: #ececf6;
+}
+#canvas-quiz-stats .alert-light .alert-link {
+  color: #686868;
+}
+#canvas-quiz-stats .alert-dark {
+  color: #1b1e21;
+  background-color: #d6d8d9;
+  border-color: #c6c8ca;
+}
+#canvas-quiz-stats .alert-dark hr {
+  border-top-color: #b9bbbe;
+}
+#canvas-quiz-stats .alert-dark .alert-link {
+  color: #040505;
+}
+@-webkit-keyframes progress-bar-stripes {
+  from {
+    background-position: 1rem 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 1rem 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+#canvas-quiz-stats .progress {
+  display: -ms-flexbox;
+  display: flex;
+  height: 1rem;
+  overflow: hidden;
+  line-height: 0;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .progress-bar {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #007bff;
+  transition: width 0.6s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .progress-bar {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .progress-bar-striped {
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 1rem 1rem;
+}
+#canvas-quiz-stats .progress-bar-animated {
+  -webkit-animation: progress-bar-stripes 1s linear infinite;
+  animation: progress-bar-stripes 1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .progress-bar-animated {
+    -webkit-animation: none;
+    animation: none;
+  }
+}
+#canvas-quiz-stats .media {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+#canvas-quiz-stats .media-body {
+  -ms-flex: 1;
+  flex: 1;
+}
+#canvas-quiz-stats .list-group {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .list-group-item-action {
+  width: 100%;
+  color: #495057;
+  text-align: inherit;
+}
+#canvas-quiz-stats .list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-action:focus {
+  z-index: 1;
+  color: #495057;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+#canvas-quiz-stats .list-group-item-action:active {
+  color: #212529;
+  background-color: #e9ecef;
+}
+#canvas-quiz-stats .list-group-item {
+  position: relative;
+  display: block;
+  padding: 0.75rem 1.25rem;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+#canvas-quiz-stats .list-group-item:first-child {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+#canvas-quiz-stats .list-group-item:last-child {
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
+}
+#canvas-quiz-stats .list-group-item.disabled,
+#canvas-quiz-stats .list-group-item:disabled {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: #fff;
+}
+#canvas-quiz-stats .list-group-item.active {
+  z-index: 2;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+#canvas-quiz-stats .list-group-item + .list-group-item {
+  border-top-width: 0;
+}
+#canvas-quiz-stats .list-group-item + .list-group-item.active {
+  margin-top: -1px;
+  border-top-width: 1px;
+}
+#canvas-quiz-stats .list-group-horizontal {
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+#canvas-quiz-stats .list-group-horizontal > .list-group-item:first-child {
+  border-bottom-left-radius: 0.25rem;
+  border-top-right-radius: 0;
+}
+#canvas-quiz-stats .list-group-horizontal > .list-group-item:last-child {
+  border-top-right-radius: 0.25rem;
+  border-bottom-left-radius: 0;
+}
+#canvas-quiz-stats .list-group-horizontal > .list-group-item.active {
+  margin-top: 0;
+}
+#canvas-quiz-stats .list-group-horizontal > .list-group-item + .list-group-item {
+  border-top-width: 1px;
+  border-left-width: 0;
+}
+#canvas-quiz-stats .list-group-horizontal > .list-group-item + .list-group-item.active {
+  margin-left: -1px;
+  border-left-width: 1px;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .list-group-horizontal-sm {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item:first-child {
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item.active {
+    margin-top: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item + .list-group-item {
+    border-top-width: 1px;
+    border-left-width: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item + .list-group-item.active {
+    margin-left: -1px;
+    border-left-width: 1px;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .list-group-horizontal-md {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item:first-child {
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item.active {
+    margin-top: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item + .list-group-item {
+    border-top-width: 1px;
+    border-left-width: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item + .list-group-item.active {
+    margin-left: -1px;
+    border-left-width: 1px;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .list-group-horizontal-lg {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item:first-child {
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item.active {
+    margin-top: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item + .list-group-item {
+    border-top-width: 1px;
+    border-left-width: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item + .list-group-item.active {
+    margin-left: -1px;
+    border-left-width: 1px;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .list-group-horizontal-xl {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item:first-child {
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item.active {
+    margin-top: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item + .list-group-item {
+    border-top-width: 1px;
+    border-left-width: 0;
+  }
+  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item + .list-group-item.active {
+    margin-left: -1px;
+    border-left-width: 1px;
+  }
+}
+#canvas-quiz-stats .list-group-flush {
+  border-radius: 0;
+}
+#canvas-quiz-stats .list-group-flush > .list-group-item {
+  border-width: 0 0 1px;
+}
+#canvas-quiz-stats .list-group-flush > .list-group-item:last-child {
+  border-bottom-width: 0;
+}
+#canvas-quiz-stats .list-group-item-primary {
+  color: #004085;
+  background-color: #b8daff;
+}
+#canvas-quiz-stats .list-group-item-primary.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-primary.list-group-item-action:focus {
+  color: #004085;
+  background-color: #9fcdff;
+}
+#canvas-quiz-stats .list-group-item-primary.list-group-item-action.active {
+  color: #fff;
+  background-color: #004085;
+  border-color: #004085;
+}
+#canvas-quiz-stats .list-group-item-secondary {
+  color: #383d41;
+  background-color: #d6d8db;
+}
+#canvas-quiz-stats .list-group-item-secondary.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-secondary.list-group-item-action:focus {
+  color: #383d41;
+  background-color: #c8cbcf;
+}
+#canvas-quiz-stats .list-group-item-secondary.list-group-item-action.active {
+  color: #fff;
+  background-color: #383d41;
+  border-color: #383d41;
+}
+#canvas-quiz-stats .list-group-item-success {
+  color: #155724;
+  background-color: #c3e6cb;
+}
+#canvas-quiz-stats .list-group-item-success.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-success.list-group-item-action:focus {
+  color: #155724;
+  background-color: #b1dfbb;
+}
+#canvas-quiz-stats .list-group-item-success.list-group-item-action.active {
+  color: #fff;
+  background-color: #155724;
+  border-color: #155724;
+}
+#canvas-quiz-stats .list-group-item-info {
+  color: #0c5460;
+  background-color: #bee5eb;
+}
+#canvas-quiz-stats .list-group-item-info.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-info.list-group-item-action:focus {
+  color: #0c5460;
+  background-color: #abdde5;
+}
+#canvas-quiz-stats .list-group-item-info.list-group-item-action.active {
+  color: #fff;
+  background-color: #0c5460;
+  border-color: #0c5460;
+}
+#canvas-quiz-stats .list-group-item-warning {
+  color: #856404;
+  background-color: #ffeeba;
+}
+#canvas-quiz-stats .list-group-item-warning.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-warning.list-group-item-action:focus {
+  color: #856404;
+  background-color: #ffe8a1;
+}
+#canvas-quiz-stats .list-group-item-warning.list-group-item-action.active {
+  color: #fff;
+  background-color: #856404;
+  border-color: #856404;
+}
+#canvas-quiz-stats .list-group-item-danger {
+  color: #721c24;
+  background-color: #f5c6cb;
+}
+#canvas-quiz-stats .list-group-item-danger.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-danger.list-group-item-action:focus {
+  color: #721c24;
+  background-color: #f1b0b7;
+}
+#canvas-quiz-stats .list-group-item-danger.list-group-item-action.active {
+  color: #fff;
+  background-color: #721c24;
+  border-color: #721c24;
+}
+#canvas-quiz-stats .list-group-item-light {
+  color: #818182;
+  background-color: #fdfdfe;
+}
+#canvas-quiz-stats .list-group-item-light.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-light.list-group-item-action:focus {
+  color: #818182;
+  background-color: #ececf6;
+}
+#canvas-quiz-stats .list-group-item-light.list-group-item-action.active {
+  color: #fff;
+  background-color: #818182;
+  border-color: #818182;
+}
+#canvas-quiz-stats .list-group-item-dark {
+  color: #1b1e21;
+  background-color: #c6c8ca;
+}
+#canvas-quiz-stats .list-group-item-dark.list-group-item-action:hover,
+#canvas-quiz-stats .list-group-item-dark.list-group-item-action:focus {
+  color: #1b1e21;
+  background-color: #b9bbbe;
+}
+#canvas-quiz-stats .list-group-item-dark.list-group-item-action.active {
+  color: #fff;
+  background-color: #1b1e21;
+  border-color: #1b1e21;
+}
+#canvas-quiz-stats .close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
+}
+#canvas-quiz-stats .close:hover {
+  color: #000;
+  text-decoration: none;
+}
+#canvas-quiz-stats .close:not(:disabled):not(.disabled):hover,
+#canvas-quiz-stats .close:not(:disabled):not(.disabled):focus {
+  opacity: 0.75;
+}
+#canvas-quiz-stats button.close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+}
+#canvas-quiz-stats a.close.disabled {
+  pointer-events: none;
+}
+#canvas-quiz-stats .toast {
+  -ms-flex-preferred-size: 350px;
+  flex-basis: 350px;
+  max-width: 350px;
+  font-size: 0.875rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .toast:not(:last-child) {
+  margin-bottom: 0.75rem;
+}
+#canvas-quiz-stats .toast.showing {
+  opacity: 1;
+}
+#canvas-quiz-stats .toast.show {
+  display: block;
+  opacity: 1;
+}
+#canvas-quiz-stats .toast.hide {
+  display: none;
+}
+#canvas-quiz-stats .toast-header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  color: #6c757d;
+  background-color: rgba(255, 255, 255, 0.85);
+  background-clip: padding-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);
+}
+#canvas-quiz-stats .toast-body {
+  padding: 0.75rem;
+}
+#canvas-quiz-stats .modal-open {
+  overflow: hidden;
+}
+#canvas-quiz-stats .modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+#canvas-quiz-stats .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+}
+#canvas-quiz-stats .modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: none;
+}
+#canvas-quiz-stats .modal.fade .modal-dialog {
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -50px);
+  transform: translate(0, -50px);
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .modal.fade .modal-dialog {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .modal.show .modal-dialog {
+  -webkit-transform: none;
+  transform: none;
+}
+#canvas-quiz-stats .modal.modal-static .modal-dialog {
+  -webkit-transform: scale(1.02);
+  transform: scale(1.02);
+}
+#canvas-quiz-stats .modal-dialog-scrollable {
+  display: -ms-flexbox;
+  display: flex;
+  max-height: calc(100% - 1rem);
+}
+#canvas-quiz-stats .modal-dialog-scrollable .modal-content {
+  max-height: calc(100vh - 1rem);
+  overflow: hidden;
+}
+#canvas-quiz-stats .modal-dialog-scrollable .modal-header,
+#canvas-quiz-stats .modal-dialog-scrollable .modal-footer {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+#canvas-quiz-stats .modal-dialog-scrollable .modal-body {
+  overflow-y: auto;
+}
+#canvas-quiz-stats .modal-dialog-centered {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+}
+#canvas-quiz-stats .modal-dialog-centered::before {
+  display: block;
+  height: calc(100vh - 1rem);
+  height: -webkit-min-content;
+  height: -moz-min-content;
+  height: min-content;
+  content: "";
+}
+#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable {
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  justify-content: center;
+  height: 100%;
+}
+#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable .modal-content {
+  max-height: none;
+}
+#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable::before {
+  content: none;
+}
+#canvas-quiz-stats .modal-content {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+#canvas-quiz-stats .modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+#canvas-quiz-stats .modal-backdrop.fade {
+  opacity: 0;
+}
+#canvas-quiz-stats .modal-backdrop.show {
+  opacity: 0.5;
+}
+#canvas-quiz-stats .modal-header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(0.3rem - 1px);
+  border-top-right-radius: calc(0.3rem - 1px);
+}
+#canvas-quiz-stats .modal-header .close {
+  padding: 1rem 1rem;
+  margin: -1rem -1rem -1rem auto;
+}
+#canvas-quiz-stats .modal-title {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+#canvas-quiz-stats .modal-body {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+#canvas-quiz-stats .modal-footer {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+  border-bottom-right-radius: calc(0.3rem - 1px);
+  border-bottom-left-radius: calc(0.3rem - 1px);
+}
+#canvas-quiz-stats .modal-footer > * {
+  margin: 0.25rem;
+}
+#canvas-quiz-stats .modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+  #canvas-quiz-stats .modal-dialog-scrollable {
+    max-height: calc(100% - 3.5rem);
+  }
+  #canvas-quiz-stats .modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 3.5rem);
+  }
+  #canvas-quiz-stats .modal-dialog-centered {
+    min-height: calc(100% - 3.5rem);
+  }
+  #canvas-quiz-stats .modal-dialog-centered::before {
+    height: calc(100vh - 3.5rem);
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+  }
+  #canvas-quiz-stats .modal-sm {
+    max-width: 300px;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .modal-lg,
+  #canvas-quiz-stats .modal-xl {
+    max-width: 800px;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .modal-xl {
+    max-width: 1140px;
+  }
+}
+#canvas-quiz-stats .tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-align: start;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-break: normal;
+  word-spacing: normal;
+  white-space: normal;
+  line-break: auto;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  opacity: 0;
+}
+#canvas-quiz-stats .tooltip.show {
+  opacity: 0.9;
+}
+#canvas-quiz-stats .tooltip .arrow {
+  position: absolute;
+  display: block;
+  width: 0.8rem;
+  height: 0.4rem;
+}
+#canvas-quiz-stats .tooltip .arrow::before {
+  position: absolute;
+  content: "";
+  border-color: transparent;
+  border-style: solid;
+}
+#canvas-quiz-stats .bs-tooltip-top,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="top"] {
+  padding: 0.4rem 0;
+}
+#canvas-quiz-stats .bs-tooltip-top .arrow,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="top"] .arrow {
+  bottom: 0;
+}
+#canvas-quiz-stats .bs-tooltip-top .arrow::before,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+  top: 0;
+  border-width: 0.4rem 0.4rem 0;
+  border-top-color: #000;
+}
+#canvas-quiz-stats .bs-tooltip-right,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="right"] {
+  padding: 0 0.4rem;
+}
+#canvas-quiz-stats .bs-tooltip-right .arrow,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="right"] .arrow {
+  left: 0;
+  width: 0.4rem;
+  height: 0.8rem;
+}
+#canvas-quiz-stats .bs-tooltip-right .arrow::before,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="right"] .arrow::before {
+  right: 0;
+  border-width: 0.4rem 0.4rem 0.4rem 0;
+  border-right-color: #000;
+}
+#canvas-quiz-stats .bs-tooltip-bottom,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="bottom"] {
+  padding: 0.4rem 0;
+}
+#canvas-quiz-stats .bs-tooltip-bottom .arrow,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="bottom"] .arrow {
+  top: 0;
+}
+#canvas-quiz-stats .bs-tooltip-bottom .arrow::before,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+  bottom: 0;
+  border-width: 0 0.4rem 0.4rem;
+  border-bottom-color: #000;
+}
+#canvas-quiz-stats .bs-tooltip-left,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="left"] {
+  padding: 0 0.4rem;
+}
+#canvas-quiz-stats .bs-tooltip-left .arrow,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="left"] .arrow {
+  right: 0;
+  width: 0.4rem;
+  height: 0.8rem;
+}
+#canvas-quiz-stats .bs-tooltip-left .arrow::before,
+#canvas-quiz-stats .bs-tooltip-auto[x-placement^="left"] .arrow::before {
+  left: 0;
+  border-width: 0.4rem 0 0.4rem 0.4rem;
+  border-left-color: #000;
+}
+#canvas-quiz-stats .tooltip-inner {
+  max-width: 200px;
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  border-radius: 0.25rem;
+}
+#canvas-quiz-stats .popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1060;
+  display: block;
+  max-width: 276px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-align: start;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-break: normal;
+  word-spacing: normal;
+  white-space: normal;
+  line-break: auto;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+}
+#canvas-quiz-stats .popover .arrow {
+  position: absolute;
+  display: block;
+  width: 1rem;
+  height: 0.5rem;
+  margin: 0 0.3rem;
+}
+#canvas-quiz-stats .popover .arrow::before,
+#canvas-quiz-stats .popover .arrow::after {
+  position: absolute;
+  display: block;
+  content: "";
+  border-color: transparent;
+  border-style: solid;
+}
+#canvas-quiz-stats .bs-popover-top,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="top"] {
+  margin-bottom: 0.5rem;
+}
+#canvas-quiz-stats .bs-popover-top > .arrow,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="top"] > .arrow {
+  bottom: calc(-0.5rem - 1px);
+}
+#canvas-quiz-stats .bs-popover-top > .arrow::before,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="top"] > .arrow::before {
+  bottom: 0;
+  border-width: 0.5rem 0.5rem 0;
+  border-top-color: rgba(0, 0, 0, 0.25);
+}
+#canvas-quiz-stats .bs-popover-top > .arrow::after,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="top"] > .arrow::after {
+  bottom: 1px;
+  border-width: 0.5rem 0.5rem 0;
+  border-top-color: #fff;
+}
+#canvas-quiz-stats .bs-popover-right,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="right"] {
+  margin-left: 0.5rem;
+}
+#canvas-quiz-stats .bs-popover-right > .arrow,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="right"] > .arrow {
+  left: calc(-0.5rem - 1px);
+  width: 0.5rem;
+  height: 1rem;
+  margin: 0.3rem 0;
+}
+#canvas-quiz-stats .bs-popover-right > .arrow::before,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="right"] > .arrow::before {
+  left: 0;
+  border-width: 0.5rem 0.5rem 0.5rem 0;
+  border-right-color: rgba(0, 0, 0, 0.25);
+}
+#canvas-quiz-stats .bs-popover-right > .arrow::after,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="right"] > .arrow::after {
+  left: 1px;
+  border-width: 0.5rem 0.5rem 0.5rem 0;
+  border-right-color: #fff;
+}
+#canvas-quiz-stats .bs-popover-bottom,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="bottom"] {
+  margin-top: 0.5rem;
+}
+#canvas-quiz-stats .bs-popover-bottom > .arrow,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="bottom"] > .arrow {
+  top: calc(-0.5rem - 1px);
+}
+#canvas-quiz-stats .bs-popover-bottom > .arrow::before,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="bottom"] > .arrow::before {
+  top: 0;
+  border-width: 0 0.5rem 0.5rem 0.5rem;
+  border-bottom-color: rgba(0, 0, 0, 0.25);
+}
+#canvas-quiz-stats .bs-popover-bottom > .arrow::after,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="bottom"] > .arrow::after {
+  top: 1px;
+  border-width: 0 0.5rem 0.5rem 0.5rem;
+  border-bottom-color: #fff;
+}
+#canvas-quiz-stats .bs-popover-bottom .popover-header::before,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="bottom"] .popover-header::before {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: 1rem;
+  margin-left: -0.5rem;
+  content: "";
+  border-bottom: 1px solid #f7f7f7;
+}
+#canvas-quiz-stats .bs-popover-left,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="left"] {
+  margin-right: 0.5rem;
+}
+#canvas-quiz-stats .bs-popover-left > .arrow,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="left"] > .arrow {
+  right: calc(-0.5rem - 1px);
+  width: 0.5rem;
+  height: 1rem;
+  margin: 0.3rem 0;
+}
+#canvas-quiz-stats .bs-popover-left > .arrow::before,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="left"] > .arrow::before {
+  right: 0;
+  border-width: 0.5rem 0 0.5rem 0.5rem;
+  border-left-color: rgba(0, 0, 0, 0.25);
+}
+#canvas-quiz-stats .bs-popover-left > .arrow::after,
+#canvas-quiz-stats .bs-popover-auto[x-placement^="left"] > .arrow::after {
+  right: 1px;
+  border-width: 0.5rem 0 0.5rem 0.5rem;
+  border-left-color: #fff;
+}
+#canvas-quiz-stats .popover-header {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ebebeb;
+  border-top-left-radius: calc(0.3rem - 1px);
+  border-top-right-radius: calc(0.3rem - 1px);
+}
+#canvas-quiz-stats .popover-header:empty {
+  display: none;
+}
+#canvas-quiz-stats .popover-body {
+  padding: 0.5rem 0.75rem;
+  color: #212529;
+}
+#canvas-quiz-stats .carousel {
+  position: relative;
+}
+#canvas-quiz-stats .carousel.pointer-event {
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+}
+#canvas-quiz-stats .carousel-inner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+#canvas-quiz-stats .carousel-inner::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+#canvas-quiz-stats .carousel-item {
+  position: relative;
+  display: none;
+  float: left;
+  width: 100%;
+  margin-right: -100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: -webkit-transform 0.6s ease-in-out;
+  transition: transform 0.6s ease-in-out;
+  transition: transform 0.6s ease-in-out, -webkit-transform 0.6s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .carousel-item {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .carousel-item.active,
+#canvas-quiz-stats .carousel-item-next,
+#canvas-quiz-stats .carousel-item-prev {
+  display: block;
+}
+#canvas-quiz-stats .carousel-item-next:not(.carousel-item-left),
+#canvas-quiz-stats .active.carousel-item-right {
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
+}
+#canvas-quiz-stats .carousel-item-prev:not(.carousel-item-right),
+#canvas-quiz-stats .active.carousel-item-left {
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+}
+#canvas-quiz-stats .carousel-fade .carousel-item {
+  opacity: 0;
+  transition-property: opacity;
+  -webkit-transform: none;
+  transform: none;
+}
+#canvas-quiz-stats .carousel-fade .carousel-item.active,
+#canvas-quiz-stats .carousel-fade .carousel-item-next.carousel-item-left,
+#canvas-quiz-stats .carousel-fade .carousel-item-prev.carousel-item-right {
+  z-index: 1;
+  opacity: 1;
+}
+#canvas-quiz-stats .carousel-fade .active.carousel-item-left,
+#canvas-quiz-stats .carousel-fade .active.carousel-item-right {
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0s 0.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .carousel-fade .active.carousel-item-left,
+  #canvas-quiz-stats .carousel-fade .active.carousel-item-right {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .carousel-control-prev,
+#canvas-quiz-stats .carousel-control-next {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 15%;
+  color: #fff;
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .carousel-control-prev,
+  #canvas-quiz-stats .carousel-control-next {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .carousel-control-prev:hover,
+#canvas-quiz-stats .carousel-control-prev:focus,
+#canvas-quiz-stats .carousel-control-next:hover,
+#canvas-quiz-stats .carousel-control-next:focus {
+  color: #fff;
+  text-decoration: none;
+  outline: 0;
+  opacity: 0.9;
+}
+#canvas-quiz-stats .carousel-control-prev {
+  left: 0;
+}
+#canvas-quiz-stats .carousel-control-next {
+  right: 0;
+}
+#canvas-quiz-stats .carousel-control-prev-icon,
+#canvas-quiz-stats .carousel-control-next-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: no-repeat 50% / 100% 100%;
+}
+#canvas-quiz-stats .carousel-control-prev-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .carousel-control-next-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3e%3c/svg%3e");
+}
+#canvas-quiz-stats .carousel-indicators {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 15;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding-left: 0;
+  margin-right: 15%;
+  margin-left: 15%;
+  list-style: none;
+}
+#canvas-quiz-stats .carousel-indicators li {
+  box-sizing: content-box;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+  width: 30px;
+  height: 3px;
+  margin-right: 3px;
+  margin-left: 3px;
+  text-indent: -999px;
+  cursor: pointer;
+  background-color: #fff;
+  background-clip: padding-box;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  opacity: 0.5;
+  transition: opacity 0.6s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #canvas-quiz-stats .carousel-indicators li {
+    transition: none;
+  }
+}
+#canvas-quiz-stats .carousel-indicators .active {
+  opacity: 1;
+}
+#canvas-quiz-stats .carousel-caption {
+  position: absolute;
+  right: 15%;
+  bottom: 20px;
+  left: 15%;
+  z-index: 10;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #fff;
+  text-align: center;
+}
+@-webkit-keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+#canvas-quiz-stats .spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border 0.75s linear infinite;
+  animation: spinner-border 0.75s linear infinite;
+}
+#canvas-quiz-stats .spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}
+@-webkit-keyframes spinner-grow {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+@keyframes spinner-grow {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+#canvas-quiz-stats .spinner-grow {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  background-color: currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  -webkit-animation: spinner-grow 0.75s linear infinite;
+  animation: spinner-grow 0.75s linear infinite;
+}
+#canvas-quiz-stats .spinner-grow-sm {
+  width: 1rem;
+  height: 1rem;
+}
+#canvas-quiz-stats .align-baseline {
+  vertical-align: baseline !important;
+}
+#canvas-quiz-stats .align-top {
+  vertical-align: top !important;
+}
+#canvas-quiz-stats .align-middle {
+  vertical-align: middle !important;
+}
+#canvas-quiz-stats .align-bottom {
+  vertical-align: bottom !important;
+}
+#canvas-quiz-stats .align-text-bottom {
+  vertical-align: text-bottom !important;
+}
+#canvas-quiz-stats .align-text-top {
+  vertical-align: text-top !important;
+}
+#canvas-quiz-stats .bg-primary {
+  background-color: #007bff !important;
+}
+#canvas-quiz-stats a.bg-primary:hover,
+#canvas-quiz-stats a.bg-primary:focus,
+#canvas-quiz-stats button.bg-primary:hover,
+#canvas-quiz-stats button.bg-primary:focus {
+  background-color: #0062cc !important;
+}
+#canvas-quiz-stats .bg-secondary {
+  background-color: #6c757d !important;
+}
+#canvas-quiz-stats a.bg-secondary:hover,
+#canvas-quiz-stats a.bg-secondary:focus,
+#canvas-quiz-stats button.bg-secondary:hover,
+#canvas-quiz-stats button.bg-secondary:focus {
+  background-color: #545b62 !important;
+}
+#canvas-quiz-stats .bg-success {
+  background-color: #28a745 !important;
+}
+#canvas-quiz-stats a.bg-success:hover,
+#canvas-quiz-stats a.bg-success:focus,
+#canvas-quiz-stats button.bg-success:hover,
+#canvas-quiz-stats button.bg-success:focus {
+  background-color: #1e7e34 !important;
+}
+#canvas-quiz-stats .bg-info {
+  background-color: #17a2b8 !important;
+}
+#canvas-quiz-stats a.bg-info:hover,
+#canvas-quiz-stats a.bg-info:focus,
+#canvas-quiz-stats button.bg-info:hover,
+#canvas-quiz-stats button.bg-info:focus {
+  background-color: #117a8b !important;
+}
+#canvas-quiz-stats .bg-warning {
+  background-color: #ffc107 !important;
+}
+#canvas-quiz-stats a.bg-warning:hover,
+#canvas-quiz-stats a.bg-warning:focus,
+#canvas-quiz-stats button.bg-warning:hover,
+#canvas-quiz-stats button.bg-warning:focus {
+  background-color: #d39e00 !important;
+}
+#canvas-quiz-stats .bg-danger {
+  background-color: #dc3545 !important;
+}
+#canvas-quiz-stats a.bg-danger:hover,
+#canvas-quiz-stats a.bg-danger:focus,
+#canvas-quiz-stats button.bg-danger:hover,
+#canvas-quiz-stats button.bg-danger:focus {
+  background-color: #bd2130 !important;
+}
+#canvas-quiz-stats .bg-light {
+  background-color: #f8f9fa !important;
+}
+#canvas-quiz-stats a.bg-light:hover,
+#canvas-quiz-stats a.bg-light:focus,
+#canvas-quiz-stats button.bg-light:hover,
+#canvas-quiz-stats button.bg-light:focus {
+  background-color: #dae0e5 !important;
+}
+#canvas-quiz-stats .bg-dark {
+  background-color: #343a40 !important;
+}
+#canvas-quiz-stats a.bg-dark:hover,
+#canvas-quiz-stats a.bg-dark:focus,
+#canvas-quiz-stats button.bg-dark:hover,
+#canvas-quiz-stats button.bg-dark:focus {
+  background-color: #1d2124 !important;
+}
+#canvas-quiz-stats .bg-white {
+  background-color: #fff !important;
+}
+#canvas-quiz-stats .bg-transparent {
+  background-color: transparent !important;
+}
+#canvas-quiz-stats .border {
+  border: 1px solid #dee2e6 !important;
+}
+#canvas-quiz-stats .border-top {
+  border-top: 1px solid #dee2e6 !important;
+}
+#canvas-quiz-stats .border-right {
+  border-right: 1px solid #dee2e6 !important;
+}
+#canvas-quiz-stats .border-bottom {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+#canvas-quiz-stats .border-left {
+  border-left: 1px solid #dee2e6 !important;
+}
+#canvas-quiz-stats .border-0 {
+  border: 0 !important;
+}
+#canvas-quiz-stats .border-top-0 {
+  border-top: 0 !important;
+}
+#canvas-quiz-stats .border-right-0 {
+  border-right: 0 !important;
+}
+#canvas-quiz-stats .border-bottom-0 {
+  border-bottom: 0 !important;
+}
+#canvas-quiz-stats .border-left-0 {
+  border-left: 0 !important;
+}
+#canvas-quiz-stats .border-primary {
+  border-color: #007bff !important;
+}
+#canvas-quiz-stats .border-secondary {
+  border-color: #6c757d !important;
+}
+#canvas-quiz-stats .border-success {
+  border-color: #28a745 !important;
+}
+#canvas-quiz-stats .border-info {
+  border-color: #17a2b8 !important;
+}
+#canvas-quiz-stats .border-warning {
+  border-color: #ffc107 !important;
+}
+#canvas-quiz-stats .border-danger {
+  border-color: #dc3545 !important;
+}
+#canvas-quiz-stats .border-light {
+  border-color: #f8f9fa !important;
+}
+#canvas-quiz-stats .border-dark {
+  border-color: #343a40 !important;
+}
+#canvas-quiz-stats .border-white {
+  border-color: #fff !important;
+}
+#canvas-quiz-stats .rounded-sm {
+  border-radius: 0.2rem !important;
+}
+#canvas-quiz-stats .rounded {
+  border-radius: 0.25rem !important;
+}
+#canvas-quiz-stats .rounded-top {
+  border-top-left-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
+}
+#canvas-quiz-stats .rounded-right {
+  border-top-right-radius: 0.25rem !important;
+  border-bottom-right-radius: 0.25rem !important;
+}
+#canvas-quiz-stats .rounded-bottom {
+  border-bottom-right-radius: 0.25rem !important;
+  border-bottom-left-radius: 0.25rem !important;
+}
+#canvas-quiz-stats .rounded-left {
+  border-top-left-radius: 0.25rem !important;
+  border-bottom-left-radius: 0.25rem !important;
+}
+#canvas-quiz-stats .rounded-lg {
+  border-radius: 0.3rem !important;
+}
+#canvas-quiz-stats .rounded-circle {
+  border-radius: 50% !important;
+}
+#canvas-quiz-stats .rounded-pill {
+  border-radius: 50rem !important;
+}
+#canvas-quiz-stats .rounded-0 {
+  border-radius: 0 !important;
+}
+#canvas-quiz-stats .clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+#canvas-quiz-stats .d-none {
+  display: none !important;
+}
+#canvas-quiz-stats .d-inline {
+  display: inline !important;
+}
+#canvas-quiz-stats .d-inline-block {
+  display: inline-block !important;
+}
+#canvas-quiz-stats .d-block {
+  display: block !important;
+}
+#canvas-quiz-stats .d-table {
+  display: table !important;
+}
+#canvas-quiz-stats .d-table-row {
+  display: table-row !important;
+}
+#canvas-quiz-stats .d-table-cell {
+  display: table-cell !important;
+}
+#canvas-quiz-stats .d-flex {
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+#canvas-quiz-stats .d-inline-flex {
+  display: -ms-inline-flexbox !important;
+  display: inline-flex !important;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .d-sm-none {
+    display: none !important;
+  }
+  #canvas-quiz-stats .d-sm-inline {
+    display: inline !important;
+  }
+  #canvas-quiz-stats .d-sm-inline-block {
+    display: inline-block !important;
+  }
+  #canvas-quiz-stats .d-sm-block {
+    display: block !important;
+  }
+  #canvas-quiz-stats .d-sm-table {
+    display: table !important;
+  }
+  #canvas-quiz-stats .d-sm-table-row {
+    display: table-row !important;
+  }
+  #canvas-quiz-stats .d-sm-table-cell {
+    display: table-cell !important;
+  }
+  #canvas-quiz-stats .d-sm-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  #canvas-quiz-stats .d-sm-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .d-md-none {
+    display: none !important;
+  }
+  #canvas-quiz-stats .d-md-inline {
+    display: inline !important;
+  }
+  #canvas-quiz-stats .d-md-inline-block {
+    display: inline-block !important;
+  }
+  #canvas-quiz-stats .d-md-block {
+    display: block !important;
+  }
+  #canvas-quiz-stats .d-md-table {
+    display: table !important;
+  }
+  #canvas-quiz-stats .d-md-table-row {
+    display: table-row !important;
+  }
+  #canvas-quiz-stats .d-md-table-cell {
+    display: table-cell !important;
+  }
+  #canvas-quiz-stats .d-md-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  #canvas-quiz-stats .d-md-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .d-lg-none {
+    display: none !important;
+  }
+  #canvas-quiz-stats .d-lg-inline {
+    display: inline !important;
+  }
+  #canvas-quiz-stats .d-lg-inline-block {
+    display: inline-block !important;
+  }
+  #canvas-quiz-stats .d-lg-block {
+    display: block !important;
+  }
+  #canvas-quiz-stats .d-lg-table {
+    display: table !important;
+  }
+  #canvas-quiz-stats .d-lg-table-row {
+    display: table-row !important;
+  }
+  #canvas-quiz-stats .d-lg-table-cell {
+    display: table-cell !important;
+  }
+  #canvas-quiz-stats .d-lg-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  #canvas-quiz-stats .d-lg-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .d-xl-none {
+    display: none !important;
+  }
+  #canvas-quiz-stats .d-xl-inline {
+    display: inline !important;
+  }
+  #canvas-quiz-stats .d-xl-inline-block {
+    display: inline-block !important;
+  }
+  #canvas-quiz-stats .d-xl-block {
+    display: block !important;
+  }
+  #canvas-quiz-stats .d-xl-table {
+    display: table !important;
+  }
+  #canvas-quiz-stats .d-xl-table-row {
+    display: table-row !important;
+  }
+  #canvas-quiz-stats .d-xl-table-cell {
+    display: table-cell !important;
+  }
+  #canvas-quiz-stats .d-xl-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  #canvas-quiz-stats .d-xl-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+@media print {
+  #canvas-quiz-stats .d-print-none {
+    display: none !important;
+  }
+  #canvas-quiz-stats .d-print-inline {
+    display: inline !important;
+  }
+  #canvas-quiz-stats .d-print-inline-block {
+    display: inline-block !important;
+  }
+  #canvas-quiz-stats .d-print-block {
+    display: block !important;
+  }
+  #canvas-quiz-stats .d-print-table {
+    display: table !important;
+  }
+  #canvas-quiz-stats .d-print-table-row {
+    display: table-row !important;
+  }
+  #canvas-quiz-stats .d-print-table-cell {
+    display: table-cell !important;
+  }
+  #canvas-quiz-stats .d-print-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  #canvas-quiz-stats .d-print-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+#canvas-quiz-stats .embed-responsive {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+#canvas-quiz-stats .embed-responsive::before {
+  display: block;
+  content: "";
+}
+#canvas-quiz-stats .embed-responsive .embed-responsive-item,
+#canvas-quiz-stats .embed-responsive iframe,
+#canvas-quiz-stats .embed-responsive embed,
+#canvas-quiz-stats .embed-responsive object,
+#canvas-quiz-stats .embed-responsive video {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+#canvas-quiz-stats .embed-responsive-21by9::before {
+  padding-top: 42.857143%;
+}
+#canvas-quiz-stats .embed-responsive-16by9::before {
+  padding-top: 56.25%;
+}
+#canvas-quiz-stats .embed-responsive-4by3::before {
+  padding-top: 75%;
+}
+#canvas-quiz-stats .embed-responsive-1by1::before {
+  padding-top: 100%;
+}
+#canvas-quiz-stats .flex-row {
+  -ms-flex-direction: row !important;
+  flex-direction: row !important;
+}
+#canvas-quiz-stats .flex-column {
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+#canvas-quiz-stats .flex-row-reverse {
+  -ms-flex-direction: row-reverse !important;
+  flex-direction: row-reverse !important;
+}
+#canvas-quiz-stats .flex-column-reverse {
+  -ms-flex-direction: column-reverse !important;
+  flex-direction: column-reverse !important;
+}
+#canvas-quiz-stats .flex-wrap {
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+}
+#canvas-quiz-stats .flex-nowrap {
+  -ms-flex-wrap: nowrap !important;
+  flex-wrap: nowrap !important;
+}
+#canvas-quiz-stats .flex-wrap-reverse {
+  -ms-flex-wrap: wrap-reverse !important;
+  flex-wrap: wrap-reverse !important;
+}
+#canvas-quiz-stats .flex-fill {
+  -ms-flex: 1 1 auto !important;
+  flex: 1 1 auto !important;
+}
+#canvas-quiz-stats .flex-grow-0 {
+  -ms-flex-positive: 0 !important;
+  flex-grow: 0 !important;
+}
+#canvas-quiz-stats .flex-grow-1 {
+  -ms-flex-positive: 1 !important;
+  flex-grow: 1 !important;
+}
+#canvas-quiz-stats .flex-shrink-0 {
+  -ms-flex-negative: 0 !important;
+  flex-shrink: 0 !important;
+}
+#canvas-quiz-stats .flex-shrink-1 {
+  -ms-flex-negative: 1 !important;
+  flex-shrink: 1 !important;
+}
+#canvas-quiz-stats .justify-content-start {
+  -ms-flex-pack: start !important;
+  justify-content: flex-start !important;
+}
+#canvas-quiz-stats .justify-content-end {
+  -ms-flex-pack: end !important;
+  justify-content: flex-end !important;
+}
+#canvas-quiz-stats .justify-content-center {
+  -ms-flex-pack: center !important;
+  justify-content: center !important;
+}
+#canvas-quiz-stats .justify-content-between {
+  -ms-flex-pack: justify !important;
+  justify-content: space-between !important;
+}
+#canvas-quiz-stats .justify-content-around {
+  -ms-flex-pack: distribute !important;
+  justify-content: space-around !important;
+}
+#canvas-quiz-stats .align-items-start {
+  -ms-flex-align: start !important;
+  align-items: flex-start !important;
+}
+#canvas-quiz-stats .align-items-end {
+  -ms-flex-align: end !important;
+  align-items: flex-end !important;
+}
+#canvas-quiz-stats .align-items-center {
+  -ms-flex-align: center !important;
+  align-items: center !important;
+}
+#canvas-quiz-stats .align-items-baseline {
+  -ms-flex-align: baseline !important;
+  align-items: baseline !important;
+}
+#canvas-quiz-stats .align-items-stretch {
+  -ms-flex-align: stretch !important;
+  align-items: stretch !important;
+}
+#canvas-quiz-stats .align-content-start {
+  -ms-flex-line-pack: start !important;
+  align-content: flex-start !important;
+}
+#canvas-quiz-stats .align-content-end {
+  -ms-flex-line-pack: end !important;
+  align-content: flex-end !important;
+}
+#canvas-quiz-stats .align-content-center {
+  -ms-flex-line-pack: center !important;
+  align-content: center !important;
+}
+#canvas-quiz-stats .align-content-between {
+  -ms-flex-line-pack: justify !important;
+  align-content: space-between !important;
+}
+#canvas-quiz-stats .align-content-around {
+  -ms-flex-line-pack: distribute !important;
+  align-content: space-around !important;
+}
+#canvas-quiz-stats .align-content-stretch {
+  -ms-flex-line-pack: stretch !important;
+  align-content: stretch !important;
+}
+#canvas-quiz-stats .align-self-auto {
+  -ms-flex-item-align: auto !important;
+  align-self: auto !important;
+}
+#canvas-quiz-stats .align-self-start {
+  -ms-flex-item-align: start !important;
+  align-self: flex-start !important;
+}
+#canvas-quiz-stats .align-self-end {
+  -ms-flex-item-align: end !important;
+  align-self: flex-end !important;
+}
+#canvas-quiz-stats .align-self-center {
+  -ms-flex-item-align: center !important;
+  align-self: center !important;
+}
+#canvas-quiz-stats .align-self-baseline {
+  -ms-flex-item-align: baseline !important;
+  align-self: baseline !important;
+}
+#canvas-quiz-stats .align-self-stretch {
+  -ms-flex-item-align: stretch !important;
+  align-self: stretch !important;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .flex-sm-row {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+  }
+  #canvas-quiz-stats .flex-sm-column {
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+  }
+  #canvas-quiz-stats .flex-sm-row-reverse {
+    -ms-flex-direction: row-reverse !important;
+    flex-direction: row-reverse !important;
+  }
+  #canvas-quiz-stats .flex-sm-column-reverse {
+    -ms-flex-direction: column-reverse !important;
+    flex-direction: column-reverse !important;
+  }
+  #canvas-quiz-stats .flex-sm-wrap {
+    -ms-flex-wrap: wrap !important;
+    flex-wrap: wrap !important;
+  }
+  #canvas-quiz-stats .flex-sm-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  #canvas-quiz-stats .flex-sm-wrap-reverse {
+    -ms-flex-wrap: wrap-reverse !important;
+    flex-wrap: wrap-reverse !important;
+  }
+  #canvas-quiz-stats .flex-sm-fill {
+    -ms-flex: 1 1 auto !important;
+    flex: 1 1 auto !important;
+  }
+  #canvas-quiz-stats .flex-sm-grow-0 {
+    -ms-flex-positive: 0 !important;
+    flex-grow: 0 !important;
+  }
+  #canvas-quiz-stats .flex-sm-grow-1 {
+    -ms-flex-positive: 1 !important;
+    flex-grow: 1 !important;
+  }
+  #canvas-quiz-stats .flex-sm-shrink-0 {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  #canvas-quiz-stats .flex-sm-shrink-1 {
+    -ms-flex-negative: 1 !important;
+    flex-shrink: 1 !important;
+  }
+  #canvas-quiz-stats .justify-content-sm-start {
+    -ms-flex-pack: start !important;
+    justify-content: flex-start !important;
+  }
+  #canvas-quiz-stats .justify-content-sm-end {
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important;
+  }
+  #canvas-quiz-stats .justify-content-sm-center {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+  }
+  #canvas-quiz-stats .justify-content-sm-between {
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+  }
+  #canvas-quiz-stats .justify-content-sm-around {
+    -ms-flex-pack: distribute !important;
+    justify-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-items-sm-start {
+    -ms-flex-align: start !important;
+    align-items: flex-start !important;
+  }
+  #canvas-quiz-stats .align-items-sm-end {
+    -ms-flex-align: end !important;
+    align-items: flex-end !important;
+  }
+  #canvas-quiz-stats .align-items-sm-center {
+    -ms-flex-align: center !important;
+    align-items: center !important;
+  }
+  #canvas-quiz-stats .align-items-sm-baseline {
+    -ms-flex-align: baseline !important;
+    align-items: baseline !important;
+  }
+  #canvas-quiz-stats .align-items-sm-stretch {
+    -ms-flex-align: stretch !important;
+    align-items: stretch !important;
+  }
+  #canvas-quiz-stats .align-content-sm-start {
+    -ms-flex-line-pack: start !important;
+    align-content: flex-start !important;
+  }
+  #canvas-quiz-stats .align-content-sm-end {
+    -ms-flex-line-pack: end !important;
+    align-content: flex-end !important;
+  }
+  #canvas-quiz-stats .align-content-sm-center {
+    -ms-flex-line-pack: center !important;
+    align-content: center !important;
+  }
+  #canvas-quiz-stats .align-content-sm-between {
+    -ms-flex-line-pack: justify !important;
+    align-content: space-between !important;
+  }
+  #canvas-quiz-stats .align-content-sm-around {
+    -ms-flex-line-pack: distribute !important;
+    align-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-content-sm-stretch {
+    -ms-flex-line-pack: stretch !important;
+    align-content: stretch !important;
+  }
+  #canvas-quiz-stats .align-self-sm-auto {
+    -ms-flex-item-align: auto !important;
+    align-self: auto !important;
+  }
+  #canvas-quiz-stats .align-self-sm-start {
+    -ms-flex-item-align: start !important;
+    align-self: flex-start !important;
+  }
+  #canvas-quiz-stats .align-self-sm-end {
+    -ms-flex-item-align: end !important;
+    align-self: flex-end !important;
+  }
+  #canvas-quiz-stats .align-self-sm-center {
+    -ms-flex-item-align: center !important;
+    align-self: center !important;
+  }
+  #canvas-quiz-stats .align-self-sm-baseline {
+    -ms-flex-item-align: baseline !important;
+    align-self: baseline !important;
+  }
+  #canvas-quiz-stats .align-self-sm-stretch {
+    -ms-flex-item-align: stretch !important;
+    align-self: stretch !important;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .flex-md-row {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+  }
+  #canvas-quiz-stats .flex-md-column {
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+  }
+  #canvas-quiz-stats .flex-md-row-reverse {
+    -ms-flex-direction: row-reverse !important;
+    flex-direction: row-reverse !important;
+  }
+  #canvas-quiz-stats .flex-md-column-reverse {
+    -ms-flex-direction: column-reverse !important;
+    flex-direction: column-reverse !important;
+  }
+  #canvas-quiz-stats .flex-md-wrap {
+    -ms-flex-wrap: wrap !important;
+    flex-wrap: wrap !important;
+  }
+  #canvas-quiz-stats .flex-md-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  #canvas-quiz-stats .flex-md-wrap-reverse {
+    -ms-flex-wrap: wrap-reverse !important;
+    flex-wrap: wrap-reverse !important;
+  }
+  #canvas-quiz-stats .flex-md-fill {
+    -ms-flex: 1 1 auto !important;
+    flex: 1 1 auto !important;
+  }
+  #canvas-quiz-stats .flex-md-grow-0 {
+    -ms-flex-positive: 0 !important;
+    flex-grow: 0 !important;
+  }
+  #canvas-quiz-stats .flex-md-grow-1 {
+    -ms-flex-positive: 1 !important;
+    flex-grow: 1 !important;
+  }
+  #canvas-quiz-stats .flex-md-shrink-0 {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  #canvas-quiz-stats .flex-md-shrink-1 {
+    -ms-flex-negative: 1 !important;
+    flex-shrink: 1 !important;
+  }
+  #canvas-quiz-stats .justify-content-md-start {
+    -ms-flex-pack: start !important;
+    justify-content: flex-start !important;
+  }
+  #canvas-quiz-stats .justify-content-md-end {
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important;
+  }
+  #canvas-quiz-stats .justify-content-md-center {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+  }
+  #canvas-quiz-stats .justify-content-md-between {
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+  }
+  #canvas-quiz-stats .justify-content-md-around {
+    -ms-flex-pack: distribute !important;
+    justify-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-items-md-start {
+    -ms-flex-align: start !important;
+    align-items: flex-start !important;
+  }
+  #canvas-quiz-stats .align-items-md-end {
+    -ms-flex-align: end !important;
+    align-items: flex-end !important;
+  }
+  #canvas-quiz-stats .align-items-md-center {
+    -ms-flex-align: center !important;
+    align-items: center !important;
+  }
+  #canvas-quiz-stats .align-items-md-baseline {
+    -ms-flex-align: baseline !important;
+    align-items: baseline !important;
+  }
+  #canvas-quiz-stats .align-items-md-stretch {
+    -ms-flex-align: stretch !important;
+    align-items: stretch !important;
+  }
+  #canvas-quiz-stats .align-content-md-start {
+    -ms-flex-line-pack: start !important;
+    align-content: flex-start !important;
+  }
+  #canvas-quiz-stats .align-content-md-end {
+    -ms-flex-line-pack: end !important;
+    align-content: flex-end !important;
+  }
+  #canvas-quiz-stats .align-content-md-center {
+    -ms-flex-line-pack: center !important;
+    align-content: center !important;
+  }
+  #canvas-quiz-stats .align-content-md-between {
+    -ms-flex-line-pack: justify !important;
+    align-content: space-between !important;
+  }
+  #canvas-quiz-stats .align-content-md-around {
+    -ms-flex-line-pack: distribute !important;
+    align-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-content-md-stretch {
+    -ms-flex-line-pack: stretch !important;
+    align-content: stretch !important;
+  }
+  #canvas-quiz-stats .align-self-md-auto {
+    -ms-flex-item-align: auto !important;
+    align-self: auto !important;
+  }
+  #canvas-quiz-stats .align-self-md-start {
+    -ms-flex-item-align: start !important;
+    align-self: flex-start !important;
+  }
+  #canvas-quiz-stats .align-self-md-end {
+    -ms-flex-item-align: end !important;
+    align-self: flex-end !important;
+  }
+  #canvas-quiz-stats .align-self-md-center {
+    -ms-flex-item-align: center !important;
+    align-self: center !important;
+  }
+  #canvas-quiz-stats .align-self-md-baseline {
+    -ms-flex-item-align: baseline !important;
+    align-self: baseline !important;
+  }
+  #canvas-quiz-stats .align-self-md-stretch {
+    -ms-flex-item-align: stretch !important;
+    align-self: stretch !important;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .flex-lg-row {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+  }
+  #canvas-quiz-stats .flex-lg-column {
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+  }
+  #canvas-quiz-stats .flex-lg-row-reverse {
+    -ms-flex-direction: row-reverse !important;
+    flex-direction: row-reverse !important;
+  }
+  #canvas-quiz-stats .flex-lg-column-reverse {
+    -ms-flex-direction: column-reverse !important;
+    flex-direction: column-reverse !important;
+  }
+  #canvas-quiz-stats .flex-lg-wrap {
+    -ms-flex-wrap: wrap !important;
+    flex-wrap: wrap !important;
+  }
+  #canvas-quiz-stats .flex-lg-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  #canvas-quiz-stats .flex-lg-wrap-reverse {
+    -ms-flex-wrap: wrap-reverse !important;
+    flex-wrap: wrap-reverse !important;
+  }
+  #canvas-quiz-stats .flex-lg-fill {
+    -ms-flex: 1 1 auto !important;
+    flex: 1 1 auto !important;
+  }
+  #canvas-quiz-stats .flex-lg-grow-0 {
+    -ms-flex-positive: 0 !important;
+    flex-grow: 0 !important;
+  }
+  #canvas-quiz-stats .flex-lg-grow-1 {
+    -ms-flex-positive: 1 !important;
+    flex-grow: 1 !important;
+  }
+  #canvas-quiz-stats .flex-lg-shrink-0 {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  #canvas-quiz-stats .flex-lg-shrink-1 {
+    -ms-flex-negative: 1 !important;
+    flex-shrink: 1 !important;
+  }
+  #canvas-quiz-stats .justify-content-lg-start {
+    -ms-flex-pack: start !important;
+    justify-content: flex-start !important;
+  }
+  #canvas-quiz-stats .justify-content-lg-end {
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important;
+  }
+  #canvas-quiz-stats .justify-content-lg-center {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+  }
+  #canvas-quiz-stats .justify-content-lg-between {
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+  }
+  #canvas-quiz-stats .justify-content-lg-around {
+    -ms-flex-pack: distribute !important;
+    justify-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-items-lg-start {
+    -ms-flex-align: start !important;
+    align-items: flex-start !important;
+  }
+  #canvas-quiz-stats .align-items-lg-end {
+    -ms-flex-align: end !important;
+    align-items: flex-end !important;
+  }
+  #canvas-quiz-stats .align-items-lg-center {
+    -ms-flex-align: center !important;
+    align-items: center !important;
+  }
+  #canvas-quiz-stats .align-items-lg-baseline {
+    -ms-flex-align: baseline !important;
+    align-items: baseline !important;
+  }
+  #canvas-quiz-stats .align-items-lg-stretch {
+    -ms-flex-align: stretch !important;
+    align-items: stretch !important;
+  }
+  #canvas-quiz-stats .align-content-lg-start {
+    -ms-flex-line-pack: start !important;
+    align-content: flex-start !important;
+  }
+  #canvas-quiz-stats .align-content-lg-end {
+    -ms-flex-line-pack: end !important;
+    align-content: flex-end !important;
+  }
+  #canvas-quiz-stats .align-content-lg-center {
+    -ms-flex-line-pack: center !important;
+    align-content: center !important;
+  }
+  #canvas-quiz-stats .align-content-lg-between {
+    -ms-flex-line-pack: justify !important;
+    align-content: space-between !important;
+  }
+  #canvas-quiz-stats .align-content-lg-around {
+    -ms-flex-line-pack: distribute !important;
+    align-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-content-lg-stretch {
+    -ms-flex-line-pack: stretch !important;
+    align-content: stretch !important;
+  }
+  #canvas-quiz-stats .align-self-lg-auto {
+    -ms-flex-item-align: auto !important;
+    align-self: auto !important;
+  }
+  #canvas-quiz-stats .align-self-lg-start {
+    -ms-flex-item-align: start !important;
+    align-self: flex-start !important;
+  }
+  #canvas-quiz-stats .align-self-lg-end {
+    -ms-flex-item-align: end !important;
+    align-self: flex-end !important;
+  }
+  #canvas-quiz-stats .align-self-lg-center {
+    -ms-flex-item-align: center !important;
+    align-self: center !important;
+  }
+  #canvas-quiz-stats .align-self-lg-baseline {
+    -ms-flex-item-align: baseline !important;
+    align-self: baseline !important;
+  }
+  #canvas-quiz-stats .align-self-lg-stretch {
+    -ms-flex-item-align: stretch !important;
+    align-self: stretch !important;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .flex-xl-row {
+    -ms-flex-direction: row !important;
+    flex-direction: row !important;
+  }
+  #canvas-quiz-stats .flex-xl-column {
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+  }
+  #canvas-quiz-stats .flex-xl-row-reverse {
+    -ms-flex-direction: row-reverse !important;
+    flex-direction: row-reverse !important;
+  }
+  #canvas-quiz-stats .flex-xl-column-reverse {
+    -ms-flex-direction: column-reverse !important;
+    flex-direction: column-reverse !important;
+  }
+  #canvas-quiz-stats .flex-xl-wrap {
+    -ms-flex-wrap: wrap !important;
+    flex-wrap: wrap !important;
+  }
+  #canvas-quiz-stats .flex-xl-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  #canvas-quiz-stats .flex-xl-wrap-reverse {
+    -ms-flex-wrap: wrap-reverse !important;
+    flex-wrap: wrap-reverse !important;
+  }
+  #canvas-quiz-stats .flex-xl-fill {
+    -ms-flex: 1 1 auto !important;
+    flex: 1 1 auto !important;
+  }
+  #canvas-quiz-stats .flex-xl-grow-0 {
+    -ms-flex-positive: 0 !important;
+    flex-grow: 0 !important;
+  }
+  #canvas-quiz-stats .flex-xl-grow-1 {
+    -ms-flex-positive: 1 !important;
+    flex-grow: 1 !important;
+  }
+  #canvas-quiz-stats .flex-xl-shrink-0 {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  #canvas-quiz-stats .flex-xl-shrink-1 {
+    -ms-flex-negative: 1 !important;
+    flex-shrink: 1 !important;
+  }
+  #canvas-quiz-stats .justify-content-xl-start {
+    -ms-flex-pack: start !important;
+    justify-content: flex-start !important;
+  }
+  #canvas-quiz-stats .justify-content-xl-end {
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important;
+  }
+  #canvas-quiz-stats .justify-content-xl-center {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+  }
+  #canvas-quiz-stats .justify-content-xl-between {
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+  }
+  #canvas-quiz-stats .justify-content-xl-around {
+    -ms-flex-pack: distribute !important;
+    justify-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-items-xl-start {
+    -ms-flex-align: start !important;
+    align-items: flex-start !important;
+  }
+  #canvas-quiz-stats .align-items-xl-end {
+    -ms-flex-align: end !important;
+    align-items: flex-end !important;
+  }
+  #canvas-quiz-stats .align-items-xl-center {
+    -ms-flex-align: center !important;
+    align-items: center !important;
+  }
+  #canvas-quiz-stats .align-items-xl-baseline {
+    -ms-flex-align: baseline !important;
+    align-items: baseline !important;
+  }
+  #canvas-quiz-stats .align-items-xl-stretch {
+    -ms-flex-align: stretch !important;
+    align-items: stretch !important;
+  }
+  #canvas-quiz-stats .align-content-xl-start {
+    -ms-flex-line-pack: start !important;
+    align-content: flex-start !important;
+  }
+  #canvas-quiz-stats .align-content-xl-end {
+    -ms-flex-line-pack: end !important;
+    align-content: flex-end !important;
+  }
+  #canvas-quiz-stats .align-content-xl-center {
+    -ms-flex-line-pack: center !important;
+    align-content: center !important;
+  }
+  #canvas-quiz-stats .align-content-xl-between {
+    -ms-flex-line-pack: justify !important;
+    align-content: space-between !important;
+  }
+  #canvas-quiz-stats .align-content-xl-around {
+    -ms-flex-line-pack: distribute !important;
+    align-content: space-around !important;
+  }
+  #canvas-quiz-stats .align-content-xl-stretch {
+    -ms-flex-line-pack: stretch !important;
+    align-content: stretch !important;
+  }
+  #canvas-quiz-stats .align-self-xl-auto {
+    -ms-flex-item-align: auto !important;
+    align-self: auto !important;
+  }
+  #canvas-quiz-stats .align-self-xl-start {
+    -ms-flex-item-align: start !important;
+    align-self: flex-start !important;
+  }
+  #canvas-quiz-stats .align-self-xl-end {
+    -ms-flex-item-align: end !important;
+    align-self: flex-end !important;
+  }
+  #canvas-quiz-stats .align-self-xl-center {
+    -ms-flex-item-align: center !important;
+    align-self: center !important;
+  }
+  #canvas-quiz-stats .align-self-xl-baseline {
+    -ms-flex-item-align: baseline !important;
+    align-self: baseline !important;
+  }
+  #canvas-quiz-stats .align-self-xl-stretch {
+    -ms-flex-item-align: stretch !important;
+    align-self: stretch !important;
+  }
+}
+#canvas-quiz-stats .float-left {
+  float: left !important;
+}
+#canvas-quiz-stats .float-right {
+  float: right !important;
+}
+#canvas-quiz-stats .float-none {
+  float: none !important;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .float-sm-left {
+    float: left !important;
+  }
+  #canvas-quiz-stats .float-sm-right {
+    float: right !important;
+  }
+  #canvas-quiz-stats .float-sm-none {
+    float: none !important;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .float-md-left {
+    float: left !important;
+  }
+  #canvas-quiz-stats .float-md-right {
+    float: right !important;
+  }
+  #canvas-quiz-stats .float-md-none {
+    float: none !important;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .float-lg-left {
+    float: left !important;
+  }
+  #canvas-quiz-stats .float-lg-right {
+    float: right !important;
+  }
+  #canvas-quiz-stats .float-lg-none {
+    float: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .float-xl-left {
+    float: left !important;
+  }
+  #canvas-quiz-stats .float-xl-right {
+    float: right !important;
+  }
+  #canvas-quiz-stats .float-xl-none {
+    float: none !important;
+  }
+}
+#canvas-quiz-stats .user-select-all {
+  -webkit-user-select: all !important;
+  -moz-user-select: all !important;
+  -ms-user-select: all !important;
+  user-select: all !important;
+}
+#canvas-quiz-stats .user-select-auto {
+  -webkit-user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+  user-select: auto !important;
+}
+#canvas-quiz-stats .user-select-none {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+#canvas-quiz-stats .overflow-auto {
+  overflow: auto !important;
+}
+#canvas-quiz-stats .overflow-hidden {
+  overflow: hidden !important;
+}
+#canvas-quiz-stats .position-static {
+  position: static !important;
+}
+#canvas-quiz-stats .position-relative {
+  position: relative !important;
+}
+#canvas-quiz-stats .position-absolute {
+  position: absolute !important;
+}
+#canvas-quiz-stats .position-fixed {
+  position: fixed !important;
+}
+#canvas-quiz-stats .position-sticky {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+#canvas-quiz-stats .fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+#canvas-quiz-stats .fixed-bottom {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+}
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+  #canvas-quiz-stats .sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+  }
+}
+#canvas-quiz-stats .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+#canvas-quiz-stats .sr-only-focusable:active,
+#canvas-quiz-stats .sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+#canvas-quiz-stats .shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+#canvas-quiz-stats .shadow {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+#canvas-quiz-stats .shadow-lg {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+#canvas-quiz-stats .shadow-none {
+  box-shadow: none !important;
+}
+#canvas-quiz-stats .w-25 {
+  width: 25% !important;
+}
+#canvas-quiz-stats .w-50 {
+  width: 50% !important;
+}
+#canvas-quiz-stats .w-75 {
+  width: 75% !important;
+}
+#canvas-quiz-stats .w-100 {
+  width: 100% !important;
+}
+#canvas-quiz-stats .w-auto {
+  width: auto !important;
+}
+#canvas-quiz-stats .h-25 {
+  height: 25% !important;
+}
+#canvas-quiz-stats .h-50 {
+  height: 50% !important;
+}
+#canvas-quiz-stats .h-75 {
+  height: 75% !important;
+}
+#canvas-quiz-stats .h-100 {
+  height: 100% !important;
+}
+#canvas-quiz-stats .h-auto {
+  height: auto !important;
+}
+#canvas-quiz-stats .mw-100 {
+  max-width: 100% !important;
+}
+#canvas-quiz-stats .mh-100 {
+  max-height: 100% !important;
+}
+#canvas-quiz-stats .min-vw-100 {
+  min-width: 100vw !important;
+}
+#canvas-quiz-stats .min-vh-100 {
+  min-height: 100vh !important;
+}
+#canvas-quiz-stats .vw-100 {
+  width: 100vw !important;
+}
+#canvas-quiz-stats .vh-100 {
+  height: 100vh !important;
+}
+#canvas-quiz-stats .m-0 {
+  margin: 0 !important;
+}
+#canvas-quiz-stats .mt-0,
+#canvas-quiz-stats .my-0 {
+  margin-top: 0 !important;
+}
+#canvas-quiz-stats .mr-0,
+#canvas-quiz-stats .mx-0 {
+  margin-right: 0 !important;
+}
+#canvas-quiz-stats .mb-0,
+#canvas-quiz-stats .my-0 {
+  margin-bottom: 0 !important;
+}
+#canvas-quiz-stats .ml-0,
+#canvas-quiz-stats .mx-0 {
+  margin-left: 0 !important;
+}
+#canvas-quiz-stats .m-1 {
+  margin: 0.25rem !important;
+}
+#canvas-quiz-stats .mt-1,
+#canvas-quiz-stats .my-1 {
+  margin-top: 0.25rem !important;
+}
+#canvas-quiz-stats .mr-1,
+#canvas-quiz-stats .mx-1 {
+  margin-right: 0.25rem !important;
+}
+#canvas-quiz-stats .mb-1,
+#canvas-quiz-stats .my-1 {
+  margin-bottom: 0.25rem !important;
+}
+#canvas-quiz-stats .ml-1,
+#canvas-quiz-stats .mx-1 {
+  margin-left: 0.25rem !important;
+}
+#canvas-quiz-stats .m-2 {
+  margin: 0.5rem !important;
+}
+#canvas-quiz-stats .mt-2,
+#canvas-quiz-stats .my-2 {
+  margin-top: 0.5rem !important;
+}
+#canvas-quiz-stats .mr-2,
+#canvas-quiz-stats .mx-2 {
+  margin-right: 0.5rem !important;
+}
+#canvas-quiz-stats .mb-2,
+#canvas-quiz-stats .my-2 {
+  margin-bottom: 0.5rem !important;
+}
+#canvas-quiz-stats .ml-2,
+#canvas-quiz-stats .mx-2 {
+  margin-left: 0.5rem !important;
+}
+#canvas-quiz-stats .m-3 {
+  margin: 1rem !important;
+}
+#canvas-quiz-stats .mt-3,
+#canvas-quiz-stats .my-3 {
+  margin-top: 1rem !important;
+}
+#canvas-quiz-stats .mr-3,
+#canvas-quiz-stats .mx-3 {
+  margin-right: 1rem !important;
+}
+#canvas-quiz-stats .mb-3,
+#canvas-quiz-stats .my-3 {
+  margin-bottom: 1rem !important;
+}
+#canvas-quiz-stats .ml-3,
+#canvas-quiz-stats .mx-3 {
+  margin-left: 1rem !important;
+}
+#canvas-quiz-stats .m-4 {
+  margin: 1.5rem !important;
+}
+#canvas-quiz-stats .mt-4,
+#canvas-quiz-stats .my-4 {
+  margin-top: 1.5rem !important;
+}
+#canvas-quiz-stats .mr-4,
+#canvas-quiz-stats .mx-4 {
+  margin-right: 1.5rem !important;
+}
+#canvas-quiz-stats .mb-4,
+#canvas-quiz-stats .my-4 {
+  margin-bottom: 1.5rem !important;
+}
+#canvas-quiz-stats .ml-4,
+#canvas-quiz-stats .mx-4 {
+  margin-left: 1.5rem !important;
+}
+#canvas-quiz-stats .m-5 {
+  margin: 3rem !important;
+}
+#canvas-quiz-stats .mt-5,
+#canvas-quiz-stats .my-5 {
+  margin-top: 3rem !important;
+}
+#canvas-quiz-stats .mr-5,
+#canvas-quiz-stats .mx-5 {
+  margin-right: 3rem !important;
+}
+#canvas-quiz-stats .mb-5,
+#canvas-quiz-stats .my-5 {
+  margin-bottom: 3rem !important;
+}
+#canvas-quiz-stats .ml-5,
+#canvas-quiz-stats .mx-5 {
+  margin-left: 3rem !important;
+}
+#canvas-quiz-stats .p-0 {
+  padding: 0 !important;
+}
+#canvas-quiz-stats .pt-0,
+#canvas-quiz-stats .py-0 {
+  padding-top: 0 !important;
+}
+#canvas-quiz-stats .pr-0,
+#canvas-quiz-stats .px-0 {
+  padding-right: 0 !important;
+}
+#canvas-quiz-stats .pb-0,
+#canvas-quiz-stats .py-0 {
+  padding-bottom: 0 !important;
+}
+#canvas-quiz-stats .pl-0,
+#canvas-quiz-stats .px-0 {
+  padding-left: 0 !important;
+}
+#canvas-quiz-stats .p-1 {
+  padding: 0.25rem !important;
+}
+#canvas-quiz-stats .pt-1,
+#canvas-quiz-stats .py-1 {
+  padding-top: 0.25rem !important;
+}
+#canvas-quiz-stats .pr-1,
+#canvas-quiz-stats .px-1 {
+  padding-right: 0.25rem !important;
+}
+#canvas-quiz-stats .pb-1,
+#canvas-quiz-stats .py-1 {
+  padding-bottom: 0.25rem !important;
+}
+#canvas-quiz-stats .pl-1,
+#canvas-quiz-stats .px-1 {
+  padding-left: 0.25rem !important;
+}
+#canvas-quiz-stats .p-2 {
+  padding: 0.5rem !important;
+}
+#canvas-quiz-stats .pt-2,
+#canvas-quiz-stats .py-2 {
+  padding-top: 0.5rem !important;
+}
+#canvas-quiz-stats .pr-2,
+#canvas-quiz-stats .px-2 {
+  padding-right: 0.5rem !important;
+}
+#canvas-quiz-stats .pb-2,
+#canvas-quiz-stats .py-2 {
+  padding-bottom: 0.5rem !important;
+}
+#canvas-quiz-stats .pl-2,
+#canvas-quiz-stats .px-2 {
+  padding-left: 0.5rem !important;
+}
+#canvas-quiz-stats .p-3 {
+  padding: 1rem !important;
+}
+#canvas-quiz-stats .pt-3,
+#canvas-quiz-stats .py-3 {
+  padding-top: 1rem !important;
+}
+#canvas-quiz-stats .pr-3,
+#canvas-quiz-stats .px-3 {
+  padding-right: 1rem !important;
+}
+#canvas-quiz-stats .pb-3,
+#canvas-quiz-stats .py-3 {
+  padding-bottom: 1rem !important;
+}
+#canvas-quiz-stats .pl-3,
+#canvas-quiz-stats .px-3 {
+  padding-left: 1rem !important;
+}
+#canvas-quiz-stats .p-4 {
+  padding: 1.5rem !important;
+}
+#canvas-quiz-stats .pt-4,
+#canvas-quiz-stats .py-4 {
+  padding-top: 1.5rem !important;
+}
+#canvas-quiz-stats .pr-4,
+#canvas-quiz-stats .px-4 {
+  padding-right: 1.5rem !important;
+}
+#canvas-quiz-stats .pb-4,
+#canvas-quiz-stats .py-4 {
+  padding-bottom: 1.5rem !important;
+}
+#canvas-quiz-stats .pl-4,
+#canvas-quiz-stats .px-4 {
+  padding-left: 1.5rem !important;
+}
+#canvas-quiz-stats .p-5 {
+  padding: 3rem !important;
+}
+#canvas-quiz-stats .pt-5,
+#canvas-quiz-stats .py-5 {
+  padding-top: 3rem !important;
+}
+#canvas-quiz-stats .pr-5,
+#canvas-quiz-stats .px-5 {
+  padding-right: 3rem !important;
+}
+#canvas-quiz-stats .pb-5,
+#canvas-quiz-stats .py-5 {
+  padding-bottom: 3rem !important;
+}
+#canvas-quiz-stats .pl-5,
+#canvas-quiz-stats .px-5 {
+  padding-left: 3rem !important;
+}
+#canvas-quiz-stats .m-n1 {
+  margin: -0.25rem !important;
+}
+#canvas-quiz-stats .mt-n1,
+#canvas-quiz-stats .my-n1 {
+  margin-top: -0.25rem !important;
+}
+#canvas-quiz-stats .mr-n1,
+#canvas-quiz-stats .mx-n1 {
+  margin-right: -0.25rem !important;
+}
+#canvas-quiz-stats .mb-n1,
+#canvas-quiz-stats .my-n1 {
+  margin-bottom: -0.25rem !important;
+}
+#canvas-quiz-stats .ml-n1,
+#canvas-quiz-stats .mx-n1 {
+  margin-left: -0.25rem !important;
+}
+#canvas-quiz-stats .m-n2 {
+  margin: -0.5rem !important;
+}
+#canvas-quiz-stats .mt-n2,
+#canvas-quiz-stats .my-n2 {
+  margin-top: -0.5rem !important;
+}
+#canvas-quiz-stats .mr-n2,
+#canvas-quiz-stats .mx-n2 {
+  margin-right: -0.5rem !important;
+}
+#canvas-quiz-stats .mb-n2,
+#canvas-quiz-stats .my-n2 {
+  margin-bottom: -0.5rem !important;
+}
+#canvas-quiz-stats .ml-n2,
+#canvas-quiz-stats .mx-n2 {
+  margin-left: -0.5rem !important;
+}
+#canvas-quiz-stats .m-n3 {
+  margin: -1rem !important;
+}
+#canvas-quiz-stats .mt-n3,
+#canvas-quiz-stats .my-n3 {
+  margin-top: -1rem !important;
+}
+#canvas-quiz-stats .mr-n3,
+#canvas-quiz-stats .mx-n3 {
+  margin-right: -1rem !important;
+}
+#canvas-quiz-stats .mb-n3,
+#canvas-quiz-stats .my-n3 {
+  margin-bottom: -1rem !important;
+}
+#canvas-quiz-stats .ml-n3,
+#canvas-quiz-stats .mx-n3 {
+  margin-left: -1rem !important;
+}
+#canvas-quiz-stats .m-n4 {
+  margin: -1.5rem !important;
+}
+#canvas-quiz-stats .mt-n4,
+#canvas-quiz-stats .my-n4 {
+  margin-top: -1.5rem !important;
+}
+#canvas-quiz-stats .mr-n4,
+#canvas-quiz-stats .mx-n4 {
+  margin-right: -1.5rem !important;
+}
+#canvas-quiz-stats .mb-n4,
+#canvas-quiz-stats .my-n4 {
+  margin-bottom: -1.5rem !important;
+}
+#canvas-quiz-stats .ml-n4,
+#canvas-quiz-stats .mx-n4 {
+  margin-left: -1.5rem !important;
+}
+#canvas-quiz-stats .m-n5 {
+  margin: -3rem !important;
+}
+#canvas-quiz-stats .mt-n5,
+#canvas-quiz-stats .my-n5 {
+  margin-top: -3rem !important;
+}
+#canvas-quiz-stats .mr-n5,
+#canvas-quiz-stats .mx-n5 {
+  margin-right: -3rem !important;
+}
+#canvas-quiz-stats .mb-n5,
+#canvas-quiz-stats .my-n5 {
+  margin-bottom: -3rem !important;
+}
+#canvas-quiz-stats .ml-n5,
+#canvas-quiz-stats .mx-n5 {
+  margin-left: -3rem !important;
+}
+#canvas-quiz-stats .m-auto {
+  margin: auto !important;
+}
+#canvas-quiz-stats .mt-auto,
+#canvas-quiz-stats .my-auto {
+  margin-top: auto !important;
+}
+#canvas-quiz-stats .mr-auto,
+#canvas-quiz-stats .mx-auto {
+  margin-right: auto !important;
+}
+#canvas-quiz-stats .mb-auto,
+#canvas-quiz-stats .my-auto {
+  margin-bottom: auto !important;
+}
+#canvas-quiz-stats .ml-auto,
+#canvas-quiz-stats .mx-auto {
+  margin-left: auto !important;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .m-sm-0 {
+    margin: 0 !important;
+  }
+  #canvas-quiz-stats .mt-sm-0,
+  #canvas-quiz-stats .my-sm-0 {
+    margin-top: 0 !important;
+  }
+  #canvas-quiz-stats .mr-sm-0,
+  #canvas-quiz-stats .mx-sm-0 {
+    margin-right: 0 !important;
+  }
+  #canvas-quiz-stats .mb-sm-0,
+  #canvas-quiz-stats .my-sm-0 {
+    margin-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .ml-sm-0,
+  #canvas-quiz-stats .mx-sm-0 {
+    margin-left: 0 !important;
+  }
+  #canvas-quiz-stats .m-sm-1 {
+    margin: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-1,
+  #canvas-quiz-stats .my-sm-1 {
+    margin-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-1,
+  #canvas-quiz-stats .mx-sm-1 {
+    margin-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-1,
+  #canvas-quiz-stats .my-sm-1 {
+    margin-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-1,
+  #canvas-quiz-stats .mx-sm-1 {
+    margin-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .m-sm-2 {
+    margin: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-2,
+  #canvas-quiz-stats .my-sm-2 {
+    margin-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-2,
+  #canvas-quiz-stats .mx-sm-2 {
+    margin-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-2,
+  #canvas-quiz-stats .my-sm-2 {
+    margin-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-2,
+  #canvas-quiz-stats .mx-sm-2 {
+    margin-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .m-sm-3 {
+    margin: 1rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-3,
+  #canvas-quiz-stats .my-sm-3 {
+    margin-top: 1rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-3,
+  #canvas-quiz-stats .mx-sm-3 {
+    margin-right: 1rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-3,
+  #canvas-quiz-stats .my-sm-3 {
+    margin-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-3,
+  #canvas-quiz-stats .mx-sm-3 {
+    margin-left: 1rem !important;
+  }
+  #canvas-quiz-stats .m-sm-4 {
+    margin: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-4,
+  #canvas-quiz-stats .my-sm-4 {
+    margin-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-4,
+  #canvas-quiz-stats .mx-sm-4 {
+    margin-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-4,
+  #canvas-quiz-stats .my-sm-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-4,
+  #canvas-quiz-stats .mx-sm-4 {
+    margin-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .m-sm-5 {
+    margin: 3rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-5,
+  #canvas-quiz-stats .my-sm-5 {
+    margin-top: 3rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-5,
+  #canvas-quiz-stats .mx-sm-5 {
+    margin-right: 3rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-5,
+  #canvas-quiz-stats .my-sm-5 {
+    margin-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-5,
+  #canvas-quiz-stats .mx-sm-5 {
+    margin-left: 3rem !important;
+  }
+  #canvas-quiz-stats .p-sm-0 {
+    padding: 0 !important;
+  }
+  #canvas-quiz-stats .pt-sm-0,
+  #canvas-quiz-stats .py-sm-0 {
+    padding-top: 0 !important;
+  }
+  #canvas-quiz-stats .pr-sm-0,
+  #canvas-quiz-stats .px-sm-0 {
+    padding-right: 0 !important;
+  }
+  #canvas-quiz-stats .pb-sm-0,
+  #canvas-quiz-stats .py-sm-0 {
+    padding-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .pl-sm-0,
+  #canvas-quiz-stats .px-sm-0 {
+    padding-left: 0 !important;
+  }
+  #canvas-quiz-stats .p-sm-1 {
+    padding: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pt-sm-1,
+  #canvas-quiz-stats .py-sm-1 {
+    padding-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pr-sm-1,
+  #canvas-quiz-stats .px-sm-1 {
+    padding-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pb-sm-1,
+  #canvas-quiz-stats .py-sm-1 {
+    padding-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pl-sm-1,
+  #canvas-quiz-stats .px-sm-1 {
+    padding-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .p-sm-2 {
+    padding: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pt-sm-2,
+  #canvas-quiz-stats .py-sm-2 {
+    padding-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pr-sm-2,
+  #canvas-quiz-stats .px-sm-2 {
+    padding-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pb-sm-2,
+  #canvas-quiz-stats .py-sm-2 {
+    padding-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pl-sm-2,
+  #canvas-quiz-stats .px-sm-2 {
+    padding-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .p-sm-3 {
+    padding: 1rem !important;
+  }
+  #canvas-quiz-stats .pt-sm-3,
+  #canvas-quiz-stats .py-sm-3 {
+    padding-top: 1rem !important;
+  }
+  #canvas-quiz-stats .pr-sm-3,
+  #canvas-quiz-stats .px-sm-3 {
+    padding-right: 1rem !important;
+  }
+  #canvas-quiz-stats .pb-sm-3,
+  #canvas-quiz-stats .py-sm-3 {
+    padding-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .pl-sm-3,
+  #canvas-quiz-stats .px-sm-3 {
+    padding-left: 1rem !important;
+  }
+  #canvas-quiz-stats .p-sm-4 {
+    padding: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pt-sm-4,
+  #canvas-quiz-stats .py-sm-4 {
+    padding-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pr-sm-4,
+  #canvas-quiz-stats .px-sm-4 {
+    padding-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pb-sm-4,
+  #canvas-quiz-stats .py-sm-4 {
+    padding-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pl-sm-4,
+  #canvas-quiz-stats .px-sm-4 {
+    padding-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .p-sm-5 {
+    padding: 3rem !important;
+  }
+  #canvas-quiz-stats .pt-sm-5,
+  #canvas-quiz-stats .py-sm-5 {
+    padding-top: 3rem !important;
+  }
+  #canvas-quiz-stats .pr-sm-5,
+  #canvas-quiz-stats .px-sm-5 {
+    padding-right: 3rem !important;
+  }
+  #canvas-quiz-stats .pb-sm-5,
+  #canvas-quiz-stats .py-sm-5 {
+    padding-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .pl-sm-5,
+  #canvas-quiz-stats .px-sm-5 {
+    padding-left: 3rem !important;
+  }
+  #canvas-quiz-stats .m-sm-n1 {
+    margin: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-n1,
+  #canvas-quiz-stats .my-sm-n1 {
+    margin-top: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-n1,
+  #canvas-quiz-stats .mx-sm-n1 {
+    margin-right: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-n1,
+  #canvas-quiz-stats .my-sm-n1 {
+    margin-bottom: -0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-n1,
+  #canvas-quiz-stats .mx-sm-n1 {
+    margin-left: -0.25rem !important;
+  }
+  #canvas-quiz-stats .m-sm-n2 {
+    margin: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-n2,
+  #canvas-quiz-stats .my-sm-n2 {
+    margin-top: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-n2,
+  #canvas-quiz-stats .mx-sm-n2 {
+    margin-right: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-n2,
+  #canvas-quiz-stats .my-sm-n2 {
+    margin-bottom: -0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-n2,
+  #canvas-quiz-stats .mx-sm-n2 {
+    margin-left: -0.5rem !important;
+  }
+  #canvas-quiz-stats .m-sm-n3 {
+    margin: -1rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-n3,
+  #canvas-quiz-stats .my-sm-n3 {
+    margin-top: -1rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-n3,
+  #canvas-quiz-stats .mx-sm-n3 {
+    margin-right: -1rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-n3,
+  #canvas-quiz-stats .my-sm-n3 {
+    margin-bottom: -1rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-n3,
+  #canvas-quiz-stats .mx-sm-n3 {
+    margin-left: -1rem !important;
+  }
+  #canvas-quiz-stats .m-sm-n4 {
+    margin: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-n4,
+  #canvas-quiz-stats .my-sm-n4 {
+    margin-top: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-n4,
+  #canvas-quiz-stats .mx-sm-n4 {
+    margin-right: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-n4,
+  #canvas-quiz-stats .my-sm-n4 {
+    margin-bottom: -1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-n4,
+  #canvas-quiz-stats .mx-sm-n4 {
+    margin-left: -1.5rem !important;
+  }
+  #canvas-quiz-stats .m-sm-n5 {
+    margin: -3rem !important;
+  }
+  #canvas-quiz-stats .mt-sm-n5,
+  #canvas-quiz-stats .my-sm-n5 {
+    margin-top: -3rem !important;
+  }
+  #canvas-quiz-stats .mr-sm-n5,
+  #canvas-quiz-stats .mx-sm-n5 {
+    margin-right: -3rem !important;
+  }
+  #canvas-quiz-stats .mb-sm-n5,
+  #canvas-quiz-stats .my-sm-n5 {
+    margin-bottom: -3rem !important;
+  }
+  #canvas-quiz-stats .ml-sm-n5,
+  #canvas-quiz-stats .mx-sm-n5 {
+    margin-left: -3rem !important;
+  }
+  #canvas-quiz-stats .m-sm-auto {
+    margin: auto !important;
+  }
+  #canvas-quiz-stats .mt-sm-auto,
+  #canvas-quiz-stats .my-sm-auto {
+    margin-top: auto !important;
+  }
+  #canvas-quiz-stats .mr-sm-auto,
+  #canvas-quiz-stats .mx-sm-auto {
+    margin-right: auto !important;
+  }
+  #canvas-quiz-stats .mb-sm-auto,
+  #canvas-quiz-stats .my-sm-auto {
+    margin-bottom: auto !important;
+  }
+  #canvas-quiz-stats .ml-sm-auto,
+  #canvas-quiz-stats .mx-sm-auto {
+    margin-left: auto !important;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .m-md-0 {
+    margin: 0 !important;
+  }
+  #canvas-quiz-stats .mt-md-0,
+  #canvas-quiz-stats .my-md-0 {
+    margin-top: 0 !important;
+  }
+  #canvas-quiz-stats .mr-md-0,
+  #canvas-quiz-stats .mx-md-0 {
+    margin-right: 0 !important;
+  }
+  #canvas-quiz-stats .mb-md-0,
+  #canvas-quiz-stats .my-md-0 {
+    margin-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .ml-md-0,
+  #canvas-quiz-stats .mx-md-0 {
+    margin-left: 0 !important;
+  }
+  #canvas-quiz-stats .m-md-1 {
+    margin: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-md-1,
+  #canvas-quiz-stats .my-md-1 {
+    margin-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-md-1,
+  #canvas-quiz-stats .mx-md-1 {
+    margin-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-md-1,
+  #canvas-quiz-stats .my-md-1 {
+    margin-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-md-1,
+  #canvas-quiz-stats .mx-md-1 {
+    margin-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .m-md-2 {
+    margin: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-md-2,
+  #canvas-quiz-stats .my-md-2 {
+    margin-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-md-2,
+  #canvas-quiz-stats .mx-md-2 {
+    margin-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-md-2,
+  #canvas-quiz-stats .my-md-2 {
+    margin-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-md-2,
+  #canvas-quiz-stats .mx-md-2 {
+    margin-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .m-md-3 {
+    margin: 1rem !important;
+  }
+  #canvas-quiz-stats .mt-md-3,
+  #canvas-quiz-stats .my-md-3 {
+    margin-top: 1rem !important;
+  }
+  #canvas-quiz-stats .mr-md-3,
+  #canvas-quiz-stats .mx-md-3 {
+    margin-right: 1rem !important;
+  }
+  #canvas-quiz-stats .mb-md-3,
+  #canvas-quiz-stats .my-md-3 {
+    margin-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .ml-md-3,
+  #canvas-quiz-stats .mx-md-3 {
+    margin-left: 1rem !important;
+  }
+  #canvas-quiz-stats .m-md-4 {
+    margin: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-md-4,
+  #canvas-quiz-stats .my-md-4 {
+    margin-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-md-4,
+  #canvas-quiz-stats .mx-md-4 {
+    margin-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-md-4,
+  #canvas-quiz-stats .my-md-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-md-4,
+  #canvas-quiz-stats .mx-md-4 {
+    margin-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .m-md-5 {
+    margin: 3rem !important;
+  }
+  #canvas-quiz-stats .mt-md-5,
+  #canvas-quiz-stats .my-md-5 {
+    margin-top: 3rem !important;
+  }
+  #canvas-quiz-stats .mr-md-5,
+  #canvas-quiz-stats .mx-md-5 {
+    margin-right: 3rem !important;
+  }
+  #canvas-quiz-stats .mb-md-5,
+  #canvas-quiz-stats .my-md-5 {
+    margin-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .ml-md-5,
+  #canvas-quiz-stats .mx-md-5 {
+    margin-left: 3rem !important;
+  }
+  #canvas-quiz-stats .p-md-0 {
+    padding: 0 !important;
+  }
+  #canvas-quiz-stats .pt-md-0,
+  #canvas-quiz-stats .py-md-0 {
+    padding-top: 0 !important;
+  }
+  #canvas-quiz-stats .pr-md-0,
+  #canvas-quiz-stats .px-md-0 {
+    padding-right: 0 !important;
+  }
+  #canvas-quiz-stats .pb-md-0,
+  #canvas-quiz-stats .py-md-0 {
+    padding-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .pl-md-0,
+  #canvas-quiz-stats .px-md-0 {
+    padding-left: 0 !important;
+  }
+  #canvas-quiz-stats .p-md-1 {
+    padding: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pt-md-1,
+  #canvas-quiz-stats .py-md-1 {
+    padding-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pr-md-1,
+  #canvas-quiz-stats .px-md-1 {
+    padding-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pb-md-1,
+  #canvas-quiz-stats .py-md-1 {
+    padding-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pl-md-1,
+  #canvas-quiz-stats .px-md-1 {
+    padding-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .p-md-2 {
+    padding: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pt-md-2,
+  #canvas-quiz-stats .py-md-2 {
+    padding-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pr-md-2,
+  #canvas-quiz-stats .px-md-2 {
+    padding-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pb-md-2,
+  #canvas-quiz-stats .py-md-2 {
+    padding-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pl-md-2,
+  #canvas-quiz-stats .px-md-2 {
+    padding-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .p-md-3 {
+    padding: 1rem !important;
+  }
+  #canvas-quiz-stats .pt-md-3,
+  #canvas-quiz-stats .py-md-3 {
+    padding-top: 1rem !important;
+  }
+  #canvas-quiz-stats .pr-md-3,
+  #canvas-quiz-stats .px-md-3 {
+    padding-right: 1rem !important;
+  }
+  #canvas-quiz-stats .pb-md-3,
+  #canvas-quiz-stats .py-md-3 {
+    padding-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .pl-md-3,
+  #canvas-quiz-stats .px-md-3 {
+    padding-left: 1rem !important;
+  }
+  #canvas-quiz-stats .p-md-4 {
+    padding: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pt-md-4,
+  #canvas-quiz-stats .py-md-4 {
+    padding-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pr-md-4,
+  #canvas-quiz-stats .px-md-4 {
+    padding-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pb-md-4,
+  #canvas-quiz-stats .py-md-4 {
+    padding-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pl-md-4,
+  #canvas-quiz-stats .px-md-4 {
+    padding-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .p-md-5 {
+    padding: 3rem !important;
+  }
+  #canvas-quiz-stats .pt-md-5,
+  #canvas-quiz-stats .py-md-5 {
+    padding-top: 3rem !important;
+  }
+  #canvas-quiz-stats .pr-md-5,
+  #canvas-quiz-stats .px-md-5 {
+    padding-right: 3rem !important;
+  }
+  #canvas-quiz-stats .pb-md-5,
+  #canvas-quiz-stats .py-md-5 {
+    padding-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .pl-md-5,
+  #canvas-quiz-stats .px-md-5 {
+    padding-left: 3rem !important;
+  }
+  #canvas-quiz-stats .m-md-n1 {
+    margin: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-md-n1,
+  #canvas-quiz-stats .my-md-n1 {
+    margin-top: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-md-n1,
+  #canvas-quiz-stats .mx-md-n1 {
+    margin-right: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-md-n1,
+  #canvas-quiz-stats .my-md-n1 {
+    margin-bottom: -0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-md-n1,
+  #canvas-quiz-stats .mx-md-n1 {
+    margin-left: -0.25rem !important;
+  }
+  #canvas-quiz-stats .m-md-n2 {
+    margin: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-md-n2,
+  #canvas-quiz-stats .my-md-n2 {
+    margin-top: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-md-n2,
+  #canvas-quiz-stats .mx-md-n2 {
+    margin-right: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-md-n2,
+  #canvas-quiz-stats .my-md-n2 {
+    margin-bottom: -0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-md-n2,
+  #canvas-quiz-stats .mx-md-n2 {
+    margin-left: -0.5rem !important;
+  }
+  #canvas-quiz-stats .m-md-n3 {
+    margin: -1rem !important;
+  }
+  #canvas-quiz-stats .mt-md-n3,
+  #canvas-quiz-stats .my-md-n3 {
+    margin-top: -1rem !important;
+  }
+  #canvas-quiz-stats .mr-md-n3,
+  #canvas-quiz-stats .mx-md-n3 {
+    margin-right: -1rem !important;
+  }
+  #canvas-quiz-stats .mb-md-n3,
+  #canvas-quiz-stats .my-md-n3 {
+    margin-bottom: -1rem !important;
+  }
+  #canvas-quiz-stats .ml-md-n3,
+  #canvas-quiz-stats .mx-md-n3 {
+    margin-left: -1rem !important;
+  }
+  #canvas-quiz-stats .m-md-n4 {
+    margin: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-md-n4,
+  #canvas-quiz-stats .my-md-n4 {
+    margin-top: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-md-n4,
+  #canvas-quiz-stats .mx-md-n4 {
+    margin-right: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-md-n4,
+  #canvas-quiz-stats .my-md-n4 {
+    margin-bottom: -1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-md-n4,
+  #canvas-quiz-stats .mx-md-n4 {
+    margin-left: -1.5rem !important;
+  }
+  #canvas-quiz-stats .m-md-n5 {
+    margin: -3rem !important;
+  }
+  #canvas-quiz-stats .mt-md-n5,
+  #canvas-quiz-stats .my-md-n5 {
+    margin-top: -3rem !important;
+  }
+  #canvas-quiz-stats .mr-md-n5,
+  #canvas-quiz-stats .mx-md-n5 {
+    margin-right: -3rem !important;
+  }
+  #canvas-quiz-stats .mb-md-n5,
+  #canvas-quiz-stats .my-md-n5 {
+    margin-bottom: -3rem !important;
+  }
+  #canvas-quiz-stats .ml-md-n5,
+  #canvas-quiz-stats .mx-md-n5 {
+    margin-left: -3rem !important;
+  }
+  #canvas-quiz-stats .m-md-auto {
+    margin: auto !important;
+  }
+  #canvas-quiz-stats .mt-md-auto,
+  #canvas-quiz-stats .my-md-auto {
+    margin-top: auto !important;
+  }
+  #canvas-quiz-stats .mr-md-auto,
+  #canvas-quiz-stats .mx-md-auto {
+    margin-right: auto !important;
+  }
+  #canvas-quiz-stats .mb-md-auto,
+  #canvas-quiz-stats .my-md-auto {
+    margin-bottom: auto !important;
+  }
+  #canvas-quiz-stats .ml-md-auto,
+  #canvas-quiz-stats .mx-md-auto {
+    margin-left: auto !important;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .m-lg-0 {
+    margin: 0 !important;
+  }
+  #canvas-quiz-stats .mt-lg-0,
+  #canvas-quiz-stats .my-lg-0 {
+    margin-top: 0 !important;
+  }
+  #canvas-quiz-stats .mr-lg-0,
+  #canvas-quiz-stats .mx-lg-0 {
+    margin-right: 0 !important;
+  }
+  #canvas-quiz-stats .mb-lg-0,
+  #canvas-quiz-stats .my-lg-0 {
+    margin-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .ml-lg-0,
+  #canvas-quiz-stats .mx-lg-0 {
+    margin-left: 0 !important;
+  }
+  #canvas-quiz-stats .m-lg-1 {
+    margin: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-1,
+  #canvas-quiz-stats .my-lg-1 {
+    margin-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-1,
+  #canvas-quiz-stats .mx-lg-1 {
+    margin-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-1,
+  #canvas-quiz-stats .my-lg-1 {
+    margin-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-1,
+  #canvas-quiz-stats .mx-lg-1 {
+    margin-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .m-lg-2 {
+    margin: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-2,
+  #canvas-quiz-stats .my-lg-2 {
+    margin-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-2,
+  #canvas-quiz-stats .mx-lg-2 {
+    margin-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-2,
+  #canvas-quiz-stats .my-lg-2 {
+    margin-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-2,
+  #canvas-quiz-stats .mx-lg-2 {
+    margin-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .m-lg-3 {
+    margin: 1rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-3,
+  #canvas-quiz-stats .my-lg-3 {
+    margin-top: 1rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-3,
+  #canvas-quiz-stats .mx-lg-3 {
+    margin-right: 1rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-3,
+  #canvas-quiz-stats .my-lg-3 {
+    margin-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-3,
+  #canvas-quiz-stats .mx-lg-3 {
+    margin-left: 1rem !important;
+  }
+  #canvas-quiz-stats .m-lg-4 {
+    margin: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-4,
+  #canvas-quiz-stats .my-lg-4 {
+    margin-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-4,
+  #canvas-quiz-stats .mx-lg-4 {
+    margin-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-4,
+  #canvas-quiz-stats .my-lg-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-4,
+  #canvas-quiz-stats .mx-lg-4 {
+    margin-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .m-lg-5 {
+    margin: 3rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-5,
+  #canvas-quiz-stats .my-lg-5 {
+    margin-top: 3rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-5,
+  #canvas-quiz-stats .mx-lg-5 {
+    margin-right: 3rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-5,
+  #canvas-quiz-stats .my-lg-5 {
+    margin-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-5,
+  #canvas-quiz-stats .mx-lg-5 {
+    margin-left: 3rem !important;
+  }
+  #canvas-quiz-stats .p-lg-0 {
+    padding: 0 !important;
+  }
+  #canvas-quiz-stats .pt-lg-0,
+  #canvas-quiz-stats .py-lg-0 {
+    padding-top: 0 !important;
+  }
+  #canvas-quiz-stats .pr-lg-0,
+  #canvas-quiz-stats .px-lg-0 {
+    padding-right: 0 !important;
+  }
+  #canvas-quiz-stats .pb-lg-0,
+  #canvas-quiz-stats .py-lg-0 {
+    padding-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .pl-lg-0,
+  #canvas-quiz-stats .px-lg-0 {
+    padding-left: 0 !important;
+  }
+  #canvas-quiz-stats .p-lg-1 {
+    padding: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pt-lg-1,
+  #canvas-quiz-stats .py-lg-1 {
+    padding-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pr-lg-1,
+  #canvas-quiz-stats .px-lg-1 {
+    padding-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pb-lg-1,
+  #canvas-quiz-stats .py-lg-1 {
+    padding-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pl-lg-1,
+  #canvas-quiz-stats .px-lg-1 {
+    padding-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .p-lg-2 {
+    padding: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pt-lg-2,
+  #canvas-quiz-stats .py-lg-2 {
+    padding-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pr-lg-2,
+  #canvas-quiz-stats .px-lg-2 {
+    padding-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pb-lg-2,
+  #canvas-quiz-stats .py-lg-2 {
+    padding-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pl-lg-2,
+  #canvas-quiz-stats .px-lg-2 {
+    padding-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .p-lg-3 {
+    padding: 1rem !important;
+  }
+  #canvas-quiz-stats .pt-lg-3,
+  #canvas-quiz-stats .py-lg-3 {
+    padding-top: 1rem !important;
+  }
+  #canvas-quiz-stats .pr-lg-3,
+  #canvas-quiz-stats .px-lg-3 {
+    padding-right: 1rem !important;
+  }
+  #canvas-quiz-stats .pb-lg-3,
+  #canvas-quiz-stats .py-lg-3 {
+    padding-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .pl-lg-3,
+  #canvas-quiz-stats .px-lg-3 {
+    padding-left: 1rem !important;
+  }
+  #canvas-quiz-stats .p-lg-4 {
+    padding: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pt-lg-4,
+  #canvas-quiz-stats .py-lg-4 {
+    padding-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pr-lg-4,
+  #canvas-quiz-stats .px-lg-4 {
+    padding-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pb-lg-4,
+  #canvas-quiz-stats .py-lg-4 {
+    padding-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pl-lg-4,
+  #canvas-quiz-stats .px-lg-4 {
+    padding-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .p-lg-5 {
+    padding: 3rem !important;
+  }
+  #canvas-quiz-stats .pt-lg-5,
+  #canvas-quiz-stats .py-lg-5 {
+    padding-top: 3rem !important;
+  }
+  #canvas-quiz-stats .pr-lg-5,
+  #canvas-quiz-stats .px-lg-5 {
+    padding-right: 3rem !important;
+  }
+  #canvas-quiz-stats .pb-lg-5,
+  #canvas-quiz-stats .py-lg-5 {
+    padding-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .pl-lg-5,
+  #canvas-quiz-stats .px-lg-5 {
+    padding-left: 3rem !important;
+  }
+  #canvas-quiz-stats .m-lg-n1 {
+    margin: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-n1,
+  #canvas-quiz-stats .my-lg-n1 {
+    margin-top: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-n1,
+  #canvas-quiz-stats .mx-lg-n1 {
+    margin-right: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-n1,
+  #canvas-quiz-stats .my-lg-n1 {
+    margin-bottom: -0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-n1,
+  #canvas-quiz-stats .mx-lg-n1 {
+    margin-left: -0.25rem !important;
+  }
+  #canvas-quiz-stats .m-lg-n2 {
+    margin: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-n2,
+  #canvas-quiz-stats .my-lg-n2 {
+    margin-top: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-n2,
+  #canvas-quiz-stats .mx-lg-n2 {
+    margin-right: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-n2,
+  #canvas-quiz-stats .my-lg-n2 {
+    margin-bottom: -0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-n2,
+  #canvas-quiz-stats .mx-lg-n2 {
+    margin-left: -0.5rem !important;
+  }
+  #canvas-quiz-stats .m-lg-n3 {
+    margin: -1rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-n3,
+  #canvas-quiz-stats .my-lg-n3 {
+    margin-top: -1rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-n3,
+  #canvas-quiz-stats .mx-lg-n3 {
+    margin-right: -1rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-n3,
+  #canvas-quiz-stats .my-lg-n3 {
+    margin-bottom: -1rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-n3,
+  #canvas-quiz-stats .mx-lg-n3 {
+    margin-left: -1rem !important;
+  }
+  #canvas-quiz-stats .m-lg-n4 {
+    margin: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-n4,
+  #canvas-quiz-stats .my-lg-n4 {
+    margin-top: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-n4,
+  #canvas-quiz-stats .mx-lg-n4 {
+    margin-right: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-n4,
+  #canvas-quiz-stats .my-lg-n4 {
+    margin-bottom: -1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-n4,
+  #canvas-quiz-stats .mx-lg-n4 {
+    margin-left: -1.5rem !important;
+  }
+  #canvas-quiz-stats .m-lg-n5 {
+    margin: -3rem !important;
+  }
+  #canvas-quiz-stats .mt-lg-n5,
+  #canvas-quiz-stats .my-lg-n5 {
+    margin-top: -3rem !important;
+  }
+  #canvas-quiz-stats .mr-lg-n5,
+  #canvas-quiz-stats .mx-lg-n5 {
+    margin-right: -3rem !important;
+  }
+  #canvas-quiz-stats .mb-lg-n5,
+  #canvas-quiz-stats .my-lg-n5 {
+    margin-bottom: -3rem !important;
+  }
+  #canvas-quiz-stats .ml-lg-n5,
+  #canvas-quiz-stats .mx-lg-n5 {
+    margin-left: -3rem !important;
+  }
+  #canvas-quiz-stats .m-lg-auto {
+    margin: auto !important;
+  }
+  #canvas-quiz-stats .mt-lg-auto,
+  #canvas-quiz-stats .my-lg-auto {
+    margin-top: auto !important;
+  }
+  #canvas-quiz-stats .mr-lg-auto,
+  #canvas-quiz-stats .mx-lg-auto {
+    margin-right: auto !important;
+  }
+  #canvas-quiz-stats .mb-lg-auto,
+  #canvas-quiz-stats .my-lg-auto {
+    margin-bottom: auto !important;
+  }
+  #canvas-quiz-stats .ml-lg-auto,
+  #canvas-quiz-stats .mx-lg-auto {
+    margin-left: auto !important;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .m-xl-0 {
+    margin: 0 !important;
+  }
+  #canvas-quiz-stats .mt-xl-0,
+  #canvas-quiz-stats .my-xl-0 {
+    margin-top: 0 !important;
+  }
+  #canvas-quiz-stats .mr-xl-0,
+  #canvas-quiz-stats .mx-xl-0 {
+    margin-right: 0 !important;
+  }
+  #canvas-quiz-stats .mb-xl-0,
+  #canvas-quiz-stats .my-xl-0 {
+    margin-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .ml-xl-0,
+  #canvas-quiz-stats .mx-xl-0 {
+    margin-left: 0 !important;
+  }
+  #canvas-quiz-stats .m-xl-1 {
+    margin: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-1,
+  #canvas-quiz-stats .my-xl-1 {
+    margin-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-1,
+  #canvas-quiz-stats .mx-xl-1 {
+    margin-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-1,
+  #canvas-quiz-stats .my-xl-1 {
+    margin-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-1,
+  #canvas-quiz-stats .mx-xl-1 {
+    margin-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .m-xl-2 {
+    margin: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-2,
+  #canvas-quiz-stats .my-xl-2 {
+    margin-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-2,
+  #canvas-quiz-stats .mx-xl-2 {
+    margin-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-2,
+  #canvas-quiz-stats .my-xl-2 {
+    margin-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-2,
+  #canvas-quiz-stats .mx-xl-2 {
+    margin-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .m-xl-3 {
+    margin: 1rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-3,
+  #canvas-quiz-stats .my-xl-3 {
+    margin-top: 1rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-3,
+  #canvas-quiz-stats .mx-xl-3 {
+    margin-right: 1rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-3,
+  #canvas-quiz-stats .my-xl-3 {
+    margin-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-3,
+  #canvas-quiz-stats .mx-xl-3 {
+    margin-left: 1rem !important;
+  }
+  #canvas-quiz-stats .m-xl-4 {
+    margin: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-4,
+  #canvas-quiz-stats .my-xl-4 {
+    margin-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-4,
+  #canvas-quiz-stats .mx-xl-4 {
+    margin-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-4,
+  #canvas-quiz-stats .my-xl-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-4,
+  #canvas-quiz-stats .mx-xl-4 {
+    margin-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .m-xl-5 {
+    margin: 3rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-5,
+  #canvas-quiz-stats .my-xl-5 {
+    margin-top: 3rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-5,
+  #canvas-quiz-stats .mx-xl-5 {
+    margin-right: 3rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-5,
+  #canvas-quiz-stats .my-xl-5 {
+    margin-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-5,
+  #canvas-quiz-stats .mx-xl-5 {
+    margin-left: 3rem !important;
+  }
+  #canvas-quiz-stats .p-xl-0 {
+    padding: 0 !important;
+  }
+  #canvas-quiz-stats .pt-xl-0,
+  #canvas-quiz-stats .py-xl-0 {
+    padding-top: 0 !important;
+  }
+  #canvas-quiz-stats .pr-xl-0,
+  #canvas-quiz-stats .px-xl-0 {
+    padding-right: 0 !important;
+  }
+  #canvas-quiz-stats .pb-xl-0,
+  #canvas-quiz-stats .py-xl-0 {
+    padding-bottom: 0 !important;
+  }
+  #canvas-quiz-stats .pl-xl-0,
+  #canvas-quiz-stats .px-xl-0 {
+    padding-left: 0 !important;
+  }
+  #canvas-quiz-stats .p-xl-1 {
+    padding: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pt-xl-1,
+  #canvas-quiz-stats .py-xl-1 {
+    padding-top: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pr-xl-1,
+  #canvas-quiz-stats .px-xl-1 {
+    padding-right: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pb-xl-1,
+  #canvas-quiz-stats .py-xl-1 {
+    padding-bottom: 0.25rem !important;
+  }
+  #canvas-quiz-stats .pl-xl-1,
+  #canvas-quiz-stats .px-xl-1 {
+    padding-left: 0.25rem !important;
+  }
+  #canvas-quiz-stats .p-xl-2 {
+    padding: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pt-xl-2,
+  #canvas-quiz-stats .py-xl-2 {
+    padding-top: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pr-xl-2,
+  #canvas-quiz-stats .px-xl-2 {
+    padding-right: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pb-xl-2,
+  #canvas-quiz-stats .py-xl-2 {
+    padding-bottom: 0.5rem !important;
+  }
+  #canvas-quiz-stats .pl-xl-2,
+  #canvas-quiz-stats .px-xl-2 {
+    padding-left: 0.5rem !important;
+  }
+  #canvas-quiz-stats .p-xl-3 {
+    padding: 1rem !important;
+  }
+  #canvas-quiz-stats .pt-xl-3,
+  #canvas-quiz-stats .py-xl-3 {
+    padding-top: 1rem !important;
+  }
+  #canvas-quiz-stats .pr-xl-3,
+  #canvas-quiz-stats .px-xl-3 {
+    padding-right: 1rem !important;
+  }
+  #canvas-quiz-stats .pb-xl-3,
+  #canvas-quiz-stats .py-xl-3 {
+    padding-bottom: 1rem !important;
+  }
+  #canvas-quiz-stats .pl-xl-3,
+  #canvas-quiz-stats .px-xl-3 {
+    padding-left: 1rem !important;
+  }
+  #canvas-quiz-stats .p-xl-4 {
+    padding: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pt-xl-4,
+  #canvas-quiz-stats .py-xl-4 {
+    padding-top: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pr-xl-4,
+  #canvas-quiz-stats .px-xl-4 {
+    padding-right: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pb-xl-4,
+  #canvas-quiz-stats .py-xl-4 {
+    padding-bottom: 1.5rem !important;
+  }
+  #canvas-quiz-stats .pl-xl-4,
+  #canvas-quiz-stats .px-xl-4 {
+    padding-left: 1.5rem !important;
+  }
+  #canvas-quiz-stats .p-xl-5 {
+    padding: 3rem !important;
+  }
+  #canvas-quiz-stats .pt-xl-5,
+  #canvas-quiz-stats .py-xl-5 {
+    padding-top: 3rem !important;
+  }
+  #canvas-quiz-stats .pr-xl-5,
+  #canvas-quiz-stats .px-xl-5 {
+    padding-right: 3rem !important;
+  }
+  #canvas-quiz-stats .pb-xl-5,
+  #canvas-quiz-stats .py-xl-5 {
+    padding-bottom: 3rem !important;
+  }
+  #canvas-quiz-stats .pl-xl-5,
+  #canvas-quiz-stats .px-xl-5 {
+    padding-left: 3rem !important;
+  }
+  #canvas-quiz-stats .m-xl-n1 {
+    margin: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-n1,
+  #canvas-quiz-stats .my-xl-n1 {
+    margin-top: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-n1,
+  #canvas-quiz-stats .mx-xl-n1 {
+    margin-right: -0.25rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-n1,
+  #canvas-quiz-stats .my-xl-n1 {
+    margin-bottom: -0.25rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-n1,
+  #canvas-quiz-stats .mx-xl-n1 {
+    margin-left: -0.25rem !important;
+  }
+  #canvas-quiz-stats .m-xl-n2 {
+    margin: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-n2,
+  #canvas-quiz-stats .my-xl-n2 {
+    margin-top: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-n2,
+  #canvas-quiz-stats .mx-xl-n2 {
+    margin-right: -0.5rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-n2,
+  #canvas-quiz-stats .my-xl-n2 {
+    margin-bottom: -0.5rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-n2,
+  #canvas-quiz-stats .mx-xl-n2 {
+    margin-left: -0.5rem !important;
+  }
+  #canvas-quiz-stats .m-xl-n3 {
+    margin: -1rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-n3,
+  #canvas-quiz-stats .my-xl-n3 {
+    margin-top: -1rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-n3,
+  #canvas-quiz-stats .mx-xl-n3 {
+    margin-right: -1rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-n3,
+  #canvas-quiz-stats .my-xl-n3 {
+    margin-bottom: -1rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-n3,
+  #canvas-quiz-stats .mx-xl-n3 {
+    margin-left: -1rem !important;
+  }
+  #canvas-quiz-stats .m-xl-n4 {
+    margin: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-n4,
+  #canvas-quiz-stats .my-xl-n4 {
+    margin-top: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-n4,
+  #canvas-quiz-stats .mx-xl-n4 {
+    margin-right: -1.5rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-n4,
+  #canvas-quiz-stats .my-xl-n4 {
+    margin-bottom: -1.5rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-n4,
+  #canvas-quiz-stats .mx-xl-n4 {
+    margin-left: -1.5rem !important;
+  }
+  #canvas-quiz-stats .m-xl-n5 {
+    margin: -3rem !important;
+  }
+  #canvas-quiz-stats .mt-xl-n5,
+  #canvas-quiz-stats .my-xl-n5 {
+    margin-top: -3rem !important;
+  }
+  #canvas-quiz-stats .mr-xl-n5,
+  #canvas-quiz-stats .mx-xl-n5 {
+    margin-right: -3rem !important;
+  }
+  #canvas-quiz-stats .mb-xl-n5,
+  #canvas-quiz-stats .my-xl-n5 {
+    margin-bottom: -3rem !important;
+  }
+  #canvas-quiz-stats .ml-xl-n5,
+  #canvas-quiz-stats .mx-xl-n5 {
+    margin-left: -3rem !important;
+  }
+  #canvas-quiz-stats .m-xl-auto {
+    margin: auto !important;
+  }
+  #canvas-quiz-stats .mt-xl-auto,
+  #canvas-quiz-stats .my-xl-auto {
+    margin-top: auto !important;
+  }
+  #canvas-quiz-stats .mr-xl-auto,
+  #canvas-quiz-stats .mx-xl-auto {
+    margin-right: auto !important;
+  }
+  #canvas-quiz-stats .mb-xl-auto,
+  #canvas-quiz-stats .my-xl-auto {
+    margin-bottom: auto !important;
+  }
+  #canvas-quiz-stats .ml-xl-auto,
+  #canvas-quiz-stats .mx-xl-auto {
+    margin-left: auto !important;
+  }
+}
+#canvas-quiz-stats .stretched-link::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: auto;
+  content: "";
+  background-color: rgba(0, 0, 0, 0);
+}
+#canvas-quiz-stats .text-monospace {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+#canvas-quiz-stats .text-justify {
+  text-align: justify !important;
+}
+#canvas-quiz-stats .text-wrap {
+  white-space: normal !important;
+}
+#canvas-quiz-stats .text-nowrap {
+  white-space: nowrap !important;
+}
+#canvas-quiz-stats .text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#canvas-quiz-stats .text-left {
+  text-align: left !important;
+}
+#canvas-quiz-stats .text-right {
+  text-align: right !important;
+}
+#canvas-quiz-stats .text-center {
+  text-align: center !important;
+}
+@media (min-width: 576px) {
+  #canvas-quiz-stats .text-sm-left {
+    text-align: left !important;
+  }
+  #canvas-quiz-stats .text-sm-right {
+    text-align: right !important;
+  }
+  #canvas-quiz-stats .text-sm-center {
+    text-align: center !important;
+  }
+}
+@media (min-width: 768px) {
+  #canvas-quiz-stats .text-md-left {
+    text-align: left !important;
+  }
+  #canvas-quiz-stats .text-md-right {
+    text-align: right !important;
+  }
+  #canvas-quiz-stats .text-md-center {
+    text-align: center !important;
+  }
+}
+@media (min-width: 992px) {
+  #canvas-quiz-stats .text-lg-left {
+    text-align: left !important;
+  }
+  #canvas-quiz-stats .text-lg-right {
+    text-align: right !important;
+  }
+  #canvas-quiz-stats .text-lg-center {
+    text-align: center !important;
+  }
+}
+@media (min-width: 1200px) {
+  #canvas-quiz-stats .text-xl-left {
+    text-align: left !important;
+  }
+  #canvas-quiz-stats .text-xl-right {
+    text-align: right !important;
+  }
+  #canvas-quiz-stats .text-xl-center {
+    text-align: center !important;
+  }
+}
+#canvas-quiz-stats .text-lowercase {
+  text-transform: lowercase !important;
+}
+#canvas-quiz-stats .text-uppercase {
+  text-transform: uppercase !important;
+}
+#canvas-quiz-stats .text-capitalize {
+  text-transform: capitalize !important;
+}
+#canvas-quiz-stats .font-weight-light {
+  font-weight: 300 !important;
+}
+#canvas-quiz-stats .font-weight-lighter {
+  font-weight: lighter !important;
+}
+#canvas-quiz-stats .font-weight-normal {
+  font-weight: 400 !important;
+}
+#canvas-quiz-stats .font-weight-bold {
+  font-weight: 700 !important;
+}
+#canvas-quiz-stats .font-weight-bolder {
+  font-weight: bolder !important;
+}
+#canvas-quiz-stats .font-italic {
+  font-style: italic !important;
+}
+#canvas-quiz-stats .text-white {
+  color: #fff !important;
+}
+#canvas-quiz-stats .text-primary {
+  color: #007bff !important;
+}
+#canvas-quiz-stats a.text-primary:hover,
+#canvas-quiz-stats a.text-primary:focus {
+  color: #0056b3 !important;
+}
+#canvas-quiz-stats .text-secondary {
+  color: #6c757d !important;
+}
+#canvas-quiz-stats a.text-secondary:hover,
+#canvas-quiz-stats a.text-secondary:focus {
+  color: #494f54 !important;
+}
+#canvas-quiz-stats .text-success {
+  color: #28a745 !important;
+}
+#canvas-quiz-stats a.text-success:hover,
+#canvas-quiz-stats a.text-success:focus {
+  color: #19692c !important;
+}
+#canvas-quiz-stats .text-info {
+  color: #17a2b8 !important;
+}
+#canvas-quiz-stats a.text-info:hover,
+#canvas-quiz-stats a.text-info:focus {
+  color: #0f6674 !important;
+}
+#canvas-quiz-stats .text-warning {
+  color: #ffc107 !important;
+}
+#canvas-quiz-stats a.text-warning:hover,
+#canvas-quiz-stats a.text-warning:focus {
+  color: #ba8b00 !important;
+}
+#canvas-quiz-stats .text-danger {
+  color: #dc3545 !important;
+}
+#canvas-quiz-stats a.text-danger:hover,
+#canvas-quiz-stats a.text-danger:focus {
+  color: #a71d2a !important;
+}
+#canvas-quiz-stats .text-light {
+  color: #f8f9fa !important;
+}
+#canvas-quiz-stats a.text-light:hover,
+#canvas-quiz-stats a.text-light:focus {
+  color: #cbd3da !important;
+}
+#canvas-quiz-stats .text-dark {
+  color: #343a40 !important;
+}
+#canvas-quiz-stats a.text-dark:hover,
+#canvas-quiz-stats a.text-dark:focus {
+  color: #121416 !important;
+}
+#canvas-quiz-stats .text-body {
+  color: #212529 !important;
+}
+#canvas-quiz-stats .text-muted {
+  color: #6c757d !important;
+}
+#canvas-quiz-stats .text-black-50 {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+#canvas-quiz-stats .text-white-50 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+#canvas-quiz-stats .text-hide {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+#canvas-quiz-stats .text-decoration-none {
+  text-decoration: none !important;
+}
+#canvas-quiz-stats .text-break {
+  word-break: break-word !important;
+  word-wrap: break-word !important;
+}
+#canvas-quiz-stats .text-reset {
+  color: inherit !important;
+}
+#canvas-quiz-stats .visible {
+  visibility: visible !important;
+}
+#canvas-quiz-stats .invisible {
+  visibility: hidden !important;
+}
+@media print {
+  #canvas-quiz-stats *,
+  #canvas-quiz-stats *::before,
+  #canvas-quiz-stats *::after {
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  #canvas-quiz-stats a:not(.btn) {
+    text-decoration: underline;
+  }
+  #canvas-quiz-stats abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+  #canvas-quiz-stats pre {
+    white-space: pre-wrap !important;
+  }
+  #canvas-quiz-stats pre,
+  #canvas-quiz-stats blockquote {
+    border: 1px solid #adb5bd;
+    page-break-inside: avoid;
+  }
+  #canvas-quiz-stats thead {
+    display: table-header-group;
+  }
+  #canvas-quiz-stats tr,
+  #canvas-quiz-stats img {
+    page-break-inside: avoid;
+  }
+  #canvas-quiz-stats p,
+  #canvas-quiz-stats h2,
+  #canvas-quiz-stats h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  #canvas-quiz-stats h2,
+  #canvas-quiz-stats h3 {
+    page-break-after: avoid;
+  }
+  @page {
+    size: a3;
+  }
+  #canvas-quiz-stats body {
+    min-width: 992px !important;
+  }
+  #canvas-quiz-stats .container {
+    min-width: 992px !important;
+  }
+  #canvas-quiz-stats .navbar {
+    display: none;
+  }
+  #canvas-quiz-stats .badge {
+    border: 1px solid #000;
+  }
+  #canvas-quiz-stats .table {
+    border-collapse: collapse !important;
+  }
+  #canvas-quiz-stats .table td,
+  #canvas-quiz-stats .table th {
+    background-color: #fff !important;
+  }
+  #canvas-quiz-stats .table-bordered th,
+  #canvas-quiz-stats .table-bordered td {
+    border: 1px solid #dee2e6 !important;
+  }
+  #canvas-quiz-stats .table-dark {
+    color: inherit;
+  }
+  #canvas-quiz-stats .table-dark th,
+  #canvas-quiz-stats .table-dark td,
+  #canvas-quiz-stats .table-dark thead th,
+  #canvas-quiz-stats .table-dark tbody + tbody {
+    border-color: #dee2e6;
+  }
+  #canvas-quiz-stats .table .thead-dark th {
+    color: inherit;
+    border-color: #dee2e6;
+  }
+}
+`;
   function _extends() {
     _extends = Object.assign ? Object.assign.bind() : function(target) {
       for (var i = 1; i < arguments.length; i++) {
@@ -9893,6 +19307,19 @@
     observer.observe(body, { childList: true, subtree: true });
     return observer;
   }
+  function injectStyles(css) {
+    const el2 = document.createElement("style");
+    el2.textContent = css;
+    if (document.head) {
+      document.head.appendChild(el2);
+    } else {
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => document.head.appendChild(el2),
+        { once: true }
+      );
+    }
+  }
   function getCSRFToken() {
     const csrfCookie = document.cookie.split(";").find((v2) => v2.trim().startsWith("_csrf_token="));
     if (csrfCookie) {
@@ -11673,7 +21100,173 @@
       ))
     )));
   }
-  log("React script has successfully started");
+  const CANVAS_ORIGINS = ["https://q.utoronto.ca"];
+  const GRADESCOPE_ORIGINS = [
+    "https://www.gradescope.ca",
+    "https://www.gradescope.com"
+  ];
+  const HASH_KEY = "gs";
+  function bridgeMessage(e) {
+    var _a;
+    return ((_a = e.data) == null ? void 0 : _a.gsBridge) ? e.data : null;
+  }
+  function canvasLinkFor(canvasUrl, gradescopeUrl) {
+    return `${canvasUrl}#${HASH_KEY}=${encodeURIComponent(gradescopeUrl)}`;
+  }
+  function whenReady(callback) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", callback, { once: true });
+    } else {
+      callback();
+    }
+  }
+  function isGradescope() {
+    return GRADESCOPE_ORIGINS.includes(window.location.origin);
+  }
+  function runInCanvas() {
+    var _a;
+    if (window.top !== window) {
+      return;
+    }
+    const canvasUrl = () => window.location.href.split("#")[0];
+    let pending = new URLSearchParams(window.location.hash.slice(1)).get(
+      HASH_KEY
+    );
+    window.addEventListener("message", (e) => {
+      const msg = bridgeMessage(e);
+      if (!GRADESCOPE_ORIGINS.includes(e.origin) || (msg == null ? void 0 : msg.type) !== "loaded") {
+        return;
+      }
+      const source = e.source;
+      const reply = (reply2) => source.postMessage({ gsBridge: true, ...reply2 }, e.origin);
+      if (pending) {
+        reply({ type: "navigate", url: pending });
+        pending = null;
+        return;
+      }
+      history.replaceState(
+        history.state,
+        "",
+        canvasLinkFor(canvasUrl(), msg.url)
+      );
+      reply({ type: "canvasUrl", url: canvasUrl() });
+    });
+    for (const frame of document.querySelectorAll("iframe")) {
+      (_a = frame.contentWindow) == null ? void 0 : _a.postMessage({ gsBridge: true, type: "ping" }, "*");
+    }
+  }
+  function runInGradescope() {
+    if (window.top === window || window.parent !== window.top) {
+      return;
+    }
+    const post = (msg) => {
+      for (const origin of CANVAS_ORIGINS) {
+        window.parent.postMessage({ gsBridge: true, ...msg }, origin);
+      }
+    };
+    const isLaunchPage = /^\/(auth|lti)\b/.test(window.location.pathname);
+    const announce = () => {
+      if (!isLaunchPage) {
+        post({ type: "loaded", url: window.location.href });
+      }
+    };
+    let canvasUrl = null;
+    const suspended = /* @__PURE__ */ new WeakSet();
+    window.addEventListener("message", (e) => {
+      const msg = bridgeMessage(e);
+      if (e.source !== window.parent || !CANVAS_ORIGINS.includes(e.origin) || !msg) {
+        return;
+      }
+      if (msg.type === "ping") {
+        announce();
+      } else if (msg.type === "navigate") {
+        const url = new URL(msg.url);
+        if (url.origin === window.location.origin) {
+          window.location.replace(url.href);
+        }
+      } else if (msg.type === "canvasUrl" && !canvasUrl) {
+        canvasUrl = msg.url;
+        whenReady(startRewriting);
+      }
+    });
+    announce();
+    function shouldRewrite(a) {
+      const raw = a.getAttribute("href");
+      if (!raw || raw.startsWith("#") || raw.startsWith("javascript:")) {
+        return false;
+      }
+      if (a.target && a.target !== "_self") {
+        return false;
+      }
+      if (a.hasAttribute("download") || a.dataset.method || a.dataset.remote) {
+        return false;
+      }
+      return new URL(a.href).origin === window.location.origin;
+    }
+    function rewrite(a) {
+      if (!canvasUrl || suspended.has(a) || a.getAttribute("href") === a.dataset.gsCanvasHref) {
+        return;
+      }
+      delete a.dataset.gsOriginalHref;
+      delete a.dataset.gsCanvasHref;
+      if (!shouldRewrite(a)) {
+        return;
+      }
+      const original = a.href;
+      const rewritten = canvasLinkFor(canvasUrl, original);
+      a.dataset.gsOriginalHref = original;
+      a.dataset.gsCanvasHref = rewritten;
+      a.setAttribute("href", rewritten);
+    }
+    function startRewriting() {
+      document.querySelectorAll("a[href]").forEach(rewrite);
+      new MutationObserver((records) => {
+        for (const record of records) {
+          if (record.type === "attributes") {
+            if (record.target instanceof HTMLAnchorElement) {
+              rewrite(record.target);
+            }
+            continue;
+          }
+          for (const node of record.addedNodes) {
+            if (!(node instanceof Element)) {
+              continue;
+            }
+            if (node instanceof HTMLAnchorElement) {
+              rewrite(node);
+            }
+            node.querySelectorAll("a[href]").forEach(rewrite);
+          }
+        }
+      }).observe(document.documentElement, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ["href"]
+      });
+      window.addEventListener(
+        "click",
+        (e) => {
+          if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey) {
+            return;
+          }
+          const a = e.target.closest(
+            "a[data-gs-original-href]"
+          );
+          if (!a || a.getAttribute("href") !== a.dataset.gsCanvasHref) {
+            return;
+          }
+          suspended.add(a);
+          a.setAttribute("href", a.dataset.gsOriginalHref);
+          window.setTimeout(() => {
+            suspended.delete(a);
+            rewrite(a);
+          }, 0);
+        },
+        true
+      );
+    }
+  }
   async function main() {
     const body = await awaitElement(".header-bar");
     const container = document.createElement("div");
@@ -11687,16 +21280,16 @@
       root.render(/* @__PURE__ */ React.createElement(App, null));
     }
   }
-  addLocationChangeCallback(() => {
-    main().catch((e) => {
-      log(e);
+  if (isGradescope()) {
+    runInGradescope();
+  } else {
+    log("React script has successfully started");
+    injectStyles(indexCss + appCss + bootstrapCss);
+    runInCanvas();
+    addLocationChangeCallback(() => {
+      main().catch((e) => {
+        log(e);
+      });
     });
-  });
+  }
 })();
-;
-(function(){
-                    const el = document.createElement("style");
-                    el.innerText = "body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\",\n    \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\",\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, \"Courier New\",\n    monospace;\n}\n.App {\n    text-align: center;\n}\n\n.App-logo {\n    height: 40vmin;\n}\n\n.App-header {\n    background-color: #282c34;\n    min-height: 100vh;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    font-size: calc(10px + 2vmin);\n    color: white;\n}\n\n.App-link {\n    color: #09d3ac;\n}\n\n.fullscreen-modal {\n    width: 95%;\n    max-width: 95% !important;\n}\n\n.query-input {\n    display: block;\n    width: 100%;\n}\n\n.question-container {\n    border-top: 1px solid black;\n    border-bottom: 1px solid black;\n    margin-bottom: 4px;\n}\n\n.question-answer-box {\n    margin-left: 2em;\n}\n.question-option.correct {\n    color: #559900;\n}\n.question-option.multiple_answers_question::before {\n    content: \"☐\";\n    font-weight: bold;\n    margin-right: 0.5em;\n}\n.question-option.multiple_answers_question.correct::before {\n    content: \"☒\";\n    color: #559900;\n}\n\n.question-option.multiple_choice_question::before {\n    content: \"◌\";\n    font-weight: bold;\n    margin-right: 0.5em;\n}\n.question-option.multiple_choice_question.correct::before {\n    content: \"●\";\n    color: #559900;\n}\n\n.group-container {\n    margin-left: 1em;\n    margin-top: 1em;\n}\n.question-group {\n    border-left: 4px solid rgb(10, 93, 202);\n    padding-left: 1em;\n}\n\n.question-id {\n    font-weight: bold;\n    color: blue;\n    margin-bottom: 0.3em;\n}\n#canvas-quiz-stats {\n  /*!\n * Bootstrap v4.5.3 (https://getbootstrap.com/)\n * Copyright 2011-2020 The Bootstrap Authors\n * Copyright 2011-2020 Twitter, Inc.\n * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)\n */\n  /*# sourceMappingURL=bootstrap.css.map */\n}\n#canvas-quiz-stats :root {\n  --blue: #007bff;\n  --indigo: #6610f2;\n  --purple: #6f42c1;\n  --pink: #e83e8c;\n  --red: #dc3545;\n  --orange: #fd7e14;\n  --yellow: #ffc107;\n  --green: #28a745;\n  --teal: #20c997;\n  --cyan: #17a2b8;\n  --white: #fff;\n  --gray: #6c757d;\n  --gray-dark: #343a40;\n  --primary: #007bff;\n  --secondary: #6c757d;\n  --success: #28a745;\n  --info: #17a2b8;\n  --warning: #ffc107;\n  --danger: #dc3545;\n  --light: #f8f9fa;\n  --dark: #343a40;\n  --breakpoint-xs: 0;\n  --breakpoint-sm: 576px;\n  --breakpoint-md: 768px;\n  --breakpoint-lg: 992px;\n  --breakpoint-xl: 1200px;\n  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;\n}\n#canvas-quiz-stats *,\n#canvas-quiz-stats *::before,\n#canvas-quiz-stats *::after {\n  box-sizing: border-box;\n}\n#canvas-quiz-stats html {\n  font-family: sans-serif;\n  line-height: 1.15;\n  -webkit-text-size-adjust: 100%;\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\n#canvas-quiz-stats article,\n#canvas-quiz-stats aside,\n#canvas-quiz-stats figcaption,\n#canvas-quiz-stats figure,\n#canvas-quiz-stats footer,\n#canvas-quiz-stats header,\n#canvas-quiz-stats hgroup,\n#canvas-quiz-stats main,\n#canvas-quiz-stats nav,\n#canvas-quiz-stats section {\n  display: block;\n}\n#canvas-quiz-stats body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n  font-size: 1rem;\n  font-weight: 400;\n  line-height: 1.5;\n  color: #212529;\n  text-align: left;\n  background-color: #fff;\n}\n#canvas-quiz-stats [tabindex=\"-1\"]:focus:not(:focus-visible) {\n  outline: 0 !important;\n}\n#canvas-quiz-stats hr {\n  box-sizing: content-box;\n  height: 0;\n  overflow: visible;\n}\n#canvas-quiz-stats h1,\n#canvas-quiz-stats h2,\n#canvas-quiz-stats h3,\n#canvas-quiz-stats h4,\n#canvas-quiz-stats h5,\n#canvas-quiz-stats h6 {\n  margin-top: 0;\n  margin-bottom: 0.5rem;\n}\n#canvas-quiz-stats p {\n  margin-top: 0;\n  margin-bottom: 1rem;\n}\n#canvas-quiz-stats abbr[title],\n#canvas-quiz-stats abbr[data-original-title] {\n  text-decoration: underline;\n  -webkit-text-decoration: underline dotted;\n  text-decoration: underline dotted;\n  cursor: help;\n  border-bottom: 0;\n  -webkit-text-decoration-skip-ink: none;\n  text-decoration-skip-ink: none;\n}\n#canvas-quiz-stats address {\n  margin-bottom: 1rem;\n  font-style: normal;\n  line-height: inherit;\n}\n#canvas-quiz-stats ol,\n#canvas-quiz-stats ul,\n#canvas-quiz-stats dl {\n  margin-top: 0;\n  margin-bottom: 1rem;\n}\n#canvas-quiz-stats ol ol,\n#canvas-quiz-stats ul ul,\n#canvas-quiz-stats ol ul,\n#canvas-quiz-stats ul ol {\n  margin-bottom: 0;\n}\n#canvas-quiz-stats dt {\n  font-weight: 700;\n}\n#canvas-quiz-stats dd {\n  margin-bottom: 0.5rem;\n  margin-left: 0;\n}\n#canvas-quiz-stats blockquote {\n  margin: 0 0 1rem;\n}\n#canvas-quiz-stats b,\n#canvas-quiz-stats strong {\n  font-weight: bolder;\n}\n#canvas-quiz-stats small {\n  font-size: 80%;\n}\n#canvas-quiz-stats sub,\n#canvas-quiz-stats sup {\n  position: relative;\n  font-size: 75%;\n  line-height: 0;\n  vertical-align: baseline;\n}\n#canvas-quiz-stats sub {\n  bottom: -0.25em;\n}\n#canvas-quiz-stats sup {\n  top: -0.5em;\n}\n#canvas-quiz-stats a {\n  color: #007bff;\n  text-decoration: none;\n  background-color: transparent;\n}\n#canvas-quiz-stats a:hover {\n  color: #0056b3;\n  text-decoration: underline;\n}\n#canvas-quiz-stats a:not([href]):not([class]) {\n  color: inherit;\n  text-decoration: none;\n}\n#canvas-quiz-stats a:not([href]):not([class]):hover {\n  color: inherit;\n  text-decoration: none;\n}\n#canvas-quiz-stats pre,\n#canvas-quiz-stats code,\n#canvas-quiz-stats kbd,\n#canvas-quiz-stats samp {\n  font-family: SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;\n  font-size: 1em;\n}\n#canvas-quiz-stats pre {\n  margin-top: 0;\n  margin-bottom: 1rem;\n  overflow: auto;\n  -ms-overflow-style: scrollbar;\n}\n#canvas-quiz-stats figure {\n  margin: 0 0 1rem;\n}\n#canvas-quiz-stats img {\n  vertical-align: middle;\n  border-style: none;\n}\n#canvas-quiz-stats svg {\n  overflow: hidden;\n  vertical-align: middle;\n}\n#canvas-quiz-stats table {\n  border-collapse: collapse;\n}\n#canvas-quiz-stats caption {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n  color: #6c757d;\n  text-align: left;\n  caption-side: bottom;\n}\n#canvas-quiz-stats th {\n  text-align: inherit;\n  text-align: -webkit-match-parent;\n}\n#canvas-quiz-stats label {\n  display: inline-block;\n  margin-bottom: 0.5rem;\n}\n#canvas-quiz-stats button {\n  border-radius: 0;\n}\n#canvas-quiz-stats button:focus {\n  outline: 1px dotted;\n  outline: 5px auto -webkit-focus-ring-color;\n}\n#canvas-quiz-stats input,\n#canvas-quiz-stats button,\n#canvas-quiz-stats select,\n#canvas-quiz-stats optgroup,\n#canvas-quiz-stats textarea {\n  margin: 0;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: inherit;\n}\n#canvas-quiz-stats button,\n#canvas-quiz-stats input {\n  overflow: visible;\n}\n#canvas-quiz-stats button,\n#canvas-quiz-stats select {\n  text-transform: none;\n}\n#canvas-quiz-stats [role=\"button\"] {\n  cursor: pointer;\n}\n#canvas-quiz-stats select {\n  word-wrap: normal;\n}\n#canvas-quiz-stats button,\n#canvas-quiz-stats [type=\"button\"],\n#canvas-quiz-stats [type=\"reset\"],\n#canvas-quiz-stats [type=\"submit\"] {\n  -webkit-appearance: button;\n}\n#canvas-quiz-stats button:not(:disabled),\n#canvas-quiz-stats [type=\"button\"]:not(:disabled),\n#canvas-quiz-stats [type=\"reset\"]:not(:disabled),\n#canvas-quiz-stats [type=\"submit\"]:not(:disabled) {\n  cursor: pointer;\n}\n#canvas-quiz-stats button::-moz-focus-inner,\n#canvas-quiz-stats [type=\"button\"]::-moz-focus-inner,\n#canvas-quiz-stats [type=\"reset\"]::-moz-focus-inner,\n#canvas-quiz-stats [type=\"submit\"]::-moz-focus-inner {\n  padding: 0;\n  border-style: none;\n}\n#canvas-quiz-stats input[type=\"radio\"],\n#canvas-quiz-stats input[type=\"checkbox\"] {\n  box-sizing: border-box;\n  padding: 0;\n}\n#canvas-quiz-stats textarea {\n  overflow: auto;\n  resize: vertical;\n}\n#canvas-quiz-stats fieldset {\n  min-width: 0;\n  padding: 0;\n  margin: 0;\n  border: 0;\n}\n#canvas-quiz-stats legend {\n  display: block;\n  width: 100%;\n  max-width: 100%;\n  padding: 0;\n  margin-bottom: 0.5rem;\n  font-size: 1.5rem;\n  line-height: inherit;\n  color: inherit;\n  white-space: normal;\n}\n#canvas-quiz-stats progress {\n  vertical-align: baseline;\n}\n#canvas-quiz-stats [type=\"number\"]::-webkit-inner-spin-button,\n#canvas-quiz-stats [type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n#canvas-quiz-stats [type=\"search\"] {\n  outline-offset: -2px;\n  -webkit-appearance: none;\n}\n#canvas-quiz-stats [type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n#canvas-quiz-stats ::-webkit-file-upload-button {\n  font: inherit;\n  -webkit-appearance: button;\n}\n#canvas-quiz-stats output {\n  display: inline-block;\n}\n#canvas-quiz-stats summary {\n  display: list-item;\n  cursor: pointer;\n}\n#canvas-quiz-stats template {\n  display: none;\n}\n#canvas-quiz-stats [hidden] {\n  display: none !important;\n}\n#canvas-quiz-stats h1,\n#canvas-quiz-stats h2,\n#canvas-quiz-stats h3,\n#canvas-quiz-stats h4,\n#canvas-quiz-stats h5,\n#canvas-quiz-stats h6,\n#canvas-quiz-stats .h1,\n#canvas-quiz-stats .h2,\n#canvas-quiz-stats .h3,\n#canvas-quiz-stats .h4,\n#canvas-quiz-stats .h5,\n#canvas-quiz-stats .h6 {\n  margin-bottom: 0.5rem;\n  font-weight: 500;\n  line-height: 1.2;\n}\n#canvas-quiz-stats h1,\n#canvas-quiz-stats .h1 {\n  font-size: 2.5rem;\n}\n#canvas-quiz-stats h2,\n#canvas-quiz-stats .h2 {\n  font-size: 2rem;\n}\n#canvas-quiz-stats h3,\n#canvas-quiz-stats .h3 {\n  font-size: 1.75rem;\n}\n#canvas-quiz-stats h4,\n#canvas-quiz-stats .h4 {\n  font-size: 1.5rem;\n}\n#canvas-quiz-stats h5,\n#canvas-quiz-stats .h5 {\n  font-size: 1.25rem;\n}\n#canvas-quiz-stats h6,\n#canvas-quiz-stats .h6 {\n  font-size: 1rem;\n}\n#canvas-quiz-stats .lead {\n  font-size: 1.25rem;\n  font-weight: 300;\n}\n#canvas-quiz-stats .display-1 {\n  font-size: 6rem;\n  font-weight: 300;\n  line-height: 1.2;\n}\n#canvas-quiz-stats .display-2 {\n  font-size: 5.5rem;\n  font-weight: 300;\n  line-height: 1.2;\n}\n#canvas-quiz-stats .display-3 {\n  font-size: 4.5rem;\n  font-weight: 300;\n  line-height: 1.2;\n}\n#canvas-quiz-stats .display-4 {\n  font-size: 3.5rem;\n  font-weight: 300;\n  line-height: 1.2;\n}\n#canvas-quiz-stats hr {\n  margin-top: 1rem;\n  margin-bottom: 1rem;\n  border: 0;\n  border-top: 1px solid rgba(0, 0, 0, 0.1);\n}\n#canvas-quiz-stats small,\n#canvas-quiz-stats .small {\n  font-size: 80%;\n  font-weight: 400;\n}\n#canvas-quiz-stats mark,\n#canvas-quiz-stats .mark {\n  padding: 0.2em;\n  background-color: #fcf8e3;\n}\n#canvas-quiz-stats .list-unstyled {\n  padding-left: 0;\n  list-style: none;\n}\n#canvas-quiz-stats .list-inline {\n  padding-left: 0;\n  list-style: none;\n}\n#canvas-quiz-stats .list-inline-item {\n  display: inline-block;\n}\n#canvas-quiz-stats .list-inline-item:not(:last-child) {\n  margin-right: 0.5rem;\n}\n#canvas-quiz-stats .initialism {\n  font-size: 90%;\n  text-transform: uppercase;\n}\n#canvas-quiz-stats .blockquote {\n  margin-bottom: 1rem;\n  font-size: 1.25rem;\n}\n#canvas-quiz-stats .blockquote-footer {\n  display: block;\n  font-size: 80%;\n  color: #6c757d;\n}\n#canvas-quiz-stats .blockquote-footer::before {\n  content: \"\\2014\\00A0\";\n}\n#canvas-quiz-stats .img-fluid {\n  max-width: 100%;\n  height: auto;\n}\n#canvas-quiz-stats .img-thumbnail {\n  padding: 0.25rem;\n  background-color: #fff;\n  border: 1px solid #dee2e6;\n  border-radius: 0.25rem;\n  max-width: 100%;\n  height: auto;\n}\n#canvas-quiz-stats .figure {\n  display: inline-block;\n}\n#canvas-quiz-stats .figure-img {\n  margin-bottom: 0.5rem;\n  line-height: 1;\n}\n#canvas-quiz-stats .figure-caption {\n  font-size: 90%;\n  color: #6c757d;\n}\n#canvas-quiz-stats code {\n  font-size: 87.5%;\n  color: #e83e8c;\n  word-wrap: break-word;\n}\n#canvas-quiz-stats a > code {\n  color: inherit;\n}\n#canvas-quiz-stats kbd {\n  padding: 0.2rem 0.4rem;\n  font-size: 87.5%;\n  color: #fff;\n  background-color: #212529;\n  border-radius: 0.2rem;\n}\n#canvas-quiz-stats kbd kbd {\n  padding: 0;\n  font-size: 100%;\n  font-weight: 700;\n}\n#canvas-quiz-stats pre {\n  display: block;\n  font-size: 87.5%;\n  color: #212529;\n}\n#canvas-quiz-stats pre code {\n  font-size: inherit;\n  color: inherit;\n  word-break: normal;\n}\n#canvas-quiz-stats .pre-scrollable {\n  max-height: 340px;\n  overflow-y: scroll;\n}\n#canvas-quiz-stats .container,\n#canvas-quiz-stats .container-fluid,\n#canvas-quiz-stats .container-sm,\n#canvas-quiz-stats .container-md,\n#canvas-quiz-stats .container-lg,\n#canvas-quiz-stats .container-xl {\n  width: 100%;\n  padding-right: 15px;\n  padding-left: 15px;\n  margin-right: auto;\n  margin-left: auto;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .container,\n  #canvas-quiz-stats .container-sm {\n    max-width: 540px;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .container,\n  #canvas-quiz-stats .container-sm,\n  #canvas-quiz-stats .container-md {\n    max-width: 720px;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .container,\n  #canvas-quiz-stats .container-sm,\n  #canvas-quiz-stats .container-md,\n  #canvas-quiz-stats .container-lg {\n    max-width: 960px;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .container,\n  #canvas-quiz-stats .container-sm,\n  #canvas-quiz-stats .container-md,\n  #canvas-quiz-stats .container-lg,\n  #canvas-quiz-stats .container-xl {\n    max-width: 1140px;\n  }\n}\n#canvas-quiz-stats .row {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n#canvas-quiz-stats .no-gutters {\n  margin-right: 0;\n  margin-left: 0;\n}\n#canvas-quiz-stats .no-gutters > .col,\n#canvas-quiz-stats .no-gutters > [class*=\"col-\"] {\n  padding-right: 0;\n  padding-left: 0;\n}\n#canvas-quiz-stats .col-1,\n#canvas-quiz-stats .col-2,\n#canvas-quiz-stats .col-3,\n#canvas-quiz-stats .col-4,\n#canvas-quiz-stats .col-5,\n#canvas-quiz-stats .col-6,\n#canvas-quiz-stats .col-7,\n#canvas-quiz-stats .col-8,\n#canvas-quiz-stats .col-9,\n#canvas-quiz-stats .col-10,\n#canvas-quiz-stats .col-11,\n#canvas-quiz-stats .col-12,\n#canvas-quiz-stats .col,\n#canvas-quiz-stats .col-auto,\n#canvas-quiz-stats .col-sm-1,\n#canvas-quiz-stats .col-sm-2,\n#canvas-quiz-stats .col-sm-3,\n#canvas-quiz-stats .col-sm-4,\n#canvas-quiz-stats .col-sm-5,\n#canvas-quiz-stats .col-sm-6,\n#canvas-quiz-stats .col-sm-7,\n#canvas-quiz-stats .col-sm-8,\n#canvas-quiz-stats .col-sm-9,\n#canvas-quiz-stats .col-sm-10,\n#canvas-quiz-stats .col-sm-11,\n#canvas-quiz-stats .col-sm-12,\n#canvas-quiz-stats .col-sm,\n#canvas-quiz-stats .col-sm-auto,\n#canvas-quiz-stats .col-md-1,\n#canvas-quiz-stats .col-md-2,\n#canvas-quiz-stats .col-md-3,\n#canvas-quiz-stats .col-md-4,\n#canvas-quiz-stats .col-md-5,\n#canvas-quiz-stats .col-md-6,\n#canvas-quiz-stats .col-md-7,\n#canvas-quiz-stats .col-md-8,\n#canvas-quiz-stats .col-md-9,\n#canvas-quiz-stats .col-md-10,\n#canvas-quiz-stats .col-md-11,\n#canvas-quiz-stats .col-md-12,\n#canvas-quiz-stats .col-md,\n#canvas-quiz-stats .col-md-auto,\n#canvas-quiz-stats .col-lg-1,\n#canvas-quiz-stats .col-lg-2,\n#canvas-quiz-stats .col-lg-3,\n#canvas-quiz-stats .col-lg-4,\n#canvas-quiz-stats .col-lg-5,\n#canvas-quiz-stats .col-lg-6,\n#canvas-quiz-stats .col-lg-7,\n#canvas-quiz-stats .col-lg-8,\n#canvas-quiz-stats .col-lg-9,\n#canvas-quiz-stats .col-lg-10,\n#canvas-quiz-stats .col-lg-11,\n#canvas-quiz-stats .col-lg-12,\n#canvas-quiz-stats .col-lg,\n#canvas-quiz-stats .col-lg-auto,\n#canvas-quiz-stats .col-xl-1,\n#canvas-quiz-stats .col-xl-2,\n#canvas-quiz-stats .col-xl-3,\n#canvas-quiz-stats .col-xl-4,\n#canvas-quiz-stats .col-xl-5,\n#canvas-quiz-stats .col-xl-6,\n#canvas-quiz-stats .col-xl-7,\n#canvas-quiz-stats .col-xl-8,\n#canvas-quiz-stats .col-xl-9,\n#canvas-quiz-stats .col-xl-10,\n#canvas-quiz-stats .col-xl-11,\n#canvas-quiz-stats .col-xl-12,\n#canvas-quiz-stats .col-xl,\n#canvas-quiz-stats .col-xl-auto {\n  position: relative;\n  width: 100%;\n  padding-right: 15px;\n  padding-left: 15px;\n}\n#canvas-quiz-stats .col {\n  -ms-flex-preferred-size: 0;\n  flex-basis: 0;\n  -ms-flex-positive: 1;\n  flex-grow: 1;\n  max-width: 100%;\n}\n#canvas-quiz-stats .row-cols-1 > * {\n  -ms-flex: 0 0 100%;\n  flex: 0 0 100%;\n  max-width: 100%;\n}\n#canvas-quiz-stats .row-cols-2 > * {\n  -ms-flex: 0 0 50%;\n  flex: 0 0 50%;\n  max-width: 50%;\n}\n#canvas-quiz-stats .row-cols-3 > * {\n  -ms-flex: 0 0 33.333333%;\n  flex: 0 0 33.333333%;\n  max-width: 33.333333%;\n}\n#canvas-quiz-stats .row-cols-4 > * {\n  -ms-flex: 0 0 25%;\n  flex: 0 0 25%;\n  max-width: 25%;\n}\n#canvas-quiz-stats .row-cols-5 > * {\n  -ms-flex: 0 0 20%;\n  flex: 0 0 20%;\n  max-width: 20%;\n}\n#canvas-quiz-stats .row-cols-6 > * {\n  -ms-flex: 0 0 16.666667%;\n  flex: 0 0 16.666667%;\n  max-width: 16.666667%;\n}\n#canvas-quiz-stats .col-auto {\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto;\n  width: auto;\n  max-width: 100%;\n}\n#canvas-quiz-stats .col-1 {\n  -ms-flex: 0 0 8.333333%;\n  flex: 0 0 8.333333%;\n  max-width: 8.333333%;\n}\n#canvas-quiz-stats .col-2 {\n  -ms-flex: 0 0 16.666667%;\n  flex: 0 0 16.666667%;\n  max-width: 16.666667%;\n}\n#canvas-quiz-stats .col-3 {\n  -ms-flex: 0 0 25%;\n  flex: 0 0 25%;\n  max-width: 25%;\n}\n#canvas-quiz-stats .col-4 {\n  -ms-flex: 0 0 33.333333%;\n  flex: 0 0 33.333333%;\n  max-width: 33.333333%;\n}\n#canvas-quiz-stats .col-5 {\n  -ms-flex: 0 0 41.666667%;\n  flex: 0 0 41.666667%;\n  max-width: 41.666667%;\n}\n#canvas-quiz-stats .col-6 {\n  -ms-flex: 0 0 50%;\n  flex: 0 0 50%;\n  max-width: 50%;\n}\n#canvas-quiz-stats .col-7 {\n  -ms-flex: 0 0 58.333333%;\n  flex: 0 0 58.333333%;\n  max-width: 58.333333%;\n}\n#canvas-quiz-stats .col-8 {\n  -ms-flex: 0 0 66.666667%;\n  flex: 0 0 66.666667%;\n  max-width: 66.666667%;\n}\n#canvas-quiz-stats .col-9 {\n  -ms-flex: 0 0 75%;\n  flex: 0 0 75%;\n  max-width: 75%;\n}\n#canvas-quiz-stats .col-10 {\n  -ms-flex: 0 0 83.333333%;\n  flex: 0 0 83.333333%;\n  max-width: 83.333333%;\n}\n#canvas-quiz-stats .col-11 {\n  -ms-flex: 0 0 91.666667%;\n  flex: 0 0 91.666667%;\n  max-width: 91.666667%;\n}\n#canvas-quiz-stats .col-12 {\n  -ms-flex: 0 0 100%;\n  flex: 0 0 100%;\n  max-width: 100%;\n}\n#canvas-quiz-stats .order-first {\n  -ms-flex-order: -1;\n  order: -1;\n}\n#canvas-quiz-stats .order-last {\n  -ms-flex-order: 13;\n  order: 13;\n}\n#canvas-quiz-stats .order-0 {\n  -ms-flex-order: 0;\n  order: 0;\n}\n#canvas-quiz-stats .order-1 {\n  -ms-flex-order: 1;\n  order: 1;\n}\n#canvas-quiz-stats .order-2 {\n  -ms-flex-order: 2;\n  order: 2;\n}\n#canvas-quiz-stats .order-3 {\n  -ms-flex-order: 3;\n  order: 3;\n}\n#canvas-quiz-stats .order-4 {\n  -ms-flex-order: 4;\n  order: 4;\n}\n#canvas-quiz-stats .order-5 {\n  -ms-flex-order: 5;\n  order: 5;\n}\n#canvas-quiz-stats .order-6 {\n  -ms-flex-order: 6;\n  order: 6;\n}\n#canvas-quiz-stats .order-7 {\n  -ms-flex-order: 7;\n  order: 7;\n}\n#canvas-quiz-stats .order-8 {\n  -ms-flex-order: 8;\n  order: 8;\n}\n#canvas-quiz-stats .order-9 {\n  -ms-flex-order: 9;\n  order: 9;\n}\n#canvas-quiz-stats .order-10 {\n  -ms-flex-order: 10;\n  order: 10;\n}\n#canvas-quiz-stats .order-11 {\n  -ms-flex-order: 11;\n  order: 11;\n}\n#canvas-quiz-stats .order-12 {\n  -ms-flex-order: 12;\n  order: 12;\n}\n#canvas-quiz-stats .offset-1 {\n  margin-left: 8.333333%;\n}\n#canvas-quiz-stats .offset-2 {\n  margin-left: 16.666667%;\n}\n#canvas-quiz-stats .offset-3 {\n  margin-left: 25%;\n}\n#canvas-quiz-stats .offset-4 {\n  margin-left: 33.333333%;\n}\n#canvas-quiz-stats .offset-5 {\n  margin-left: 41.666667%;\n}\n#canvas-quiz-stats .offset-6 {\n  margin-left: 50%;\n}\n#canvas-quiz-stats .offset-7 {\n  margin-left: 58.333333%;\n}\n#canvas-quiz-stats .offset-8 {\n  margin-left: 66.666667%;\n}\n#canvas-quiz-stats .offset-9 {\n  margin-left: 75%;\n}\n#canvas-quiz-stats .offset-10 {\n  margin-left: 83.333333%;\n}\n#canvas-quiz-stats .offset-11 {\n  margin-left: 91.666667%;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .col-sm {\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    -ms-flex-positive: 1;\n    flex-grow: 1;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-sm-1 > * {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-sm-2 > * {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .row-cols-sm-3 > * {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .row-cols-sm-4 > * {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .row-cols-sm-5 > * {\n    -ms-flex: 0 0 20%;\n    flex: 0 0 20%;\n    max-width: 20%;\n  }\n  #canvas-quiz-stats .row-cols-sm-6 > * {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-sm-auto {\n    -ms-flex: 0 0 auto;\n    flex: 0 0 auto;\n    width: auto;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .col-sm-1 {\n    -ms-flex: 0 0 8.333333%;\n    flex: 0 0 8.333333%;\n    max-width: 8.333333%;\n  }\n  #canvas-quiz-stats .col-sm-2 {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-sm-3 {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .col-sm-4 {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .col-sm-5 {\n    -ms-flex: 0 0 41.666667%;\n    flex: 0 0 41.666667%;\n    max-width: 41.666667%;\n  }\n  #canvas-quiz-stats .col-sm-6 {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .col-sm-7 {\n    -ms-flex: 0 0 58.333333%;\n    flex: 0 0 58.333333%;\n    max-width: 58.333333%;\n  }\n  #canvas-quiz-stats .col-sm-8 {\n    -ms-flex: 0 0 66.666667%;\n    flex: 0 0 66.666667%;\n    max-width: 66.666667%;\n  }\n  #canvas-quiz-stats .col-sm-9 {\n    -ms-flex: 0 0 75%;\n    flex: 0 0 75%;\n    max-width: 75%;\n  }\n  #canvas-quiz-stats .col-sm-10 {\n    -ms-flex: 0 0 83.333333%;\n    flex: 0 0 83.333333%;\n    max-width: 83.333333%;\n  }\n  #canvas-quiz-stats .col-sm-11 {\n    -ms-flex: 0 0 91.666667%;\n    flex: 0 0 91.666667%;\n    max-width: 91.666667%;\n  }\n  #canvas-quiz-stats .col-sm-12 {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .order-sm-first {\n    -ms-flex-order: -1;\n    order: -1;\n  }\n  #canvas-quiz-stats .order-sm-last {\n    -ms-flex-order: 13;\n    order: 13;\n  }\n  #canvas-quiz-stats .order-sm-0 {\n    -ms-flex-order: 0;\n    order: 0;\n  }\n  #canvas-quiz-stats .order-sm-1 {\n    -ms-flex-order: 1;\n    order: 1;\n  }\n  #canvas-quiz-stats .order-sm-2 {\n    -ms-flex-order: 2;\n    order: 2;\n  }\n  #canvas-quiz-stats .order-sm-3 {\n    -ms-flex-order: 3;\n    order: 3;\n  }\n  #canvas-quiz-stats .order-sm-4 {\n    -ms-flex-order: 4;\n    order: 4;\n  }\n  #canvas-quiz-stats .order-sm-5 {\n    -ms-flex-order: 5;\n    order: 5;\n  }\n  #canvas-quiz-stats .order-sm-6 {\n    -ms-flex-order: 6;\n    order: 6;\n  }\n  #canvas-quiz-stats .order-sm-7 {\n    -ms-flex-order: 7;\n    order: 7;\n  }\n  #canvas-quiz-stats .order-sm-8 {\n    -ms-flex-order: 8;\n    order: 8;\n  }\n  #canvas-quiz-stats .order-sm-9 {\n    -ms-flex-order: 9;\n    order: 9;\n  }\n  #canvas-quiz-stats .order-sm-10 {\n    -ms-flex-order: 10;\n    order: 10;\n  }\n  #canvas-quiz-stats .order-sm-11 {\n    -ms-flex-order: 11;\n    order: 11;\n  }\n  #canvas-quiz-stats .order-sm-12 {\n    -ms-flex-order: 12;\n    order: 12;\n  }\n  #canvas-quiz-stats .offset-sm-0 {\n    margin-left: 0;\n  }\n  #canvas-quiz-stats .offset-sm-1 {\n    margin-left: 8.333333%;\n  }\n  #canvas-quiz-stats .offset-sm-2 {\n    margin-left: 16.666667%;\n  }\n  #canvas-quiz-stats .offset-sm-3 {\n    margin-left: 25%;\n  }\n  #canvas-quiz-stats .offset-sm-4 {\n    margin-left: 33.333333%;\n  }\n  #canvas-quiz-stats .offset-sm-5 {\n    margin-left: 41.666667%;\n  }\n  #canvas-quiz-stats .offset-sm-6 {\n    margin-left: 50%;\n  }\n  #canvas-quiz-stats .offset-sm-7 {\n    margin-left: 58.333333%;\n  }\n  #canvas-quiz-stats .offset-sm-8 {\n    margin-left: 66.666667%;\n  }\n  #canvas-quiz-stats .offset-sm-9 {\n    margin-left: 75%;\n  }\n  #canvas-quiz-stats .offset-sm-10 {\n    margin-left: 83.333333%;\n  }\n  #canvas-quiz-stats .offset-sm-11 {\n    margin-left: 91.666667%;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .col-md {\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    -ms-flex-positive: 1;\n    flex-grow: 1;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-md-1 > * {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-md-2 > * {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .row-cols-md-3 > * {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .row-cols-md-4 > * {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .row-cols-md-5 > * {\n    -ms-flex: 0 0 20%;\n    flex: 0 0 20%;\n    max-width: 20%;\n  }\n  #canvas-quiz-stats .row-cols-md-6 > * {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-md-auto {\n    -ms-flex: 0 0 auto;\n    flex: 0 0 auto;\n    width: auto;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .col-md-1 {\n    -ms-flex: 0 0 8.333333%;\n    flex: 0 0 8.333333%;\n    max-width: 8.333333%;\n  }\n  #canvas-quiz-stats .col-md-2 {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-md-3 {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .col-md-4 {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .col-md-5 {\n    -ms-flex: 0 0 41.666667%;\n    flex: 0 0 41.666667%;\n    max-width: 41.666667%;\n  }\n  #canvas-quiz-stats .col-md-6 {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .col-md-7 {\n    -ms-flex: 0 0 58.333333%;\n    flex: 0 0 58.333333%;\n    max-width: 58.333333%;\n  }\n  #canvas-quiz-stats .col-md-8 {\n    -ms-flex: 0 0 66.666667%;\n    flex: 0 0 66.666667%;\n    max-width: 66.666667%;\n  }\n  #canvas-quiz-stats .col-md-9 {\n    -ms-flex: 0 0 75%;\n    flex: 0 0 75%;\n    max-width: 75%;\n  }\n  #canvas-quiz-stats .col-md-10 {\n    -ms-flex: 0 0 83.333333%;\n    flex: 0 0 83.333333%;\n    max-width: 83.333333%;\n  }\n  #canvas-quiz-stats .col-md-11 {\n    -ms-flex: 0 0 91.666667%;\n    flex: 0 0 91.666667%;\n    max-width: 91.666667%;\n  }\n  #canvas-quiz-stats .col-md-12 {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .order-md-first {\n    -ms-flex-order: -1;\n    order: -1;\n  }\n  #canvas-quiz-stats .order-md-last {\n    -ms-flex-order: 13;\n    order: 13;\n  }\n  #canvas-quiz-stats .order-md-0 {\n    -ms-flex-order: 0;\n    order: 0;\n  }\n  #canvas-quiz-stats .order-md-1 {\n    -ms-flex-order: 1;\n    order: 1;\n  }\n  #canvas-quiz-stats .order-md-2 {\n    -ms-flex-order: 2;\n    order: 2;\n  }\n  #canvas-quiz-stats .order-md-3 {\n    -ms-flex-order: 3;\n    order: 3;\n  }\n  #canvas-quiz-stats .order-md-4 {\n    -ms-flex-order: 4;\n    order: 4;\n  }\n  #canvas-quiz-stats .order-md-5 {\n    -ms-flex-order: 5;\n    order: 5;\n  }\n  #canvas-quiz-stats .order-md-6 {\n    -ms-flex-order: 6;\n    order: 6;\n  }\n  #canvas-quiz-stats .order-md-7 {\n    -ms-flex-order: 7;\n    order: 7;\n  }\n  #canvas-quiz-stats .order-md-8 {\n    -ms-flex-order: 8;\n    order: 8;\n  }\n  #canvas-quiz-stats .order-md-9 {\n    -ms-flex-order: 9;\n    order: 9;\n  }\n  #canvas-quiz-stats .order-md-10 {\n    -ms-flex-order: 10;\n    order: 10;\n  }\n  #canvas-quiz-stats .order-md-11 {\n    -ms-flex-order: 11;\n    order: 11;\n  }\n  #canvas-quiz-stats .order-md-12 {\n    -ms-flex-order: 12;\n    order: 12;\n  }\n  #canvas-quiz-stats .offset-md-0 {\n    margin-left: 0;\n  }\n  #canvas-quiz-stats .offset-md-1 {\n    margin-left: 8.333333%;\n  }\n  #canvas-quiz-stats .offset-md-2 {\n    margin-left: 16.666667%;\n  }\n  #canvas-quiz-stats .offset-md-3 {\n    margin-left: 25%;\n  }\n  #canvas-quiz-stats .offset-md-4 {\n    margin-left: 33.333333%;\n  }\n  #canvas-quiz-stats .offset-md-5 {\n    margin-left: 41.666667%;\n  }\n  #canvas-quiz-stats .offset-md-6 {\n    margin-left: 50%;\n  }\n  #canvas-quiz-stats .offset-md-7 {\n    margin-left: 58.333333%;\n  }\n  #canvas-quiz-stats .offset-md-8 {\n    margin-left: 66.666667%;\n  }\n  #canvas-quiz-stats .offset-md-9 {\n    margin-left: 75%;\n  }\n  #canvas-quiz-stats .offset-md-10 {\n    margin-left: 83.333333%;\n  }\n  #canvas-quiz-stats .offset-md-11 {\n    margin-left: 91.666667%;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .col-lg {\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    -ms-flex-positive: 1;\n    flex-grow: 1;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-lg-1 > * {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-lg-2 > * {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .row-cols-lg-3 > * {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .row-cols-lg-4 > * {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .row-cols-lg-5 > * {\n    -ms-flex: 0 0 20%;\n    flex: 0 0 20%;\n    max-width: 20%;\n  }\n  #canvas-quiz-stats .row-cols-lg-6 > * {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-lg-auto {\n    -ms-flex: 0 0 auto;\n    flex: 0 0 auto;\n    width: auto;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .col-lg-1 {\n    -ms-flex: 0 0 8.333333%;\n    flex: 0 0 8.333333%;\n    max-width: 8.333333%;\n  }\n  #canvas-quiz-stats .col-lg-2 {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-lg-3 {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .col-lg-4 {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .col-lg-5 {\n    -ms-flex: 0 0 41.666667%;\n    flex: 0 0 41.666667%;\n    max-width: 41.666667%;\n  }\n  #canvas-quiz-stats .col-lg-6 {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .col-lg-7 {\n    -ms-flex: 0 0 58.333333%;\n    flex: 0 0 58.333333%;\n    max-width: 58.333333%;\n  }\n  #canvas-quiz-stats .col-lg-8 {\n    -ms-flex: 0 0 66.666667%;\n    flex: 0 0 66.666667%;\n    max-width: 66.666667%;\n  }\n  #canvas-quiz-stats .col-lg-9 {\n    -ms-flex: 0 0 75%;\n    flex: 0 0 75%;\n    max-width: 75%;\n  }\n  #canvas-quiz-stats .col-lg-10 {\n    -ms-flex: 0 0 83.333333%;\n    flex: 0 0 83.333333%;\n    max-width: 83.333333%;\n  }\n  #canvas-quiz-stats .col-lg-11 {\n    -ms-flex: 0 0 91.666667%;\n    flex: 0 0 91.666667%;\n    max-width: 91.666667%;\n  }\n  #canvas-quiz-stats .col-lg-12 {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .order-lg-first {\n    -ms-flex-order: -1;\n    order: -1;\n  }\n  #canvas-quiz-stats .order-lg-last {\n    -ms-flex-order: 13;\n    order: 13;\n  }\n  #canvas-quiz-stats .order-lg-0 {\n    -ms-flex-order: 0;\n    order: 0;\n  }\n  #canvas-quiz-stats .order-lg-1 {\n    -ms-flex-order: 1;\n    order: 1;\n  }\n  #canvas-quiz-stats .order-lg-2 {\n    -ms-flex-order: 2;\n    order: 2;\n  }\n  #canvas-quiz-stats .order-lg-3 {\n    -ms-flex-order: 3;\n    order: 3;\n  }\n  #canvas-quiz-stats .order-lg-4 {\n    -ms-flex-order: 4;\n    order: 4;\n  }\n  #canvas-quiz-stats .order-lg-5 {\n    -ms-flex-order: 5;\n    order: 5;\n  }\n  #canvas-quiz-stats .order-lg-6 {\n    -ms-flex-order: 6;\n    order: 6;\n  }\n  #canvas-quiz-stats .order-lg-7 {\n    -ms-flex-order: 7;\n    order: 7;\n  }\n  #canvas-quiz-stats .order-lg-8 {\n    -ms-flex-order: 8;\n    order: 8;\n  }\n  #canvas-quiz-stats .order-lg-9 {\n    -ms-flex-order: 9;\n    order: 9;\n  }\n  #canvas-quiz-stats .order-lg-10 {\n    -ms-flex-order: 10;\n    order: 10;\n  }\n  #canvas-quiz-stats .order-lg-11 {\n    -ms-flex-order: 11;\n    order: 11;\n  }\n  #canvas-quiz-stats .order-lg-12 {\n    -ms-flex-order: 12;\n    order: 12;\n  }\n  #canvas-quiz-stats .offset-lg-0 {\n    margin-left: 0;\n  }\n  #canvas-quiz-stats .offset-lg-1 {\n    margin-left: 8.333333%;\n  }\n  #canvas-quiz-stats .offset-lg-2 {\n    margin-left: 16.666667%;\n  }\n  #canvas-quiz-stats .offset-lg-3 {\n    margin-left: 25%;\n  }\n  #canvas-quiz-stats .offset-lg-4 {\n    margin-left: 33.333333%;\n  }\n  #canvas-quiz-stats .offset-lg-5 {\n    margin-left: 41.666667%;\n  }\n  #canvas-quiz-stats .offset-lg-6 {\n    margin-left: 50%;\n  }\n  #canvas-quiz-stats .offset-lg-7 {\n    margin-left: 58.333333%;\n  }\n  #canvas-quiz-stats .offset-lg-8 {\n    margin-left: 66.666667%;\n  }\n  #canvas-quiz-stats .offset-lg-9 {\n    margin-left: 75%;\n  }\n  #canvas-quiz-stats .offset-lg-10 {\n    margin-left: 83.333333%;\n  }\n  #canvas-quiz-stats .offset-lg-11 {\n    margin-left: 91.666667%;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .col-xl {\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    -ms-flex-positive: 1;\n    flex-grow: 1;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-xl-1 > * {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .row-cols-xl-2 > * {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .row-cols-xl-3 > * {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .row-cols-xl-4 > * {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .row-cols-xl-5 > * {\n    -ms-flex: 0 0 20%;\n    flex: 0 0 20%;\n    max-width: 20%;\n  }\n  #canvas-quiz-stats .row-cols-xl-6 > * {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-xl-auto {\n    -ms-flex: 0 0 auto;\n    flex: 0 0 auto;\n    width: auto;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .col-xl-1 {\n    -ms-flex: 0 0 8.333333%;\n    flex: 0 0 8.333333%;\n    max-width: 8.333333%;\n  }\n  #canvas-quiz-stats .col-xl-2 {\n    -ms-flex: 0 0 16.666667%;\n    flex: 0 0 16.666667%;\n    max-width: 16.666667%;\n  }\n  #canvas-quiz-stats .col-xl-3 {\n    -ms-flex: 0 0 25%;\n    flex: 0 0 25%;\n    max-width: 25%;\n  }\n  #canvas-quiz-stats .col-xl-4 {\n    -ms-flex: 0 0 33.333333%;\n    flex: 0 0 33.333333%;\n    max-width: 33.333333%;\n  }\n  #canvas-quiz-stats .col-xl-5 {\n    -ms-flex: 0 0 41.666667%;\n    flex: 0 0 41.666667%;\n    max-width: 41.666667%;\n  }\n  #canvas-quiz-stats .col-xl-6 {\n    -ms-flex: 0 0 50%;\n    flex: 0 0 50%;\n    max-width: 50%;\n  }\n  #canvas-quiz-stats .col-xl-7 {\n    -ms-flex: 0 0 58.333333%;\n    flex: 0 0 58.333333%;\n    max-width: 58.333333%;\n  }\n  #canvas-quiz-stats .col-xl-8 {\n    -ms-flex: 0 0 66.666667%;\n    flex: 0 0 66.666667%;\n    max-width: 66.666667%;\n  }\n  #canvas-quiz-stats .col-xl-9 {\n    -ms-flex: 0 0 75%;\n    flex: 0 0 75%;\n    max-width: 75%;\n  }\n  #canvas-quiz-stats .col-xl-10 {\n    -ms-flex: 0 0 83.333333%;\n    flex: 0 0 83.333333%;\n    max-width: 83.333333%;\n  }\n  #canvas-quiz-stats .col-xl-11 {\n    -ms-flex: 0 0 91.666667%;\n    flex: 0 0 91.666667%;\n    max-width: 91.666667%;\n  }\n  #canvas-quiz-stats .col-xl-12 {\n    -ms-flex: 0 0 100%;\n    flex: 0 0 100%;\n    max-width: 100%;\n  }\n  #canvas-quiz-stats .order-xl-first {\n    -ms-flex-order: -1;\n    order: -1;\n  }\n  #canvas-quiz-stats .order-xl-last {\n    -ms-flex-order: 13;\n    order: 13;\n  }\n  #canvas-quiz-stats .order-xl-0 {\n    -ms-flex-order: 0;\n    order: 0;\n  }\n  #canvas-quiz-stats .order-xl-1 {\n    -ms-flex-order: 1;\n    order: 1;\n  }\n  #canvas-quiz-stats .order-xl-2 {\n    -ms-flex-order: 2;\n    order: 2;\n  }\n  #canvas-quiz-stats .order-xl-3 {\n    -ms-flex-order: 3;\n    order: 3;\n  }\n  #canvas-quiz-stats .order-xl-4 {\n    -ms-flex-order: 4;\n    order: 4;\n  }\n  #canvas-quiz-stats .order-xl-5 {\n    -ms-flex-order: 5;\n    order: 5;\n  }\n  #canvas-quiz-stats .order-xl-6 {\n    -ms-flex-order: 6;\n    order: 6;\n  }\n  #canvas-quiz-stats .order-xl-7 {\n    -ms-flex-order: 7;\n    order: 7;\n  }\n  #canvas-quiz-stats .order-xl-8 {\n    -ms-flex-order: 8;\n    order: 8;\n  }\n  #canvas-quiz-stats .order-xl-9 {\n    -ms-flex-order: 9;\n    order: 9;\n  }\n  #canvas-quiz-stats .order-xl-10 {\n    -ms-flex-order: 10;\n    order: 10;\n  }\n  #canvas-quiz-stats .order-xl-11 {\n    -ms-flex-order: 11;\n    order: 11;\n  }\n  #canvas-quiz-stats .order-xl-12 {\n    -ms-flex-order: 12;\n    order: 12;\n  }\n  #canvas-quiz-stats .offset-xl-0 {\n    margin-left: 0;\n  }\n  #canvas-quiz-stats .offset-xl-1 {\n    margin-left: 8.333333%;\n  }\n  #canvas-quiz-stats .offset-xl-2 {\n    margin-left: 16.666667%;\n  }\n  #canvas-quiz-stats .offset-xl-3 {\n    margin-left: 25%;\n  }\n  #canvas-quiz-stats .offset-xl-4 {\n    margin-left: 33.333333%;\n  }\n  #canvas-quiz-stats .offset-xl-5 {\n    margin-left: 41.666667%;\n  }\n  #canvas-quiz-stats .offset-xl-6 {\n    margin-left: 50%;\n  }\n  #canvas-quiz-stats .offset-xl-7 {\n    margin-left: 58.333333%;\n  }\n  #canvas-quiz-stats .offset-xl-8 {\n    margin-left: 66.666667%;\n  }\n  #canvas-quiz-stats .offset-xl-9 {\n    margin-left: 75%;\n  }\n  #canvas-quiz-stats .offset-xl-10 {\n    margin-left: 83.333333%;\n  }\n  #canvas-quiz-stats .offset-xl-11 {\n    margin-left: 91.666667%;\n  }\n}\n#canvas-quiz-stats .table {\n  width: 100%;\n  margin-bottom: 1rem;\n  color: #212529;\n}\n#canvas-quiz-stats .table th,\n#canvas-quiz-stats .table td {\n  padding: 0.75rem;\n  vertical-align: top;\n  border-top: 1px solid #dee2e6;\n}\n#canvas-quiz-stats .table thead th {\n  vertical-align: bottom;\n  border-bottom: 2px solid #dee2e6;\n}\n#canvas-quiz-stats .table tbody + tbody {\n  border-top: 2px solid #dee2e6;\n}\n#canvas-quiz-stats .table-sm th,\n#canvas-quiz-stats .table-sm td {\n  padding: 0.3rem;\n}\n#canvas-quiz-stats .table-bordered {\n  border: 1px solid #dee2e6;\n}\n#canvas-quiz-stats .table-bordered th,\n#canvas-quiz-stats .table-bordered td {\n  border: 1px solid #dee2e6;\n}\n#canvas-quiz-stats .table-bordered thead th,\n#canvas-quiz-stats .table-bordered thead td {\n  border-bottom-width: 2px;\n}\n#canvas-quiz-stats .table-borderless th,\n#canvas-quiz-stats .table-borderless td,\n#canvas-quiz-stats .table-borderless thead th,\n#canvas-quiz-stats .table-borderless tbody + tbody {\n  border: 0;\n}\n#canvas-quiz-stats .table-striped tbody tr:nth-of-type(odd) {\n  background-color: rgba(0, 0, 0, 0.05);\n}\n#canvas-quiz-stats .table-hover tbody tr:hover {\n  color: #212529;\n  background-color: rgba(0, 0, 0, 0.075);\n}\n#canvas-quiz-stats .table-primary,\n#canvas-quiz-stats .table-primary > th,\n#canvas-quiz-stats .table-primary > td {\n  background-color: #b8daff;\n}\n#canvas-quiz-stats .table-primary th,\n#canvas-quiz-stats .table-primary td,\n#canvas-quiz-stats .table-primary thead th,\n#canvas-quiz-stats .table-primary tbody + tbody {\n  border-color: #7abaff;\n}\n#canvas-quiz-stats .table-hover .table-primary:hover {\n  background-color: #9fcdff;\n}\n#canvas-quiz-stats .table-hover .table-primary:hover > td,\n#canvas-quiz-stats .table-hover .table-primary:hover > th {\n  background-color: #9fcdff;\n}\n#canvas-quiz-stats .table-secondary,\n#canvas-quiz-stats .table-secondary > th,\n#canvas-quiz-stats .table-secondary > td {\n  background-color: #d6d8db;\n}\n#canvas-quiz-stats .table-secondary th,\n#canvas-quiz-stats .table-secondary td,\n#canvas-quiz-stats .table-secondary thead th,\n#canvas-quiz-stats .table-secondary tbody + tbody {\n  border-color: #b3b7bb;\n}\n#canvas-quiz-stats .table-hover .table-secondary:hover {\n  background-color: #c8cbcf;\n}\n#canvas-quiz-stats .table-hover .table-secondary:hover > td,\n#canvas-quiz-stats .table-hover .table-secondary:hover > th {\n  background-color: #c8cbcf;\n}\n#canvas-quiz-stats .table-success,\n#canvas-quiz-stats .table-success > th,\n#canvas-quiz-stats .table-success > td {\n  background-color: #c3e6cb;\n}\n#canvas-quiz-stats .table-success th,\n#canvas-quiz-stats .table-success td,\n#canvas-quiz-stats .table-success thead th,\n#canvas-quiz-stats .table-success tbody + tbody {\n  border-color: #8fd19e;\n}\n#canvas-quiz-stats .table-hover .table-success:hover {\n  background-color: #b1dfbb;\n}\n#canvas-quiz-stats .table-hover .table-success:hover > td,\n#canvas-quiz-stats .table-hover .table-success:hover > th {\n  background-color: #b1dfbb;\n}\n#canvas-quiz-stats .table-info,\n#canvas-quiz-stats .table-info > th,\n#canvas-quiz-stats .table-info > td {\n  background-color: #bee5eb;\n}\n#canvas-quiz-stats .table-info th,\n#canvas-quiz-stats .table-info td,\n#canvas-quiz-stats .table-info thead th,\n#canvas-quiz-stats .table-info tbody + tbody {\n  border-color: #86cfda;\n}\n#canvas-quiz-stats .table-hover .table-info:hover {\n  background-color: #abdde5;\n}\n#canvas-quiz-stats .table-hover .table-info:hover > td,\n#canvas-quiz-stats .table-hover .table-info:hover > th {\n  background-color: #abdde5;\n}\n#canvas-quiz-stats .table-warning,\n#canvas-quiz-stats .table-warning > th,\n#canvas-quiz-stats .table-warning > td {\n  background-color: #ffeeba;\n}\n#canvas-quiz-stats .table-warning th,\n#canvas-quiz-stats .table-warning td,\n#canvas-quiz-stats .table-warning thead th,\n#canvas-quiz-stats .table-warning tbody + tbody {\n  border-color: #ffdf7e;\n}\n#canvas-quiz-stats .table-hover .table-warning:hover {\n  background-color: #ffe8a1;\n}\n#canvas-quiz-stats .table-hover .table-warning:hover > td,\n#canvas-quiz-stats .table-hover .table-warning:hover > th {\n  background-color: #ffe8a1;\n}\n#canvas-quiz-stats .table-danger,\n#canvas-quiz-stats .table-danger > th,\n#canvas-quiz-stats .table-danger > td {\n  background-color: #f5c6cb;\n}\n#canvas-quiz-stats .table-danger th,\n#canvas-quiz-stats .table-danger td,\n#canvas-quiz-stats .table-danger thead th,\n#canvas-quiz-stats .table-danger tbody + tbody {\n  border-color: #ed969e;\n}\n#canvas-quiz-stats .table-hover .table-danger:hover {\n  background-color: #f1b0b7;\n}\n#canvas-quiz-stats .table-hover .table-danger:hover > td,\n#canvas-quiz-stats .table-hover .table-danger:hover > th {\n  background-color: #f1b0b7;\n}\n#canvas-quiz-stats .table-light,\n#canvas-quiz-stats .table-light > th,\n#canvas-quiz-stats .table-light > td {\n  background-color: #fdfdfe;\n}\n#canvas-quiz-stats .table-light th,\n#canvas-quiz-stats .table-light td,\n#canvas-quiz-stats .table-light thead th,\n#canvas-quiz-stats .table-light tbody + tbody {\n  border-color: #fbfcfc;\n}\n#canvas-quiz-stats .table-hover .table-light:hover {\n  background-color: #ececf6;\n}\n#canvas-quiz-stats .table-hover .table-light:hover > td,\n#canvas-quiz-stats .table-hover .table-light:hover > th {\n  background-color: #ececf6;\n}\n#canvas-quiz-stats .table-dark,\n#canvas-quiz-stats .table-dark > th,\n#canvas-quiz-stats .table-dark > td {\n  background-color: #c6c8ca;\n}\n#canvas-quiz-stats .table-dark th,\n#canvas-quiz-stats .table-dark td,\n#canvas-quiz-stats .table-dark thead th,\n#canvas-quiz-stats .table-dark tbody + tbody {\n  border-color: #95999c;\n}\n#canvas-quiz-stats .table-hover .table-dark:hover {\n  background-color: #b9bbbe;\n}\n#canvas-quiz-stats .table-hover .table-dark:hover > td,\n#canvas-quiz-stats .table-hover .table-dark:hover > th {\n  background-color: #b9bbbe;\n}\n#canvas-quiz-stats .table-active,\n#canvas-quiz-stats .table-active > th,\n#canvas-quiz-stats .table-active > td {\n  background-color: rgba(0, 0, 0, 0.075);\n}\n#canvas-quiz-stats .table-hover .table-active:hover {\n  background-color: rgba(0, 0, 0, 0.075);\n}\n#canvas-quiz-stats .table-hover .table-active:hover > td,\n#canvas-quiz-stats .table-hover .table-active:hover > th {\n  background-color: rgba(0, 0, 0, 0.075);\n}\n#canvas-quiz-stats .table .thead-dark th {\n  color: #fff;\n  background-color: #343a40;\n  border-color: #454d55;\n}\n#canvas-quiz-stats .table .thead-light th {\n  color: #495057;\n  background-color: #e9ecef;\n  border-color: #dee2e6;\n}\n#canvas-quiz-stats .table-dark {\n  color: #fff;\n  background-color: #343a40;\n}\n#canvas-quiz-stats .table-dark th,\n#canvas-quiz-stats .table-dark td,\n#canvas-quiz-stats .table-dark thead th {\n  border-color: #454d55;\n}\n#canvas-quiz-stats .table-dark.table-bordered {\n  border: 0;\n}\n#canvas-quiz-stats .table-dark.table-striped tbody tr:nth-of-type(odd) {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n#canvas-quiz-stats .table-dark.table-hover tbody tr:hover {\n  color: #fff;\n  background-color: rgba(255, 255, 255, 0.075);\n}\n@media (max-width: 575.98px) {\n  #canvas-quiz-stats .table-responsive-sm {\n    display: block;\n    width: 100%;\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n  }\n  #canvas-quiz-stats .table-responsive-sm > .table-bordered {\n    border: 0;\n  }\n}\n@media (max-width: 767.98px) {\n  #canvas-quiz-stats .table-responsive-md {\n    display: block;\n    width: 100%;\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n  }\n  #canvas-quiz-stats .table-responsive-md > .table-bordered {\n    border: 0;\n  }\n}\n@media (max-width: 991.98px) {\n  #canvas-quiz-stats .table-responsive-lg {\n    display: block;\n    width: 100%;\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n  }\n  #canvas-quiz-stats .table-responsive-lg > .table-bordered {\n    border: 0;\n  }\n}\n@media (max-width: 1199.98px) {\n  #canvas-quiz-stats .table-responsive-xl {\n    display: block;\n    width: 100%;\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n  }\n  #canvas-quiz-stats .table-responsive-xl > .table-bordered {\n    border: 0;\n  }\n}\n#canvas-quiz-stats .table-responsive {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  -webkit-overflow-scrolling: touch;\n}\n#canvas-quiz-stats .table-responsive > .table-bordered {\n  border: 0;\n}\n#canvas-quiz-stats .form-control {\n  display: block;\n  width: 100%;\n  height: calc(1.5em + 0.75rem + 2px);\n  padding: 0.375rem 0.75rem;\n  font-size: 1rem;\n  font-weight: 400;\n  line-height: 1.5;\n  color: #495057;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid #ced4da;\n  border-radius: 0.25rem;\n  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .form-control {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .form-control::-ms-expand {\n  background-color: transparent;\n  border: 0;\n}\n#canvas-quiz-stats .form-control:-moz-focusring {\n  color: transparent;\n  text-shadow: 0 0 0 #495057;\n}\n#canvas-quiz-stats .form-control:focus {\n  color: #495057;\n  background-color: #fff;\n  border-color: #80bdff;\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .form-control::-webkit-input-placeholder {\n  color: #6c757d;\n  opacity: 1;\n}\n#canvas-quiz-stats .form-control::-moz-placeholder {\n  color: #6c757d;\n  opacity: 1;\n}\n#canvas-quiz-stats .form-control:-ms-input-placeholder {\n  color: #6c757d;\n  opacity: 1;\n}\n#canvas-quiz-stats .form-control::-ms-input-placeholder {\n  color: #6c757d;\n  opacity: 1;\n}\n#canvas-quiz-stats .form-control::placeholder {\n  color: #6c757d;\n  opacity: 1;\n}\n#canvas-quiz-stats .form-control:disabled,\n#canvas-quiz-stats .form-control[readonly] {\n  background-color: #e9ecef;\n  opacity: 1;\n}\n#canvas-quiz-stats input[type=\"date\"].form-control,\n#canvas-quiz-stats input[type=\"time\"].form-control,\n#canvas-quiz-stats input[type=\"datetime-local\"].form-control,\n#canvas-quiz-stats input[type=\"month\"].form-control {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n#canvas-quiz-stats select.form-control:focus::-ms-value {\n  color: #495057;\n  background-color: #fff;\n}\n#canvas-quiz-stats .form-control-file,\n#canvas-quiz-stats .form-control-range {\n  display: block;\n  width: 100%;\n}\n#canvas-quiz-stats .col-form-label {\n  padding-top: calc(0.375rem + 1px);\n  padding-bottom: calc(0.375rem + 1px);\n  margin-bottom: 0;\n  font-size: inherit;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .col-form-label-lg {\n  padding-top: calc(0.5rem + 1px);\n  padding-bottom: calc(0.5rem + 1px);\n  font-size: 1.25rem;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .col-form-label-sm {\n  padding-top: calc(0.25rem + 1px);\n  padding-bottom: calc(0.25rem + 1px);\n  font-size: 0.875rem;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .form-control-plaintext {\n  display: block;\n  width: 100%;\n  padding: 0.375rem 0;\n  margin-bottom: 0;\n  font-size: 1rem;\n  line-height: 1.5;\n  color: #212529;\n  background-color: transparent;\n  border: solid transparent;\n  border-width: 1px 0;\n}\n#canvas-quiz-stats .form-control-plaintext.form-control-sm,\n#canvas-quiz-stats .form-control-plaintext.form-control-lg {\n  padding-right: 0;\n  padding-left: 0;\n}\n#canvas-quiz-stats .form-control-sm {\n  height: calc(1.5em + 0.5rem + 2px);\n  padding: 0.25rem 0.5rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  border-radius: 0.2rem;\n}\n#canvas-quiz-stats .form-control-lg {\n  height: calc(1.5em + 1rem + 2px);\n  padding: 0.5rem 1rem;\n  font-size: 1.25rem;\n  line-height: 1.5;\n  border-radius: 0.3rem;\n}\n#canvas-quiz-stats select.form-control[size],\n#canvas-quiz-stats select.form-control[multiple] {\n  height: auto;\n}\n#canvas-quiz-stats textarea.form-control {\n  height: auto;\n}\n#canvas-quiz-stats .form-group {\n  margin-bottom: 1rem;\n}\n#canvas-quiz-stats .form-text {\n  display: block;\n  margin-top: 0.25rem;\n}\n#canvas-quiz-stats .form-row {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  margin-right: -5px;\n  margin-left: -5px;\n}\n#canvas-quiz-stats .form-row > .col,\n#canvas-quiz-stats .form-row > [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n#canvas-quiz-stats .form-check {\n  position: relative;\n  display: block;\n  padding-left: 1.25rem;\n}\n#canvas-quiz-stats .form-check-input {\n  position: absolute;\n  margin-top: 0.3rem;\n  margin-left: -1.25rem;\n}\n#canvas-quiz-stats .form-check-input[disabled] ~ .form-check-label,\n#canvas-quiz-stats .form-check-input:disabled ~ .form-check-label {\n  color: #6c757d;\n}\n#canvas-quiz-stats .form-check-label {\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .form-check-inline {\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  -ms-flex-align: center;\n  align-items: center;\n  padding-left: 0;\n  margin-right: 0.75rem;\n}\n#canvas-quiz-stats .form-check-inline .form-check-input {\n  position: static;\n  margin-top: 0;\n  margin-right: 0.3125rem;\n  margin-left: 0;\n}\n#canvas-quiz-stats .valid-feedback {\n  display: none;\n  width: 100%;\n  margin-top: 0.25rem;\n  font-size: 80%;\n  color: #28a745;\n}\n#canvas-quiz-stats .valid-tooltip {\n  position: absolute;\n  top: 100%;\n  left: 0;\n  z-index: 5;\n  display: none;\n  max-width: 100%;\n  padding: 0.25rem 0.5rem;\n  margin-top: 0.1rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  color: #fff;\n  background-color: rgba(40, 167, 69, 0.9);\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .was-validated :valid ~ .valid-feedback,\n#canvas-quiz-stats .was-validated :valid ~ .valid-tooltip,\n#canvas-quiz-stats .is-valid ~ .valid-feedback,\n#canvas-quiz-stats .is-valid ~ .valid-tooltip {\n  display: block;\n}\n#canvas-quiz-stats .was-validated .form-control:valid,\n#canvas-quiz-stats .form-control.is-valid {\n  border-color: #28a745;\n  padding-right: calc(1.5em + 0.75rem);\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e\");\n  background-repeat: no-repeat;\n  background-position: right calc(0.375em + 0.1875rem) center;\n  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);\n}\n#canvas-quiz-stats .was-validated .form-control:valid:focus,\n#canvas-quiz-stats .form-control.is-valid:focus {\n  border-color: #28a745;\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated textarea.form-control:valid,\n#canvas-quiz-stats textarea.form-control.is-valid {\n  padding-right: calc(1.5em + 0.75rem);\n  background-position: top calc(0.375em + 0.1875rem) right calc(0.375em + 0.1875rem);\n}\n#canvas-quiz-stats .was-validated .custom-select:valid,\n#canvas-quiz-stats .custom-select.is-valid {\n  border-color: #28a745;\n  padding-right: calc(0.75em + 2.3125rem);\n  background: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e\") no-repeat right 0.75rem center / 8px 10px, url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e\") #fff no-repeat center right 1.75rem/calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);\n}\n#canvas-quiz-stats .was-validated .custom-select:valid:focus,\n#canvas-quiz-stats .custom-select.is-valid:focus {\n  border-color: #28a745;\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated .form-check-input:valid ~ .form-check-label,\n#canvas-quiz-stats .form-check-input.is-valid ~ .form-check-label {\n  color: #28a745;\n}\n#canvas-quiz-stats .was-validated .form-check-input:valid ~ .valid-feedback,\n#canvas-quiz-stats .was-validated .form-check-input:valid ~ .valid-tooltip,\n#canvas-quiz-stats .form-check-input.is-valid ~ .valid-feedback,\n#canvas-quiz-stats .form-check-input.is-valid ~ .valid-tooltip {\n  display: block;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:valid ~ .custom-control-label,\n#canvas-quiz-stats .custom-control-input.is-valid ~ .custom-control-label {\n  color: #28a745;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:valid ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-valid ~ .custom-control-label::before {\n  border-color: #28a745;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:valid:checked ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-valid:checked ~ .custom-control-label::before {\n  border-color: #34ce57;\n  background-color: #34ce57;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:valid:focus ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-valid:focus ~ .custom-control-label::before {\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-valid:focus:not(:checked) ~ .custom-control-label::before {\n  border-color: #28a745;\n}\n#canvas-quiz-stats .was-validated .custom-file-input:valid ~ .custom-file-label,\n#canvas-quiz-stats .custom-file-input.is-valid ~ .custom-file-label {\n  border-color: #28a745;\n}\n#canvas-quiz-stats .was-validated .custom-file-input:valid:focus ~ .custom-file-label,\n#canvas-quiz-stats .custom-file-input.is-valid:focus ~ .custom-file-label {\n  border-color: #28a745;\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);\n}\n#canvas-quiz-stats .invalid-feedback {\n  display: none;\n  width: 100%;\n  margin-top: 0.25rem;\n  font-size: 80%;\n  color: #dc3545;\n}\n#canvas-quiz-stats .invalid-tooltip {\n  position: absolute;\n  top: 100%;\n  left: 0;\n  z-index: 5;\n  display: none;\n  max-width: 100%;\n  padding: 0.25rem 0.5rem;\n  margin-top: 0.1rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  color: #fff;\n  background-color: rgba(220, 53, 69, 0.9);\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .was-validated :invalid ~ .invalid-feedback,\n#canvas-quiz-stats .was-validated :invalid ~ .invalid-tooltip,\n#canvas-quiz-stats .is-invalid ~ .invalid-feedback,\n#canvas-quiz-stats .is-invalid ~ .invalid-tooltip {\n  display: block;\n}\n#canvas-quiz-stats .was-validated .form-control:invalid,\n#canvas-quiz-stats .form-control.is-invalid {\n  border-color: #dc3545;\n  padding-right: calc(1.5em + 0.75rem);\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e\");\n  background-repeat: no-repeat;\n  background-position: right calc(0.375em + 0.1875rem) center;\n  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);\n}\n#canvas-quiz-stats .was-validated .form-control:invalid:focus,\n#canvas-quiz-stats .form-control.is-invalid:focus {\n  border-color: #dc3545;\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated textarea.form-control:invalid,\n#canvas-quiz-stats textarea.form-control.is-invalid {\n  padding-right: calc(1.5em + 0.75rem);\n  background-position: top calc(0.375em + 0.1875rem) right calc(0.375em + 0.1875rem);\n}\n#canvas-quiz-stats .was-validated .custom-select:invalid,\n#canvas-quiz-stats .custom-select.is-invalid {\n  border-color: #dc3545;\n  padding-right: calc(0.75em + 2.3125rem);\n  background: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e\") no-repeat right 0.75rem center / 8px 10px, url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e\") #fff no-repeat center right 1.75rem/calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);\n}\n#canvas-quiz-stats .was-validated .custom-select:invalid:focus,\n#canvas-quiz-stats .custom-select.is-invalid:focus {\n  border-color: #dc3545;\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .form-check-label,\n#canvas-quiz-stats .form-check-input.is-invalid ~ .form-check-label {\n  color: #dc3545;\n}\n#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .invalid-feedback,\n#canvas-quiz-stats .was-validated .form-check-input:invalid ~ .invalid-tooltip,\n#canvas-quiz-stats .form-check-input.is-invalid ~ .invalid-feedback,\n#canvas-quiz-stats .form-check-input.is-invalid ~ .invalid-tooltip {\n  display: block;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:invalid ~ .custom-control-label,\n#canvas-quiz-stats .custom-control-input.is-invalid ~ .custom-control-label {\n  color: #dc3545;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:invalid ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-invalid ~ .custom-control-label::before {\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:invalid:checked ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-invalid:checked ~ .custom-control-label::before {\n  border-color: #e4606d;\n  background-color: #e4606d;\n}\n#canvas-quiz-stats .was-validated .custom-control-input:invalid:focus ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-invalid:focus ~ .custom-control-label::before {\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);\n}\n#canvas-quiz-stats .was-validated .custom-control-input:invalid:focus:not(:checked) ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input.is-invalid:focus:not(:checked) ~ .custom-control-label::before {\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .was-validated .custom-file-input:invalid ~ .custom-file-label,\n#canvas-quiz-stats .custom-file-input.is-invalid ~ .custom-file-label {\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .was-validated .custom-file-input:invalid:focus ~ .custom-file-label,\n#canvas-quiz-stats .custom-file-input.is-invalid:focus ~ .custom-file-label {\n  border-color: #dc3545;\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);\n}\n#canvas-quiz-stats .form-inline {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row wrap;\n  flex-flow: row wrap;\n  -ms-flex-align: center;\n  align-items: center;\n}\n#canvas-quiz-stats .form-inline .form-check {\n  width: 100%;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .form-inline label {\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-align: center;\n    align-items: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-bottom: 0;\n  }\n  #canvas-quiz-stats .form-inline .form-group {\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex: 0 0 auto;\n    flex: 0 0 auto;\n    -ms-flex-flow: row wrap;\n    flex-flow: row wrap;\n    -ms-flex-align: center;\n    align-items: center;\n    margin-bottom: 0;\n  }\n  #canvas-quiz-stats .form-inline .form-control {\n    display: inline-block;\n    width: auto;\n    vertical-align: middle;\n  }\n  #canvas-quiz-stats .form-inline .form-control-plaintext {\n    display: inline-block;\n  }\n  #canvas-quiz-stats .form-inline .input-group,\n  #canvas-quiz-stats .form-inline .custom-select {\n    width: auto;\n  }\n  #canvas-quiz-stats .form-inline .form-check {\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-align: center;\n    align-items: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    width: auto;\n    padding-left: 0;\n  }\n  #canvas-quiz-stats .form-inline .form-check-input {\n    position: relative;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    margin-top: 0;\n    margin-right: 0.25rem;\n    margin-left: 0;\n  }\n  #canvas-quiz-stats .form-inline .custom-control {\n    -ms-flex-align: center;\n    align-items: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n  }\n  #canvas-quiz-stats .form-inline .custom-control-label {\n    margin-bottom: 0;\n  }\n}\n#canvas-quiz-stats .btn {\n  display: inline-block;\n  font-weight: 400;\n  color: #212529;\n  text-align: center;\n  vertical-align: middle;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  background-color: transparent;\n  border: 1px solid transparent;\n  padding: 0.375rem 0.75rem;\n  font-size: 1rem;\n  line-height: 1.5;\n  border-radius: 0.25rem;\n  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .btn {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .btn:hover {\n  color: #212529;\n  text-decoration: none;\n}\n#canvas-quiz-stats .btn:focus,\n#canvas-quiz-stats .btn.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .btn.disabled,\n#canvas-quiz-stats .btn:disabled {\n  opacity: 0.65;\n}\n#canvas-quiz-stats .btn:not(:disabled):not(.disabled) {\n  cursor: pointer;\n}\n#canvas-quiz-stats a.btn.disabled,\n#canvas-quiz-stats fieldset:disabled a.btn {\n  pointer-events: none;\n}\n#canvas-quiz-stats .btn-primary {\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .btn-primary:hover {\n  color: #fff;\n  background-color: #0069d9;\n  border-color: #0062cc;\n}\n#canvas-quiz-stats .btn-primary:focus,\n#canvas-quiz-stats .btn-primary.focus {\n  color: #fff;\n  background-color: #0069d9;\n  border-color: #0062cc;\n  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);\n}\n#canvas-quiz-stats .btn-primary.disabled,\n#canvas-quiz-stats .btn-primary:disabled {\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-primary.dropdown-toggle {\n  color: #fff;\n  background-color: #0062cc;\n  border-color: #005cbf;\n}\n#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-primary:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-primary.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);\n}\n#canvas-quiz-stats .btn-secondary {\n  color: #fff;\n  background-color: #6c757d;\n  border-color: #6c757d;\n}\n#canvas-quiz-stats .btn-secondary:hover {\n  color: #fff;\n  background-color: #5a6268;\n  border-color: #545b62;\n}\n#canvas-quiz-stats .btn-secondary:focus,\n#canvas-quiz-stats .btn-secondary.focus {\n  color: #fff;\n  background-color: #5a6268;\n  border-color: #545b62;\n  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);\n}\n#canvas-quiz-stats .btn-secondary.disabled,\n#canvas-quiz-stats .btn-secondary:disabled {\n  color: #fff;\n  background-color: #6c757d;\n  border-color: #6c757d;\n}\n#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-secondary.dropdown-toggle {\n  color: #fff;\n  background-color: #545b62;\n  border-color: #4e555b;\n}\n#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-secondary:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-secondary.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);\n}\n#canvas-quiz-stats .btn-success {\n  color: #fff;\n  background-color: #28a745;\n  border-color: #28a745;\n}\n#canvas-quiz-stats .btn-success:hover {\n  color: #fff;\n  background-color: #218838;\n  border-color: #1e7e34;\n}\n#canvas-quiz-stats .btn-success:focus,\n#canvas-quiz-stats .btn-success.focus {\n  color: #fff;\n  background-color: #218838;\n  border-color: #1e7e34;\n  box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);\n}\n#canvas-quiz-stats .btn-success.disabled,\n#canvas-quiz-stats .btn-success:disabled {\n  color: #fff;\n  background-color: #28a745;\n  border-color: #28a745;\n}\n#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-success.dropdown-toggle {\n  color: #fff;\n  background-color: #1e7e34;\n  border-color: #1c7430;\n}\n#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-success:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-success.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);\n}\n#canvas-quiz-stats .btn-info {\n  color: #fff;\n  background-color: #17a2b8;\n  border-color: #17a2b8;\n}\n#canvas-quiz-stats .btn-info:hover {\n  color: #fff;\n  background-color: #138496;\n  border-color: #117a8b;\n}\n#canvas-quiz-stats .btn-info:focus,\n#canvas-quiz-stats .btn-info.focus {\n  color: #fff;\n  background-color: #138496;\n  border-color: #117a8b;\n  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);\n}\n#canvas-quiz-stats .btn-info.disabled,\n#canvas-quiz-stats .btn-info:disabled {\n  color: #fff;\n  background-color: #17a2b8;\n  border-color: #17a2b8;\n}\n#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-info.dropdown-toggle {\n  color: #fff;\n  background-color: #117a8b;\n  border-color: #10707f;\n}\n#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-info:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-info.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);\n}\n#canvas-quiz-stats .btn-warning {\n  color: #212529;\n  background-color: #ffc107;\n  border-color: #ffc107;\n}\n#canvas-quiz-stats .btn-warning:hover {\n  color: #212529;\n  background-color: #e0a800;\n  border-color: #d39e00;\n}\n#canvas-quiz-stats .btn-warning:focus,\n#canvas-quiz-stats .btn-warning.focus {\n  color: #212529;\n  background-color: #e0a800;\n  border-color: #d39e00;\n  box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);\n}\n#canvas-quiz-stats .btn-warning.disabled,\n#canvas-quiz-stats .btn-warning:disabled {\n  color: #212529;\n  background-color: #ffc107;\n  border-color: #ffc107;\n}\n#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-warning.dropdown-toggle {\n  color: #212529;\n  background-color: #d39e00;\n  border-color: #c69500;\n}\n#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-warning:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-warning.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);\n}\n#canvas-quiz-stats .btn-danger {\n  color: #fff;\n  background-color: #dc3545;\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .btn-danger:hover {\n  color: #fff;\n  background-color: #c82333;\n  border-color: #bd2130;\n}\n#canvas-quiz-stats .btn-danger:focus,\n#canvas-quiz-stats .btn-danger.focus {\n  color: #fff;\n  background-color: #c82333;\n  border-color: #bd2130;\n  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);\n}\n#canvas-quiz-stats .btn-danger.disabled,\n#canvas-quiz-stats .btn-danger:disabled {\n  color: #fff;\n  background-color: #dc3545;\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-danger.dropdown-toggle {\n  color: #fff;\n  background-color: #bd2130;\n  border-color: #b21f2d;\n}\n#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-danger:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-danger.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);\n}\n#canvas-quiz-stats .btn-light {\n  color: #212529;\n  background-color: #f8f9fa;\n  border-color: #f8f9fa;\n}\n#canvas-quiz-stats .btn-light:hover {\n  color: #212529;\n  background-color: #e2e6ea;\n  border-color: #dae0e5;\n}\n#canvas-quiz-stats .btn-light:focus,\n#canvas-quiz-stats .btn-light.focus {\n  color: #212529;\n  background-color: #e2e6ea;\n  border-color: #dae0e5;\n  box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);\n}\n#canvas-quiz-stats .btn-light.disabled,\n#canvas-quiz-stats .btn-light:disabled {\n  color: #212529;\n  background-color: #f8f9fa;\n  border-color: #f8f9fa;\n}\n#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-light.dropdown-toggle {\n  color: #212529;\n  background-color: #dae0e5;\n  border-color: #d3d9df;\n}\n#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-light:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-light.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);\n}\n#canvas-quiz-stats .btn-dark {\n  color: #fff;\n  background-color: #343a40;\n  border-color: #343a40;\n}\n#canvas-quiz-stats .btn-dark:hover {\n  color: #fff;\n  background-color: #23272b;\n  border-color: #1d2124;\n}\n#canvas-quiz-stats .btn-dark:focus,\n#canvas-quiz-stats .btn-dark.focus {\n  color: #fff;\n  background-color: #23272b;\n  border-color: #1d2124;\n  box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);\n}\n#canvas-quiz-stats .btn-dark.disabled,\n#canvas-quiz-stats .btn-dark:disabled {\n  color: #fff;\n  background-color: #343a40;\n  border-color: #343a40;\n}\n#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-dark.dropdown-toggle {\n  color: #fff;\n  background-color: #1d2124;\n  border-color: #171a1d;\n}\n#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-dark:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-dark.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);\n}\n#canvas-quiz-stats .btn-outline-primary {\n  color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .btn-outline-primary:hover {\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .btn-outline-primary:focus,\n#canvas-quiz-stats .btn-outline-primary.focus {\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .btn-outline-primary.disabled,\n#canvas-quiz-stats .btn-outline-primary:disabled {\n  color: #007bff;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-primary.dropdown-toggle {\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-primary:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-primary.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .btn-outline-secondary {\n  color: #6c757d;\n  border-color: #6c757d;\n}\n#canvas-quiz-stats .btn-outline-secondary:hover {\n  color: #fff;\n  background-color: #6c757d;\n  border-color: #6c757d;\n}\n#canvas-quiz-stats .btn-outline-secondary:focus,\n#canvas-quiz-stats .btn-outline-secondary.focus {\n  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);\n}\n#canvas-quiz-stats .btn-outline-secondary.disabled,\n#canvas-quiz-stats .btn-outline-secondary:disabled {\n  color: #6c757d;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-secondary.dropdown-toggle {\n  color: #fff;\n  background-color: #6c757d;\n  border-color: #6c757d;\n}\n#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-secondary.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);\n}\n#canvas-quiz-stats .btn-outline-success {\n  color: #28a745;\n  border-color: #28a745;\n}\n#canvas-quiz-stats .btn-outline-success:hover {\n  color: #fff;\n  background-color: #28a745;\n  border-color: #28a745;\n}\n#canvas-quiz-stats .btn-outline-success:focus,\n#canvas-quiz-stats .btn-outline-success.focus {\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);\n}\n#canvas-quiz-stats .btn-outline-success.disabled,\n#canvas-quiz-stats .btn-outline-success:disabled {\n  color: #28a745;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-success.dropdown-toggle {\n  color: #fff;\n  background-color: #28a745;\n  border-color: #28a745;\n}\n#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-success:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-success.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);\n}\n#canvas-quiz-stats .btn-outline-info {\n  color: #17a2b8;\n  border-color: #17a2b8;\n}\n#canvas-quiz-stats .btn-outline-info:hover {\n  color: #fff;\n  background-color: #17a2b8;\n  border-color: #17a2b8;\n}\n#canvas-quiz-stats .btn-outline-info:focus,\n#canvas-quiz-stats .btn-outline-info.focus {\n  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);\n}\n#canvas-quiz-stats .btn-outline-info.disabled,\n#canvas-quiz-stats .btn-outline-info:disabled {\n  color: #17a2b8;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-info.dropdown-toggle {\n  color: #fff;\n  background-color: #17a2b8;\n  border-color: #17a2b8;\n}\n#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-info:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-info.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);\n}\n#canvas-quiz-stats .btn-outline-warning {\n  color: #ffc107;\n  border-color: #ffc107;\n}\n#canvas-quiz-stats .btn-outline-warning:hover {\n  color: #212529;\n  background-color: #ffc107;\n  border-color: #ffc107;\n}\n#canvas-quiz-stats .btn-outline-warning:focus,\n#canvas-quiz-stats .btn-outline-warning.focus {\n  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);\n}\n#canvas-quiz-stats .btn-outline-warning.disabled,\n#canvas-quiz-stats .btn-outline-warning:disabled {\n  color: #ffc107;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-warning.dropdown-toggle {\n  color: #212529;\n  background-color: #ffc107;\n  border-color: #ffc107;\n}\n#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-warning:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-warning.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);\n}\n#canvas-quiz-stats .btn-outline-danger {\n  color: #dc3545;\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .btn-outline-danger:hover {\n  color: #fff;\n  background-color: #dc3545;\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .btn-outline-danger:focus,\n#canvas-quiz-stats .btn-outline-danger.focus {\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);\n}\n#canvas-quiz-stats .btn-outline-danger.disabled,\n#canvas-quiz-stats .btn-outline-danger:disabled {\n  color: #dc3545;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-danger.dropdown-toggle {\n  color: #fff;\n  background-color: #dc3545;\n  border-color: #dc3545;\n}\n#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-danger:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-danger.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);\n}\n#canvas-quiz-stats .btn-outline-light {\n  color: #f8f9fa;\n  border-color: #f8f9fa;\n}\n#canvas-quiz-stats .btn-outline-light:hover {\n  color: #212529;\n  background-color: #f8f9fa;\n  border-color: #f8f9fa;\n}\n#canvas-quiz-stats .btn-outline-light:focus,\n#canvas-quiz-stats .btn-outline-light.focus {\n  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);\n}\n#canvas-quiz-stats .btn-outline-light.disabled,\n#canvas-quiz-stats .btn-outline-light:disabled {\n  color: #f8f9fa;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-light.dropdown-toggle {\n  color: #212529;\n  background-color: #f8f9fa;\n  border-color: #f8f9fa;\n}\n#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-light:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-light.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);\n}\n#canvas-quiz-stats .btn-outline-dark {\n  color: #343a40;\n  border-color: #343a40;\n}\n#canvas-quiz-stats .btn-outline-dark:hover {\n  color: #fff;\n  background-color: #343a40;\n  border-color: #343a40;\n}\n#canvas-quiz-stats .btn-outline-dark:focus,\n#canvas-quiz-stats .btn-outline-dark.focus {\n  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);\n}\n#canvas-quiz-stats .btn-outline-dark.disabled,\n#canvas-quiz-stats .btn-outline-dark:disabled {\n  color: #343a40;\n  background-color: transparent;\n}\n#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled):active,\n#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled).active,\n#canvas-quiz-stats .show > .btn-outline-dark.dropdown-toggle {\n  color: #fff;\n  background-color: #343a40;\n  border-color: #343a40;\n}\n#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled):active:focus,\n#canvas-quiz-stats .btn-outline-dark:not(:disabled):not(.disabled).active:focus,\n#canvas-quiz-stats .show > .btn-outline-dark.dropdown-toggle:focus {\n  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);\n}\n#canvas-quiz-stats .btn-link {\n  font-weight: 400;\n  color: #007bff;\n  text-decoration: none;\n}\n#canvas-quiz-stats .btn-link:hover {\n  color: #0056b3;\n  text-decoration: underline;\n}\n#canvas-quiz-stats .btn-link:focus,\n#canvas-quiz-stats .btn-link.focus {\n  text-decoration: underline;\n}\n#canvas-quiz-stats .btn-link:disabled,\n#canvas-quiz-stats .btn-link.disabled {\n  color: #6c757d;\n  pointer-events: none;\n}\n#canvas-quiz-stats .btn-lg,\n#canvas-quiz-stats .btn-group-lg > .btn {\n  padding: 0.5rem 1rem;\n  font-size: 1.25rem;\n  line-height: 1.5;\n  border-radius: 0.3rem;\n}\n#canvas-quiz-stats .btn-sm,\n#canvas-quiz-stats .btn-group-sm > .btn {\n  padding: 0.25rem 0.5rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  border-radius: 0.2rem;\n}\n#canvas-quiz-stats .btn-block {\n  display: block;\n  width: 100%;\n}\n#canvas-quiz-stats .btn-block + .btn-block {\n  margin-top: 0.5rem;\n}\n#canvas-quiz-stats input[type=\"submit\"].btn-block,\n#canvas-quiz-stats input[type=\"reset\"].btn-block,\n#canvas-quiz-stats input[type=\"button\"].btn-block {\n  width: 100%;\n}\n#canvas-quiz-stats .fade {\n  transition: opacity 0.15s linear;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .fade {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .fade:not(.show) {\n  opacity: 0;\n}\n#canvas-quiz-stats .collapse:not(.show) {\n  display: none;\n}\n#canvas-quiz-stats .collapsing {\n  position: relative;\n  height: 0;\n  overflow: hidden;\n  transition: height 0.35s ease;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .collapsing {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .dropup,\n#canvas-quiz-stats .dropright,\n#canvas-quiz-stats .dropdown,\n#canvas-quiz-stats .dropleft {\n  position: relative;\n}\n#canvas-quiz-stats .dropdown-toggle {\n  white-space: nowrap;\n}\n#canvas-quiz-stats .dropdown-toggle::after {\n  display: inline-block;\n  margin-left: 0.255em;\n  vertical-align: 0.255em;\n  content: \"\";\n  border-top: 0.3em solid;\n  border-right: 0.3em solid transparent;\n  border-bottom: 0;\n  border-left: 0.3em solid transparent;\n}\n#canvas-quiz-stats .dropdown-toggle:empty::after {\n  margin-left: 0;\n}\n#canvas-quiz-stats .dropdown-menu {\n  position: absolute;\n  top: 100%;\n  left: 0;\n  z-index: 1000;\n  display: none;\n  float: left;\n  min-width: 10rem;\n  padding: 0.5rem 0;\n  margin: 0.125rem 0 0;\n  font-size: 1rem;\n  color: #212529;\n  text-align: left;\n  list-style: none;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, 0.15);\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .dropdown-menu-left {\n  right: auto;\n  left: 0;\n}\n#canvas-quiz-stats .dropdown-menu-right {\n  right: 0;\n  left: auto;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .dropdown-menu-sm-left {\n    right: auto;\n    left: 0;\n  }\n  #canvas-quiz-stats .dropdown-menu-sm-right {\n    right: 0;\n    left: auto;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .dropdown-menu-md-left {\n    right: auto;\n    left: 0;\n  }\n  #canvas-quiz-stats .dropdown-menu-md-right {\n    right: 0;\n    left: auto;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .dropdown-menu-lg-left {\n    right: auto;\n    left: 0;\n  }\n  #canvas-quiz-stats .dropdown-menu-lg-right {\n    right: 0;\n    left: auto;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .dropdown-menu-xl-left {\n    right: auto;\n    left: 0;\n  }\n  #canvas-quiz-stats .dropdown-menu-xl-right {\n    right: 0;\n    left: auto;\n  }\n}\n#canvas-quiz-stats .dropup .dropdown-menu {\n  top: auto;\n  bottom: 100%;\n  margin-top: 0;\n  margin-bottom: 0.125rem;\n}\n#canvas-quiz-stats .dropup .dropdown-toggle::after {\n  display: inline-block;\n  margin-left: 0.255em;\n  vertical-align: 0.255em;\n  content: \"\";\n  border-top: 0;\n  border-right: 0.3em solid transparent;\n  border-bottom: 0.3em solid;\n  border-left: 0.3em solid transparent;\n}\n#canvas-quiz-stats .dropup .dropdown-toggle:empty::after {\n  margin-left: 0;\n}\n#canvas-quiz-stats .dropright .dropdown-menu {\n  top: 0;\n  right: auto;\n  left: 100%;\n  margin-top: 0;\n  margin-left: 0.125rem;\n}\n#canvas-quiz-stats .dropright .dropdown-toggle::after {\n  display: inline-block;\n  margin-left: 0.255em;\n  vertical-align: 0.255em;\n  content: \"\";\n  border-top: 0.3em solid transparent;\n  border-right: 0;\n  border-bottom: 0.3em solid transparent;\n  border-left: 0.3em solid;\n}\n#canvas-quiz-stats .dropright .dropdown-toggle:empty::after {\n  margin-left: 0;\n}\n#canvas-quiz-stats .dropright .dropdown-toggle::after {\n  vertical-align: 0;\n}\n#canvas-quiz-stats .dropleft .dropdown-menu {\n  top: 0;\n  right: 100%;\n  left: auto;\n  margin-top: 0;\n  margin-right: 0.125rem;\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle::after {\n  display: inline-block;\n  margin-left: 0.255em;\n  vertical-align: 0.255em;\n  content: \"\";\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle::after {\n  display: none;\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle::before {\n  display: inline-block;\n  margin-right: 0.255em;\n  vertical-align: 0.255em;\n  content: \"\";\n  border-top: 0.3em solid transparent;\n  border-right: 0.3em solid;\n  border-bottom: 0.3em solid transparent;\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle:empty::after {\n  margin-left: 0;\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle::before {\n  vertical-align: 0;\n}\n#canvas-quiz-stats .dropdown-menu[x-placement^=\"top\"],\n#canvas-quiz-stats .dropdown-menu[x-placement^=\"right\"],\n#canvas-quiz-stats .dropdown-menu[x-placement^=\"bottom\"],\n#canvas-quiz-stats .dropdown-menu[x-placement^=\"left\"] {\n  right: auto;\n  bottom: auto;\n}\n#canvas-quiz-stats .dropdown-divider {\n  height: 0;\n  margin: 0.5rem 0;\n  overflow: hidden;\n  border-top: 1px solid #e9ecef;\n}\n#canvas-quiz-stats .dropdown-item {\n  display: block;\n  width: 100%;\n  padding: 0.25rem 1.5rem;\n  clear: both;\n  font-weight: 400;\n  color: #212529;\n  text-align: inherit;\n  white-space: nowrap;\n  background-color: transparent;\n  border: 0;\n}\n#canvas-quiz-stats .dropdown-item:hover,\n#canvas-quiz-stats .dropdown-item:focus {\n  color: #16181b;\n  text-decoration: none;\n  background-color: #f8f9fa;\n}\n#canvas-quiz-stats .dropdown-item.active,\n#canvas-quiz-stats .dropdown-item:active {\n  color: #fff;\n  text-decoration: none;\n  background-color: #007bff;\n}\n#canvas-quiz-stats .dropdown-item.disabled,\n#canvas-quiz-stats .dropdown-item:disabled {\n  color: #6c757d;\n  pointer-events: none;\n  background-color: transparent;\n}\n#canvas-quiz-stats .dropdown-menu.show {\n  display: block;\n}\n#canvas-quiz-stats .dropdown-header {\n  display: block;\n  padding: 0.5rem 1.5rem;\n  margin-bottom: 0;\n  font-size: 0.875rem;\n  color: #6c757d;\n  white-space: nowrap;\n}\n#canvas-quiz-stats .dropdown-item-text {\n  display: block;\n  padding: 0.25rem 1.5rem;\n  color: #212529;\n}\n#canvas-quiz-stats .btn-group,\n#canvas-quiz-stats .btn-group-vertical {\n  position: relative;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  vertical-align: middle;\n}\n#canvas-quiz-stats .btn-group > .btn,\n#canvas-quiz-stats .btn-group-vertical > .btn {\n  position: relative;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n}\n#canvas-quiz-stats .btn-group > .btn:hover,\n#canvas-quiz-stats .btn-group-vertical > .btn:hover {\n  z-index: 1;\n}\n#canvas-quiz-stats .btn-group > .btn:focus,\n#canvas-quiz-stats .btn-group > .btn:active,\n#canvas-quiz-stats .btn-group > .btn.active,\n#canvas-quiz-stats .btn-group-vertical > .btn:focus,\n#canvas-quiz-stats .btn-group-vertical > .btn:active,\n#canvas-quiz-stats .btn-group-vertical > .btn.active {\n  z-index: 1;\n}\n#canvas-quiz-stats .btn-toolbar {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n}\n#canvas-quiz-stats .btn-toolbar .input-group {\n  width: auto;\n}\n#canvas-quiz-stats .btn-group > .btn:not(:first-child),\n#canvas-quiz-stats .btn-group > .btn-group:not(:first-child) {\n  margin-left: -1px;\n}\n#canvas-quiz-stats .btn-group > .btn:not(:last-child):not(.dropdown-toggle),\n#canvas-quiz-stats .btn-group > .btn-group:not(:last-child) > .btn {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n#canvas-quiz-stats .btn-group > .btn:not(:first-child),\n#canvas-quiz-stats .btn-group > .btn-group:not(:first-child) > .btn {\n  border-top-left-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .dropdown-toggle-split {\n  padding-right: 0.5625rem;\n  padding-left: 0.5625rem;\n}\n#canvas-quiz-stats .dropdown-toggle-split::after,\n#canvas-quiz-stats .dropup .dropdown-toggle-split::after,\n#canvas-quiz-stats .dropright .dropdown-toggle-split::after {\n  margin-left: 0;\n}\n#canvas-quiz-stats .dropleft .dropdown-toggle-split::before {\n  margin-right: 0;\n}\n#canvas-quiz-stats .btn-sm + .dropdown-toggle-split,\n#canvas-quiz-stats .btn-group-sm > .btn + .dropdown-toggle-split {\n  padding-right: 0.375rem;\n  padding-left: 0.375rem;\n}\n#canvas-quiz-stats .btn-lg + .dropdown-toggle-split,\n#canvas-quiz-stats .btn-group-lg > .btn + .dropdown-toggle-split {\n  padding-right: 0.75rem;\n  padding-left: 0.75rem;\n}\n#canvas-quiz-stats .btn-group-vertical {\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -ms-flex-align: start;\n  align-items: flex-start;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n#canvas-quiz-stats .btn-group-vertical > .btn,\n#canvas-quiz-stats .btn-group-vertical > .btn-group {\n  width: 100%;\n}\n#canvas-quiz-stats .btn-group-vertical > .btn:not(:first-child),\n#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:first-child) {\n  margin-top: -1px;\n}\n#canvas-quiz-stats .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle),\n#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:last-child) > .btn {\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .btn-group-vertical > .btn:not(:first-child),\n#canvas-quiz-stats .btn-group-vertical > .btn-group:not(:first-child) > .btn {\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n#canvas-quiz-stats .btn-group-toggle > .btn,\n#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn {\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .btn-group-toggle > .btn input[type=\"radio\"],\n#canvas-quiz-stats .btn-group-toggle > .btn input[type=\"checkbox\"],\n#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn input[type=\"radio\"],\n#canvas-quiz-stats .btn-group-toggle > .btn-group > .btn input[type=\"checkbox\"] {\n  position: absolute;\n  clip: rect(0, 0, 0, 0);\n  pointer-events: none;\n}\n#canvas-quiz-stats .input-group {\n  position: relative;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  -ms-flex-align: stretch;\n  align-items: stretch;\n  width: 100%;\n}\n#canvas-quiz-stats .input-group > .form-control,\n#canvas-quiz-stats .input-group > .form-control-plaintext,\n#canvas-quiz-stats .input-group > .custom-select,\n#canvas-quiz-stats .input-group > .custom-file {\n  position: relative;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n  width: 1%;\n  min-width: 0;\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .input-group > .form-control + .form-control,\n#canvas-quiz-stats .input-group > .form-control + .custom-select,\n#canvas-quiz-stats .input-group > .form-control + .custom-file,\n#canvas-quiz-stats .input-group > .form-control-plaintext + .form-control,\n#canvas-quiz-stats .input-group > .form-control-plaintext + .custom-select,\n#canvas-quiz-stats .input-group > .form-control-plaintext + .custom-file,\n#canvas-quiz-stats .input-group > .custom-select + .form-control,\n#canvas-quiz-stats .input-group > .custom-select + .custom-select,\n#canvas-quiz-stats .input-group > .custom-select + .custom-file,\n#canvas-quiz-stats .input-group > .custom-file + .form-control,\n#canvas-quiz-stats .input-group > .custom-file + .custom-select,\n#canvas-quiz-stats .input-group > .custom-file + .custom-file {\n  margin-left: -1px;\n}\n#canvas-quiz-stats .input-group > .form-control:focus,\n#canvas-quiz-stats .input-group > .custom-select:focus,\n#canvas-quiz-stats .input-group > .custom-file .custom-file-input:focus ~ .custom-file-label {\n  z-index: 3;\n}\n#canvas-quiz-stats .input-group > .custom-file .custom-file-input:focus {\n  z-index: 4;\n}\n#canvas-quiz-stats .input-group > .form-control:not(:last-child),\n#canvas-quiz-stats .input-group > .custom-select:not(:last-child) {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n#canvas-quiz-stats .input-group > .form-control:not(:first-child),\n#canvas-quiz-stats .input-group > .custom-select:not(:first-child) {\n  border-top-left-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .input-group > .custom-file {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n  align-items: center;\n}\n#canvas-quiz-stats .input-group > .custom-file:not(:last-child) .custom-file-label,\n#canvas-quiz-stats .input-group > .custom-file:not(:last-child) .custom-file-label::after {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n#canvas-quiz-stats .input-group > .custom-file:not(:first-child) .custom-file-label {\n  border-top-left-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .input-group-prepend,\n#canvas-quiz-stats .input-group-append {\n  display: -ms-flexbox;\n  display: flex;\n}\n#canvas-quiz-stats .input-group-prepend .btn,\n#canvas-quiz-stats .input-group-append .btn {\n  position: relative;\n  z-index: 2;\n}\n#canvas-quiz-stats .input-group-prepend .btn:focus,\n#canvas-quiz-stats .input-group-append .btn:focus {\n  z-index: 3;\n}\n#canvas-quiz-stats .input-group-prepend .btn + .btn,\n#canvas-quiz-stats .input-group-prepend .btn + .input-group-text,\n#canvas-quiz-stats .input-group-prepend .input-group-text + .input-group-text,\n#canvas-quiz-stats .input-group-prepend .input-group-text + .btn,\n#canvas-quiz-stats .input-group-append .btn + .btn,\n#canvas-quiz-stats .input-group-append .btn + .input-group-text,\n#canvas-quiz-stats .input-group-append .input-group-text + .input-group-text,\n#canvas-quiz-stats .input-group-append .input-group-text + .btn {\n  margin-left: -1px;\n}\n#canvas-quiz-stats .input-group-prepend {\n  margin-right: -1px;\n}\n#canvas-quiz-stats .input-group-append {\n  margin-left: -1px;\n}\n#canvas-quiz-stats .input-group-text {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n  align-items: center;\n  padding: 0.375rem 0.75rem;\n  margin-bottom: 0;\n  font-size: 1rem;\n  font-weight: 400;\n  line-height: 1.5;\n  color: #495057;\n  text-align: center;\n  white-space: nowrap;\n  background-color: #e9ecef;\n  border: 1px solid #ced4da;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .input-group-text input[type=\"radio\"],\n#canvas-quiz-stats .input-group-text input[type=\"checkbox\"] {\n  margin-top: 0;\n}\n#canvas-quiz-stats .input-group-lg > .form-control:not(textarea),\n#canvas-quiz-stats .input-group-lg > .custom-select {\n  height: calc(1.5em + 1rem + 2px);\n}\n#canvas-quiz-stats .input-group-lg > .form-control,\n#canvas-quiz-stats .input-group-lg > .custom-select,\n#canvas-quiz-stats .input-group-lg > .input-group-prepend > .input-group-text,\n#canvas-quiz-stats .input-group-lg > .input-group-append > .input-group-text,\n#canvas-quiz-stats .input-group-lg > .input-group-prepend > .btn,\n#canvas-quiz-stats .input-group-lg > .input-group-append > .btn {\n  padding: 0.5rem 1rem;\n  font-size: 1.25rem;\n  line-height: 1.5;\n  border-radius: 0.3rem;\n}\n#canvas-quiz-stats .input-group-sm > .form-control:not(textarea),\n#canvas-quiz-stats .input-group-sm > .custom-select {\n  height: calc(1.5em + 0.5rem + 2px);\n}\n#canvas-quiz-stats .input-group-sm > .form-control,\n#canvas-quiz-stats .input-group-sm > .custom-select,\n#canvas-quiz-stats .input-group-sm > .input-group-prepend > .input-group-text,\n#canvas-quiz-stats .input-group-sm > .input-group-append > .input-group-text,\n#canvas-quiz-stats .input-group-sm > .input-group-prepend > .btn,\n#canvas-quiz-stats .input-group-sm > .input-group-append > .btn {\n  padding: 0.25rem 0.5rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  border-radius: 0.2rem;\n}\n#canvas-quiz-stats .input-group-lg > .custom-select,\n#canvas-quiz-stats .input-group-sm > .custom-select {\n  padding-right: 1.75rem;\n}\n#canvas-quiz-stats .input-group > .input-group-prepend > .btn,\n#canvas-quiz-stats .input-group > .input-group-prepend > .input-group-text,\n#canvas-quiz-stats .input-group > .input-group-append:not(:last-child) > .btn,\n#canvas-quiz-stats .input-group > .input-group-append:not(:last-child) > .input-group-text,\n#canvas-quiz-stats .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),\n#canvas-quiz-stats .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n#canvas-quiz-stats .input-group > .input-group-append > .btn,\n#canvas-quiz-stats .input-group > .input-group-append > .input-group-text,\n#canvas-quiz-stats .input-group > .input-group-prepend:not(:first-child) > .btn,\n#canvas-quiz-stats .input-group > .input-group-prepend:not(:first-child) > .input-group-text,\n#canvas-quiz-stats .input-group > .input-group-prepend:first-child > .btn:not(:first-child),\n#canvas-quiz-stats .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {\n  border-top-left-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .custom-control {\n  position: relative;\n  z-index: 1;\n  display: block;\n  min-height: 1.5rem;\n  padding-left: 1.5rem;\n  -webkit-print-color-adjust: exact;\n  color-adjust: exact;\n}\n#canvas-quiz-stats .custom-control-inline {\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  margin-right: 1rem;\n}\n#canvas-quiz-stats .custom-control-input {\n  position: absolute;\n  left: 0;\n  z-index: -1;\n  width: 1rem;\n  height: 1.25rem;\n  opacity: 0;\n}\n#canvas-quiz-stats .custom-control-input:checked ~ .custom-control-label::before {\n  color: #fff;\n  border-color: #007bff;\n  background-color: #007bff;\n}\n#canvas-quiz-stats .custom-control-input:focus ~ .custom-control-label::before {\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {\n  border-color: #80bdff;\n}\n#canvas-quiz-stats .custom-control-input:not(:disabled):active ~ .custom-control-label::before {\n  color: #fff;\n  background-color: #b3d7ff;\n  border-color: #b3d7ff;\n}\n#canvas-quiz-stats .custom-control-input[disabled] ~ .custom-control-label,\n#canvas-quiz-stats .custom-control-input:disabled ~ .custom-control-label {\n  color: #6c757d;\n}\n#canvas-quiz-stats .custom-control-input[disabled] ~ .custom-control-label::before,\n#canvas-quiz-stats .custom-control-input:disabled ~ .custom-control-label::before {\n  background-color: #e9ecef;\n}\n#canvas-quiz-stats .custom-control-label {\n  position: relative;\n  margin-bottom: 0;\n  vertical-align: top;\n}\n#canvas-quiz-stats .custom-control-label::before {\n  position: absolute;\n  top: 0.25rem;\n  left: -1.5rem;\n  display: block;\n  width: 1rem;\n  height: 1rem;\n  pointer-events: none;\n  content: \"\";\n  background-color: #fff;\n  border: #adb5bd solid 1px;\n}\n#canvas-quiz-stats .custom-control-label::after {\n  position: absolute;\n  top: 0.25rem;\n  left: -1.5rem;\n  display: block;\n  width: 1rem;\n  height: 1rem;\n  content: \"\";\n  background: no-repeat 50% / 50% 50%;\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-label::before {\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {\n  border-color: #007bff;\n  background-color: #007bff;\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {\n  background-color: rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .custom-checkbox .custom-control-input:disabled:indeterminate ~ .custom-control-label::before {\n  background-color: rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .custom-radio .custom-control-label::before {\n  border-radius: 50%;\n}\n#canvas-quiz-stats .custom-radio .custom-control-input:checked ~ .custom-control-label::after {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .custom-radio .custom-control-input:disabled:checked ~ .custom-control-label::before {\n  background-color: rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .custom-switch {\n  padding-left: 2.25rem;\n}\n#canvas-quiz-stats .custom-switch .custom-control-label::before {\n  left: -2.25rem;\n  width: 1.75rem;\n  pointer-events: all;\n  border-radius: 0.5rem;\n}\n#canvas-quiz-stats .custom-switch .custom-control-label::after {\n  top: calc(0.25rem + 2px);\n  left: calc(-2.25rem + 2px);\n  width: calc(1rem - 4px);\n  height: calc(1rem - 4px);\n  background-color: #adb5bd;\n  border-radius: 0.5rem;\n  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-transform 0.15s ease-in-out;\n  transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-transform 0.15s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .custom-switch .custom-control-label::after {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .custom-switch .custom-control-input:checked ~ .custom-control-label::after {\n  background-color: #fff;\n  -webkit-transform: translateX(0.75rem);\n  transform: translateX(0.75rem);\n}\n#canvas-quiz-stats .custom-switch .custom-control-input:disabled:checked ~ .custom-control-label::before {\n  background-color: rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .custom-select {\n  display: inline-block;\n  width: 100%;\n  height: calc(1.5em + 0.75rem + 2px);\n  padding: 0.375rem 1.75rem 0.375rem 0.75rem;\n  font-size: 1rem;\n  font-weight: 400;\n  line-height: 1.5;\n  color: #495057;\n  vertical-align: middle;\n  background: #fff url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e\") no-repeat right 0.75rem center / 8px 10px;\n  border: 1px solid #ced4da;\n  border-radius: 0.25rem;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n#canvas-quiz-stats .custom-select:focus {\n  border-color: #80bdff;\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-select:focus::-ms-value {\n  color: #495057;\n  background-color: #fff;\n}\n#canvas-quiz-stats .custom-select[multiple],\n#canvas-quiz-stats .custom-select[size]:not([size=\"1\"]) {\n  height: auto;\n  padding-right: 0.75rem;\n  background-image: none;\n}\n#canvas-quiz-stats .custom-select:disabled {\n  color: #6c757d;\n  background-color: #e9ecef;\n}\n#canvas-quiz-stats .custom-select::-ms-expand {\n  display: none;\n}\n#canvas-quiz-stats .custom-select:-moz-focusring {\n  color: transparent;\n  text-shadow: 0 0 0 #495057;\n}\n#canvas-quiz-stats .custom-select-sm {\n  height: calc(1.5em + 0.5rem + 2px);\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n  padding-left: 0.5rem;\n  font-size: 0.875rem;\n}\n#canvas-quiz-stats .custom-select-lg {\n  height: calc(1.5em + 1rem + 2px);\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 1rem;\n  font-size: 1.25rem;\n}\n#canvas-quiz-stats .custom-file {\n  position: relative;\n  display: inline-block;\n  width: 100%;\n  height: calc(1.5em + 0.75rem + 2px);\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .custom-file-input {\n  position: relative;\n  z-index: 2;\n  width: 100%;\n  height: calc(1.5em + 0.75rem + 2px);\n  margin: 0;\n  opacity: 0;\n}\n#canvas-quiz-stats .custom-file-input:focus ~ .custom-file-label {\n  border-color: #80bdff;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-file-input[disabled] ~ .custom-file-label,\n#canvas-quiz-stats .custom-file-input:disabled ~ .custom-file-label {\n  background-color: #e9ecef;\n}\n#canvas-quiz-stats .custom-file-input:lang(en) ~ .custom-file-label::after {\n  content: \"Browse\";\n}\n#canvas-quiz-stats .custom-file-input ~ .custom-file-label[data-browse]::after {\n  content: attr(data-browse);\n}\n#canvas-quiz-stats .custom-file-label {\n  position: absolute;\n  top: 0;\n  right: 0;\n  left: 0;\n  z-index: 1;\n  height: calc(1.5em + 0.75rem + 2px);\n  padding: 0.375rem 0.75rem;\n  font-weight: 400;\n  line-height: 1.5;\n  color: #495057;\n  background-color: #fff;\n  border: 1px solid #ced4da;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .custom-file-label::after {\n  position: absolute;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 3;\n  display: block;\n  height: calc(1.5em + 0.75rem);\n  padding: 0.375rem 0.75rem;\n  line-height: 1.5;\n  color: #495057;\n  content: \"Browse\";\n  background-color: #e9ecef;\n  border-left: inherit;\n  border-radius: 0 0.25rem 0.25rem 0;\n}\n#canvas-quiz-stats .custom-range {\n  width: 100%;\n  height: 1.4rem;\n  padding: 0;\n  background-color: transparent;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n#canvas-quiz-stats .custom-range:focus {\n  outline: none;\n}\n#canvas-quiz-stats .custom-range:focus::-webkit-slider-thumb {\n  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-range:focus::-moz-range-thumb {\n  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-range:focus::-ms-thumb {\n  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .custom-range::-moz-focus-outer {\n  border: 0;\n}\n#canvas-quiz-stats .custom-range::-webkit-slider-thumb {\n  width: 1rem;\n  height: 1rem;\n  margin-top: -0.25rem;\n  background-color: #007bff;\n  border: 0;\n  border-radius: 1rem;\n  -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  -webkit-appearance: none;\n  appearance: none;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .custom-range::-webkit-slider-thumb {\n    -webkit-transition: none;\n    transition: none;\n  }\n}\n#canvas-quiz-stats .custom-range::-webkit-slider-thumb:active {\n  background-color: #b3d7ff;\n}\n#canvas-quiz-stats .custom-range::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 0.5rem;\n  color: transparent;\n  cursor: pointer;\n  background-color: #dee2e6;\n  border-color: transparent;\n  border-radius: 1rem;\n}\n#canvas-quiz-stats .custom-range::-moz-range-thumb {\n  width: 1rem;\n  height: 1rem;\n  background-color: #007bff;\n  border: 0;\n  border-radius: 1rem;\n  -moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  -moz-appearance: none;\n  appearance: none;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .custom-range::-moz-range-thumb {\n    -moz-transition: none;\n    transition: none;\n  }\n}\n#canvas-quiz-stats .custom-range::-moz-range-thumb:active {\n  background-color: #b3d7ff;\n}\n#canvas-quiz-stats .custom-range::-moz-range-track {\n  width: 100%;\n  height: 0.5rem;\n  color: transparent;\n  cursor: pointer;\n  background-color: #dee2e6;\n  border-color: transparent;\n  border-radius: 1rem;\n}\n#canvas-quiz-stats .custom-range::-ms-thumb {\n  width: 1rem;\n  height: 1rem;\n  margin-top: 0;\n  margin-right: 0.2rem;\n  margin-left: 0.2rem;\n  background-color: #007bff;\n  border: 0;\n  border-radius: 1rem;\n  -ms-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n  appearance: none;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .custom-range::-ms-thumb {\n    -ms-transition: none;\n    transition: none;\n  }\n}\n#canvas-quiz-stats .custom-range::-ms-thumb:active {\n  background-color: #b3d7ff;\n}\n#canvas-quiz-stats .custom-range::-ms-track {\n  width: 100%;\n  height: 0.5rem;\n  color: transparent;\n  cursor: pointer;\n  background-color: transparent;\n  border-color: transparent;\n  border-width: 0.5rem;\n}\n#canvas-quiz-stats .custom-range::-ms-fill-lower {\n  background-color: #dee2e6;\n  border-radius: 1rem;\n}\n#canvas-quiz-stats .custom-range::-ms-fill-upper {\n  margin-right: 15px;\n  background-color: #dee2e6;\n  border-radius: 1rem;\n}\n#canvas-quiz-stats .custom-range:disabled::-webkit-slider-thumb {\n  background-color: #adb5bd;\n}\n#canvas-quiz-stats .custom-range:disabled::-webkit-slider-runnable-track {\n  cursor: default;\n}\n#canvas-quiz-stats .custom-range:disabled::-moz-range-thumb {\n  background-color: #adb5bd;\n}\n#canvas-quiz-stats .custom-range:disabled::-moz-range-track {\n  cursor: default;\n}\n#canvas-quiz-stats .custom-range:disabled::-ms-thumb {\n  background-color: #adb5bd;\n}\n#canvas-quiz-stats .custom-control-label::before,\n#canvas-quiz-stats .custom-file-label,\n#canvas-quiz-stats .custom-select {\n  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .custom-control-label::before,\n  #canvas-quiz-stats .custom-file-label,\n  #canvas-quiz-stats .custom-select {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .nav {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  padding-left: 0;\n  margin-bottom: 0;\n  list-style: none;\n}\n#canvas-quiz-stats .nav-link {\n  display: block;\n  padding: 0.5rem 1rem;\n}\n#canvas-quiz-stats .nav-link:hover,\n#canvas-quiz-stats .nav-link:focus {\n  text-decoration: none;\n}\n#canvas-quiz-stats .nav-link.disabled {\n  color: #6c757d;\n  pointer-events: none;\n  cursor: default;\n}\n#canvas-quiz-stats .nav-tabs {\n  border-bottom: 1px solid #dee2e6;\n}\n#canvas-quiz-stats .nav-tabs .nav-item {\n  margin-bottom: -1px;\n}\n#canvas-quiz-stats .nav-tabs .nav-link {\n  border: 1px solid transparent;\n  border-top-left-radius: 0.25rem;\n  border-top-right-radius: 0.25rem;\n}\n#canvas-quiz-stats .nav-tabs .nav-link:hover,\n#canvas-quiz-stats .nav-tabs .nav-link:focus {\n  border-color: #e9ecef #e9ecef #dee2e6;\n}\n#canvas-quiz-stats .nav-tabs .nav-link.disabled {\n  color: #6c757d;\n  background-color: transparent;\n  border-color: transparent;\n}\n#canvas-quiz-stats .nav-tabs .nav-link.active,\n#canvas-quiz-stats .nav-tabs .nav-item.show .nav-link {\n  color: #495057;\n  background-color: #fff;\n  border-color: #dee2e6 #dee2e6 #fff;\n}\n#canvas-quiz-stats .nav-tabs .dropdown-menu {\n  margin-top: -1px;\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n#canvas-quiz-stats .nav-pills .nav-link {\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .nav-pills .nav-link.active,\n#canvas-quiz-stats .nav-pills .show > .nav-link {\n  color: #fff;\n  background-color: #007bff;\n}\n#canvas-quiz-stats .nav-fill > .nav-link,\n#canvas-quiz-stats .nav-fill .nav-item {\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n  text-align: center;\n}\n#canvas-quiz-stats .nav-justified > .nav-link,\n#canvas-quiz-stats .nav-justified .nav-item {\n  -ms-flex-preferred-size: 0;\n  flex-basis: 0;\n  -ms-flex-positive: 1;\n  flex-grow: 1;\n  text-align: center;\n}\n#canvas-quiz-stats .tab-content > .tab-pane {\n  display: none;\n}\n#canvas-quiz-stats .tab-content > .active {\n  display: block;\n}\n#canvas-quiz-stats .navbar {\n  position: relative;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  -ms-flex-align: center;\n  align-items: center;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  padding: 0.5rem 1rem;\n}\n#canvas-quiz-stats .navbar .container,\n#canvas-quiz-stats .navbar .container-fluid,\n#canvas-quiz-stats .navbar .container-sm,\n#canvas-quiz-stats .navbar .container-md,\n#canvas-quiz-stats .navbar .container-lg,\n#canvas-quiz-stats .navbar .container-xl {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  -ms-flex-align: center;\n  align-items: center;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n#canvas-quiz-stats .navbar-brand {\n  display: inline-block;\n  padding-top: 0.3125rem;\n  padding-bottom: 0.3125rem;\n  margin-right: 1rem;\n  font-size: 1.25rem;\n  line-height: inherit;\n  white-space: nowrap;\n}\n#canvas-quiz-stats .navbar-brand:hover,\n#canvas-quiz-stats .navbar-brand:focus {\n  text-decoration: none;\n}\n#canvas-quiz-stats .navbar-nav {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  padding-left: 0;\n  margin-bottom: 0;\n  list-style: none;\n}\n#canvas-quiz-stats .navbar-nav .nav-link {\n  padding-right: 0;\n  padding-left: 0;\n}\n#canvas-quiz-stats .navbar-nav .dropdown-menu {\n  position: static;\n  float: none;\n}\n#canvas-quiz-stats .navbar-text {\n  display: inline-block;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\n#canvas-quiz-stats .navbar-collapse {\n  -ms-flex-preferred-size: 100%;\n  flex-basis: 100%;\n  -ms-flex-positive: 1;\n  flex-grow: 1;\n  -ms-flex-align: center;\n  align-items: center;\n}\n#canvas-quiz-stats .navbar-toggler {\n  padding: 0.25rem 0.75rem;\n  font-size: 1.25rem;\n  line-height: 1;\n  background-color: transparent;\n  border: 1px solid transparent;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .navbar-toggler:hover,\n#canvas-quiz-stats .navbar-toggler:focus {\n  text-decoration: none;\n}\n#canvas-quiz-stats .navbar-toggler-icon {\n  display: inline-block;\n  width: 1.5em;\n  height: 1.5em;\n  vertical-align: middle;\n  content: \"\";\n  background: no-repeat center center;\n  background-size: 100% 100%;\n}\n@media (max-width: 575.98px) {\n  #canvas-quiz-stats .navbar-expand-sm > .container,\n  #canvas-quiz-stats .navbar-expand-sm > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-sm > .container-sm,\n  #canvas-quiz-stats .navbar-expand-sm > .container-md,\n  #canvas-quiz-stats .navbar-expand-sm > .container-lg,\n  #canvas-quiz-stats .navbar-expand-sm > .container-xl {\n    padding-right: 0;\n    padding-left: 0;\n  }\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .navbar-expand-sm {\n    -ms-flex-flow: row nowrap;\n    flex-flow: row nowrap;\n    -ms-flex-pack: start;\n    justify-content: flex-start;\n  }\n  #canvas-quiz-stats .navbar-expand-sm .navbar-nav {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .navbar-expand-sm .navbar-nav .dropdown-menu {\n    position: absolute;\n  }\n  #canvas-quiz-stats .navbar-expand-sm .navbar-nav .nav-link {\n    padding-right: 0.5rem;\n    padding-left: 0.5rem;\n  }\n  #canvas-quiz-stats .navbar-expand-sm > .container,\n  #canvas-quiz-stats .navbar-expand-sm > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-sm > .container-sm,\n  #canvas-quiz-stats .navbar-expand-sm > .container-md,\n  #canvas-quiz-stats .navbar-expand-sm > .container-lg,\n  #canvas-quiz-stats .navbar-expand-sm > .container-xl {\n    -ms-flex-wrap: nowrap;\n    flex-wrap: nowrap;\n  }\n  #canvas-quiz-stats .navbar-expand-sm .navbar-collapse {\n    display: -ms-flexbox !important;\n    display: flex !important;\n    -ms-flex-preferred-size: auto;\n    flex-basis: auto;\n  }\n  #canvas-quiz-stats .navbar-expand-sm .navbar-toggler {\n    display: none;\n  }\n}\n@media (max-width: 767.98px) {\n  #canvas-quiz-stats .navbar-expand-md > .container,\n  #canvas-quiz-stats .navbar-expand-md > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-md > .container-sm,\n  #canvas-quiz-stats .navbar-expand-md > .container-md,\n  #canvas-quiz-stats .navbar-expand-md > .container-lg,\n  #canvas-quiz-stats .navbar-expand-md > .container-xl {\n    padding-right: 0;\n    padding-left: 0;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .navbar-expand-md {\n    -ms-flex-flow: row nowrap;\n    flex-flow: row nowrap;\n    -ms-flex-pack: start;\n    justify-content: flex-start;\n  }\n  #canvas-quiz-stats .navbar-expand-md .navbar-nav {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .navbar-expand-md .navbar-nav .dropdown-menu {\n    position: absolute;\n  }\n  #canvas-quiz-stats .navbar-expand-md .navbar-nav .nav-link {\n    padding-right: 0.5rem;\n    padding-left: 0.5rem;\n  }\n  #canvas-quiz-stats .navbar-expand-md > .container,\n  #canvas-quiz-stats .navbar-expand-md > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-md > .container-sm,\n  #canvas-quiz-stats .navbar-expand-md > .container-md,\n  #canvas-quiz-stats .navbar-expand-md > .container-lg,\n  #canvas-quiz-stats .navbar-expand-md > .container-xl {\n    -ms-flex-wrap: nowrap;\n    flex-wrap: nowrap;\n  }\n  #canvas-quiz-stats .navbar-expand-md .navbar-collapse {\n    display: -ms-flexbox !important;\n    display: flex !important;\n    -ms-flex-preferred-size: auto;\n    flex-basis: auto;\n  }\n  #canvas-quiz-stats .navbar-expand-md .navbar-toggler {\n    display: none;\n  }\n}\n@media (max-width: 991.98px) {\n  #canvas-quiz-stats .navbar-expand-lg > .container,\n  #canvas-quiz-stats .navbar-expand-lg > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-lg > .container-sm,\n  #canvas-quiz-stats .navbar-expand-lg > .container-md,\n  #canvas-quiz-stats .navbar-expand-lg > .container-lg,\n  #canvas-quiz-stats .navbar-expand-lg > .container-xl {\n    padding-right: 0;\n    padding-left: 0;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .navbar-expand-lg {\n    -ms-flex-flow: row nowrap;\n    flex-flow: row nowrap;\n    -ms-flex-pack: start;\n    justify-content: flex-start;\n  }\n  #canvas-quiz-stats .navbar-expand-lg .navbar-nav {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .navbar-expand-lg .navbar-nav .dropdown-menu {\n    position: absolute;\n  }\n  #canvas-quiz-stats .navbar-expand-lg .navbar-nav .nav-link {\n    padding-right: 0.5rem;\n    padding-left: 0.5rem;\n  }\n  #canvas-quiz-stats .navbar-expand-lg > .container,\n  #canvas-quiz-stats .navbar-expand-lg > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-lg > .container-sm,\n  #canvas-quiz-stats .navbar-expand-lg > .container-md,\n  #canvas-quiz-stats .navbar-expand-lg > .container-lg,\n  #canvas-quiz-stats .navbar-expand-lg > .container-xl {\n    -ms-flex-wrap: nowrap;\n    flex-wrap: nowrap;\n  }\n  #canvas-quiz-stats .navbar-expand-lg .navbar-collapse {\n    display: -ms-flexbox !important;\n    display: flex !important;\n    -ms-flex-preferred-size: auto;\n    flex-basis: auto;\n  }\n  #canvas-quiz-stats .navbar-expand-lg .navbar-toggler {\n    display: none;\n  }\n}\n@media (max-width: 1199.98px) {\n  #canvas-quiz-stats .navbar-expand-xl > .container,\n  #canvas-quiz-stats .navbar-expand-xl > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-xl > .container-sm,\n  #canvas-quiz-stats .navbar-expand-xl > .container-md,\n  #canvas-quiz-stats .navbar-expand-xl > .container-lg,\n  #canvas-quiz-stats .navbar-expand-xl > .container-xl {\n    padding-right: 0;\n    padding-left: 0;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .navbar-expand-xl {\n    -ms-flex-flow: row nowrap;\n    flex-flow: row nowrap;\n    -ms-flex-pack: start;\n    justify-content: flex-start;\n  }\n  #canvas-quiz-stats .navbar-expand-xl .navbar-nav {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .navbar-expand-xl .navbar-nav .dropdown-menu {\n    position: absolute;\n  }\n  #canvas-quiz-stats .navbar-expand-xl .navbar-nav .nav-link {\n    padding-right: 0.5rem;\n    padding-left: 0.5rem;\n  }\n  #canvas-quiz-stats .navbar-expand-xl > .container,\n  #canvas-quiz-stats .navbar-expand-xl > .container-fluid,\n  #canvas-quiz-stats .navbar-expand-xl > .container-sm,\n  #canvas-quiz-stats .navbar-expand-xl > .container-md,\n  #canvas-quiz-stats .navbar-expand-xl > .container-lg,\n  #canvas-quiz-stats .navbar-expand-xl > .container-xl {\n    -ms-flex-wrap: nowrap;\n    flex-wrap: nowrap;\n  }\n  #canvas-quiz-stats .navbar-expand-xl .navbar-collapse {\n    display: -ms-flexbox !important;\n    display: flex !important;\n    -ms-flex-preferred-size: auto;\n    flex-basis: auto;\n  }\n  #canvas-quiz-stats .navbar-expand-xl .navbar-toggler {\n    display: none;\n  }\n}\n#canvas-quiz-stats .navbar-expand {\n  -ms-flex-flow: row nowrap;\n  flex-flow: row nowrap;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n}\n#canvas-quiz-stats .navbar-expand > .container,\n#canvas-quiz-stats .navbar-expand > .container-fluid,\n#canvas-quiz-stats .navbar-expand > .container-sm,\n#canvas-quiz-stats .navbar-expand > .container-md,\n#canvas-quiz-stats .navbar-expand > .container-lg,\n#canvas-quiz-stats .navbar-expand > .container-xl {\n  padding-right: 0;\n  padding-left: 0;\n}\n#canvas-quiz-stats .navbar-expand .navbar-nav {\n  -ms-flex-direction: row;\n  flex-direction: row;\n}\n#canvas-quiz-stats .navbar-expand .navbar-nav .dropdown-menu {\n  position: absolute;\n}\n#canvas-quiz-stats .navbar-expand .navbar-nav .nav-link {\n  padding-right: 0.5rem;\n  padding-left: 0.5rem;\n}\n#canvas-quiz-stats .navbar-expand > .container,\n#canvas-quiz-stats .navbar-expand > .container-fluid,\n#canvas-quiz-stats .navbar-expand > .container-sm,\n#canvas-quiz-stats .navbar-expand > .container-md,\n#canvas-quiz-stats .navbar-expand > .container-lg,\n#canvas-quiz-stats .navbar-expand > .container-xl {\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n}\n#canvas-quiz-stats .navbar-expand .navbar-collapse {\n  display: -ms-flexbox !important;\n  display: flex !important;\n  -ms-flex-preferred-size: auto;\n  flex-basis: auto;\n}\n#canvas-quiz-stats .navbar-expand .navbar-toggler {\n  display: none;\n}\n#canvas-quiz-stats .navbar-light .navbar-brand {\n  color: rgba(0, 0, 0, 0.9);\n}\n#canvas-quiz-stats .navbar-light .navbar-brand:hover,\n#canvas-quiz-stats .navbar-light .navbar-brand:focus {\n  color: rgba(0, 0, 0, 0.9);\n}\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link {\n  color: rgba(0, 0, 0, 0.5);\n}\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link:hover,\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link:focus {\n  color: rgba(0, 0, 0, 0.7);\n}\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.disabled {\n  color: rgba(0, 0, 0, 0.3);\n}\n#canvas-quiz-stats .navbar-light .navbar-nav .show > .nav-link,\n#canvas-quiz-stats .navbar-light .navbar-nav .active > .nav-link,\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.show,\n#canvas-quiz-stats .navbar-light .navbar-nav .nav-link.active {\n  color: rgba(0, 0, 0, 0.9);\n}\n#canvas-quiz-stats .navbar-light .navbar-toggler {\n  color: rgba(0, 0, 0, 0.5);\n  border-color: rgba(0, 0, 0, 0.1);\n}\n#canvas-quiz-stats .navbar-light .navbar-toggler-icon {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .navbar-light .navbar-text {\n  color: rgba(0, 0, 0, 0.5);\n}\n#canvas-quiz-stats .navbar-light .navbar-text a {\n  color: rgba(0, 0, 0, 0.9);\n}\n#canvas-quiz-stats .navbar-light .navbar-text a:hover,\n#canvas-quiz-stats .navbar-light .navbar-text a:focus {\n  color: rgba(0, 0, 0, 0.9);\n}\n#canvas-quiz-stats .navbar-dark .navbar-brand {\n  color: #fff;\n}\n#canvas-quiz-stats .navbar-dark .navbar-brand:hover,\n#canvas-quiz-stats .navbar-dark .navbar-brand:focus {\n  color: #fff;\n}\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link {\n  color: rgba(255, 255, 255, 0.5);\n}\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link:hover,\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link:focus {\n  color: rgba(255, 255, 255, 0.75);\n}\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.disabled {\n  color: rgba(255, 255, 255, 0.25);\n}\n#canvas-quiz-stats .navbar-dark .navbar-nav .show > .nav-link,\n#canvas-quiz-stats .navbar-dark .navbar-nav .active > .nav-link,\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.show,\n#canvas-quiz-stats .navbar-dark .navbar-nav .nav-link.active {\n  color: #fff;\n}\n#canvas-quiz-stats .navbar-dark .navbar-toggler {\n  color: rgba(255, 255, 255, 0.5);\n  border-color: rgba(255, 255, 255, 0.1);\n}\n#canvas-quiz-stats .navbar-dark .navbar-toggler-icon {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .navbar-dark .navbar-text {\n  color: rgba(255, 255, 255, 0.5);\n}\n#canvas-quiz-stats .navbar-dark .navbar-text a {\n  color: #fff;\n}\n#canvas-quiz-stats .navbar-dark .navbar-text a:hover,\n#canvas-quiz-stats .navbar-dark .navbar-text a:focus {\n  color: #fff;\n}\n#canvas-quiz-stats .card {\n  position: relative;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  min-width: 0;\n  word-wrap: break-word;\n  background-color: #fff;\n  background-clip: border-box;\n  border: 1px solid rgba(0, 0, 0, 0.125);\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .card > hr {\n  margin-right: 0;\n  margin-left: 0;\n}\n#canvas-quiz-stats .card > .list-group {\n  border-top: inherit;\n  border-bottom: inherit;\n}\n#canvas-quiz-stats .card > .list-group:first-child {\n  border-top-width: 0;\n  border-top-left-radius: calc(0.25rem - 1px);\n  border-top-right-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card > .list-group:last-child {\n  border-bottom-width: 0;\n  border-bottom-right-radius: calc(0.25rem - 1px);\n  border-bottom-left-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card > .card-header + .list-group,\n#canvas-quiz-stats .card > .list-group + .card-footer {\n  border-top: 0;\n}\n#canvas-quiz-stats .card-body {\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n  min-height: 1px;\n  padding: 1.25rem;\n}\n#canvas-quiz-stats .card-title {\n  margin-bottom: 0.75rem;\n}\n#canvas-quiz-stats .card-subtitle {\n  margin-top: -0.375rem;\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .card-text:last-child {\n  margin-bottom: 0;\n}\n#canvas-quiz-stats .card-link:hover {\n  text-decoration: none;\n}\n#canvas-quiz-stats .card-link + .card-link {\n  margin-left: 1.25rem;\n}\n#canvas-quiz-stats .card-header {\n  padding: 0.75rem 1.25rem;\n  margin-bottom: 0;\n  background-color: rgba(0, 0, 0, 0.03);\n  border-bottom: 1px solid rgba(0, 0, 0, 0.125);\n}\n#canvas-quiz-stats .card-header:first-child {\n  border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;\n}\n#canvas-quiz-stats .card-footer {\n  padding: 0.75rem 1.25rem;\n  background-color: rgba(0, 0, 0, 0.03);\n  border-top: 1px solid rgba(0, 0, 0, 0.125);\n}\n#canvas-quiz-stats .card-footer:last-child {\n  border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card-header-tabs {\n  margin-right: -0.625rem;\n  margin-bottom: -0.75rem;\n  margin-left: -0.625rem;\n  border-bottom: 0;\n}\n#canvas-quiz-stats .card-header-pills {\n  margin-right: -0.625rem;\n  margin-left: -0.625rem;\n}\n#canvas-quiz-stats .card-img-overlay {\n  position: absolute;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  padding: 1.25rem;\n  border-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card-img,\n#canvas-quiz-stats .card-img-top,\n#canvas-quiz-stats .card-img-bottom {\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  width: 100%;\n}\n#canvas-quiz-stats .card-img,\n#canvas-quiz-stats .card-img-top {\n  border-top-left-radius: calc(0.25rem - 1px);\n  border-top-right-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card-img,\n#canvas-quiz-stats .card-img-bottom {\n  border-bottom-right-radius: calc(0.25rem - 1px);\n  border-bottom-left-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .card-deck .card {\n  margin-bottom: 15px;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .card-deck {\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-flow: row wrap;\n    flex-flow: row wrap;\n    margin-right: -15px;\n    margin-left: -15px;\n  }\n  #canvas-quiz-stats .card-deck .card {\n    -ms-flex: 1 0 0%;\n    flex: 1 0 0%;\n    margin-right: 15px;\n    margin-bottom: 0;\n    margin-left: 15px;\n  }\n}\n#canvas-quiz-stats .card-group > .card {\n  margin-bottom: 15px;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .card-group {\n    display: -ms-flexbox;\n    display: flex;\n    -ms-flex-flow: row wrap;\n    flex-flow: row wrap;\n  }\n  #canvas-quiz-stats .card-group > .card {\n    -ms-flex: 1 0 0%;\n    flex: 1 0 0%;\n    margin-bottom: 0;\n  }\n  #canvas-quiz-stats .card-group > .card + .card {\n    margin-left: 0;\n    border-left: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:last-child) {\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-img-top,\n  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-header {\n    border-top-right-radius: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-img-bottom,\n  #canvas-quiz-stats .card-group > .card:not(:last-child) .card-footer {\n    border-bottom-right-radius: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:first-child) {\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-img-top,\n  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-header {\n    border-top-left-radius: 0;\n  }\n  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-img-bottom,\n  #canvas-quiz-stats .card-group > .card:not(:first-child) .card-footer {\n    border-bottom-left-radius: 0;\n  }\n}\n#canvas-quiz-stats .card-columns .card {\n  margin-bottom: 0.75rem;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .card-columns {\n    -webkit-column-count: 3;\n    -moz-column-count: 3;\n    column-count: 3;\n    -webkit-column-gap: 1.25rem;\n    -moz-column-gap: 1.25rem;\n    column-gap: 1.25rem;\n    orphans: 1;\n    widows: 1;\n  }\n  #canvas-quiz-stats .card-columns .card {\n    display: inline-block;\n    width: 100%;\n  }\n}\n#canvas-quiz-stats .accordion {\n  overflow-anchor: none;\n}\n#canvas-quiz-stats .accordion > .card {\n  overflow: hidden;\n}\n#canvas-quiz-stats .accordion > .card:not(:last-of-type) {\n  border-bottom: 0;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .accordion > .card:not(:first-of-type) {\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n#canvas-quiz-stats .accordion > .card > .card-header {\n  border-radius: 0;\n  margin-bottom: -1px;\n}\n#canvas-quiz-stats .breadcrumb {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  padding: 0.75rem 1rem;\n  margin-bottom: 1rem;\n  list-style: none;\n  background-color: #e9ecef;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .breadcrumb-item {\n  display: -ms-flexbox;\n  display: flex;\n}\n#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item {\n  padding-left: 0.5rem;\n}\n#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item::before {\n  display: inline-block;\n  padding-right: 0.5rem;\n  color: #6c757d;\n  content: \"/\";\n}\n#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item:hover::before {\n  text-decoration: underline;\n}\n#canvas-quiz-stats .breadcrumb-item + .breadcrumb-item:hover::before {\n  text-decoration: none;\n}\n#canvas-quiz-stats .breadcrumb-item.active {\n  color: #6c757d;\n}\n#canvas-quiz-stats .pagination {\n  display: -ms-flexbox;\n  display: flex;\n  padding-left: 0;\n  list-style: none;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .page-link {\n  position: relative;\n  display: block;\n  padding: 0.5rem 0.75rem;\n  margin-left: -1px;\n  line-height: 1.25;\n  color: #007bff;\n  background-color: #fff;\n  border: 1px solid #dee2e6;\n}\n#canvas-quiz-stats .page-link:hover {\n  z-index: 2;\n  color: #0056b3;\n  text-decoration: none;\n  background-color: #e9ecef;\n  border-color: #dee2e6;\n}\n#canvas-quiz-stats .page-link:focus {\n  z-index: 3;\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n#canvas-quiz-stats .page-item:first-child .page-link {\n  margin-left: 0;\n  border-top-left-radius: 0.25rem;\n  border-bottom-left-radius: 0.25rem;\n}\n#canvas-quiz-stats .page-item:last-child .page-link {\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n#canvas-quiz-stats .page-item.active .page-link {\n  z-index: 3;\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .page-item.disabled .page-link {\n  color: #6c757d;\n  pointer-events: none;\n  cursor: auto;\n  background-color: #fff;\n  border-color: #dee2e6;\n}\n#canvas-quiz-stats .pagination-lg .page-link {\n  padding: 0.75rem 1.5rem;\n  font-size: 1.25rem;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .pagination-lg .page-item:first-child .page-link {\n  border-top-left-radius: 0.3rem;\n  border-bottom-left-radius: 0.3rem;\n}\n#canvas-quiz-stats .pagination-lg .page-item:last-child .page-link {\n  border-top-right-radius: 0.3rem;\n  border-bottom-right-radius: 0.3rem;\n}\n#canvas-quiz-stats .pagination-sm .page-link {\n  padding: 0.25rem 0.5rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .pagination-sm .page-item:first-child .page-link {\n  border-top-left-radius: 0.2rem;\n  border-bottom-left-radius: 0.2rem;\n}\n#canvas-quiz-stats .pagination-sm .page-item:last-child .page-link {\n  border-top-right-radius: 0.2rem;\n  border-bottom-right-radius: 0.2rem;\n}\n#canvas-quiz-stats .badge {\n  display: inline-block;\n  padding: 0.25em 0.4em;\n  font-size: 75%;\n  font-weight: 700;\n  line-height: 1;\n  text-align: center;\n  white-space: nowrap;\n  vertical-align: baseline;\n  border-radius: 0.25rem;\n  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .badge {\n    transition: none;\n  }\n}\n#canvas-quiz-stats a.badge:hover,\n#canvas-quiz-stats a.badge:focus {\n  text-decoration: none;\n}\n#canvas-quiz-stats .badge:empty {\n  display: none;\n}\n#canvas-quiz-stats .btn .badge {\n  position: relative;\n  top: -1px;\n}\n#canvas-quiz-stats .badge-pill {\n  padding-right: 0.6em;\n  padding-left: 0.6em;\n  border-radius: 10rem;\n}\n#canvas-quiz-stats .badge-primary {\n  color: #fff;\n  background-color: #007bff;\n}\n#canvas-quiz-stats a.badge-primary:hover,\n#canvas-quiz-stats a.badge-primary:focus {\n  color: #fff;\n  background-color: #0062cc;\n}\n#canvas-quiz-stats a.badge-primary:focus,\n#canvas-quiz-stats a.badge-primary.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);\n}\n#canvas-quiz-stats .badge-secondary {\n  color: #fff;\n  background-color: #6c757d;\n}\n#canvas-quiz-stats a.badge-secondary:hover,\n#canvas-quiz-stats a.badge-secondary:focus {\n  color: #fff;\n  background-color: #545b62;\n}\n#canvas-quiz-stats a.badge-secondary:focus,\n#canvas-quiz-stats a.badge-secondary.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);\n}\n#canvas-quiz-stats .badge-success {\n  color: #fff;\n  background-color: #28a745;\n}\n#canvas-quiz-stats a.badge-success:hover,\n#canvas-quiz-stats a.badge-success:focus {\n  color: #fff;\n  background-color: #1e7e34;\n}\n#canvas-quiz-stats a.badge-success:focus,\n#canvas-quiz-stats a.badge-success.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);\n}\n#canvas-quiz-stats .badge-info {\n  color: #fff;\n  background-color: #17a2b8;\n}\n#canvas-quiz-stats a.badge-info:hover,\n#canvas-quiz-stats a.badge-info:focus {\n  color: #fff;\n  background-color: #117a8b;\n}\n#canvas-quiz-stats a.badge-info:focus,\n#canvas-quiz-stats a.badge-info.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);\n}\n#canvas-quiz-stats .badge-warning {\n  color: #212529;\n  background-color: #ffc107;\n}\n#canvas-quiz-stats a.badge-warning:hover,\n#canvas-quiz-stats a.badge-warning:focus {\n  color: #212529;\n  background-color: #d39e00;\n}\n#canvas-quiz-stats a.badge-warning:focus,\n#canvas-quiz-stats a.badge-warning.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);\n}\n#canvas-quiz-stats .badge-danger {\n  color: #fff;\n  background-color: #dc3545;\n}\n#canvas-quiz-stats a.badge-danger:hover,\n#canvas-quiz-stats a.badge-danger:focus {\n  color: #fff;\n  background-color: #bd2130;\n}\n#canvas-quiz-stats a.badge-danger:focus,\n#canvas-quiz-stats a.badge-danger.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);\n}\n#canvas-quiz-stats .badge-light {\n  color: #212529;\n  background-color: #f8f9fa;\n}\n#canvas-quiz-stats a.badge-light:hover,\n#canvas-quiz-stats a.badge-light:focus {\n  color: #212529;\n  background-color: #dae0e5;\n}\n#canvas-quiz-stats a.badge-light:focus,\n#canvas-quiz-stats a.badge-light.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);\n}\n#canvas-quiz-stats .badge-dark {\n  color: #fff;\n  background-color: #343a40;\n}\n#canvas-quiz-stats a.badge-dark:hover,\n#canvas-quiz-stats a.badge-dark:focus {\n  color: #fff;\n  background-color: #1d2124;\n}\n#canvas-quiz-stats a.badge-dark:focus,\n#canvas-quiz-stats a.badge-dark.focus {\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);\n}\n#canvas-quiz-stats .jumbotron {\n  padding: 2rem 1rem;\n  margin-bottom: 2rem;\n  background-color: #e9ecef;\n  border-radius: 0.3rem;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .jumbotron {\n    padding: 4rem 2rem;\n  }\n}\n#canvas-quiz-stats .jumbotron-fluid {\n  padding-right: 0;\n  padding-left: 0;\n  border-radius: 0;\n}\n#canvas-quiz-stats .alert {\n  position: relative;\n  padding: 0.75rem 1.25rem;\n  margin-bottom: 1rem;\n  border: 1px solid transparent;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .alert-heading {\n  color: inherit;\n}\n#canvas-quiz-stats .alert-link {\n  font-weight: 700;\n}\n#canvas-quiz-stats .alert-dismissible {\n  padding-right: 4rem;\n}\n#canvas-quiz-stats .alert-dismissible .close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 2;\n  padding: 0.75rem 1.25rem;\n  color: inherit;\n}\n#canvas-quiz-stats .alert-primary {\n  color: #004085;\n  background-color: #cce5ff;\n  border-color: #b8daff;\n}\n#canvas-quiz-stats .alert-primary hr {\n  border-top-color: #9fcdff;\n}\n#canvas-quiz-stats .alert-primary .alert-link {\n  color: #002752;\n}\n#canvas-quiz-stats .alert-secondary {\n  color: #383d41;\n  background-color: #e2e3e5;\n  border-color: #d6d8db;\n}\n#canvas-quiz-stats .alert-secondary hr {\n  border-top-color: #c8cbcf;\n}\n#canvas-quiz-stats .alert-secondary .alert-link {\n  color: #202326;\n}\n#canvas-quiz-stats .alert-success {\n  color: #155724;\n  background-color: #d4edda;\n  border-color: #c3e6cb;\n}\n#canvas-quiz-stats .alert-success hr {\n  border-top-color: #b1dfbb;\n}\n#canvas-quiz-stats .alert-success .alert-link {\n  color: #0b2e13;\n}\n#canvas-quiz-stats .alert-info {\n  color: #0c5460;\n  background-color: #d1ecf1;\n  border-color: #bee5eb;\n}\n#canvas-quiz-stats .alert-info hr {\n  border-top-color: #abdde5;\n}\n#canvas-quiz-stats .alert-info .alert-link {\n  color: #062c33;\n}\n#canvas-quiz-stats .alert-warning {\n  color: #856404;\n  background-color: #fff3cd;\n  border-color: #ffeeba;\n}\n#canvas-quiz-stats .alert-warning hr {\n  border-top-color: #ffe8a1;\n}\n#canvas-quiz-stats .alert-warning .alert-link {\n  color: #533f03;\n}\n#canvas-quiz-stats .alert-danger {\n  color: #721c24;\n  background-color: #f8d7da;\n  border-color: #f5c6cb;\n}\n#canvas-quiz-stats .alert-danger hr {\n  border-top-color: #f1b0b7;\n}\n#canvas-quiz-stats .alert-danger .alert-link {\n  color: #491217;\n}\n#canvas-quiz-stats .alert-light {\n  color: #818182;\n  background-color: #fefefe;\n  border-color: #fdfdfe;\n}\n#canvas-quiz-stats .alert-light hr {\n  border-top-color: #ececf6;\n}\n#canvas-quiz-stats .alert-light .alert-link {\n  color: #686868;\n}\n#canvas-quiz-stats .alert-dark {\n  color: #1b1e21;\n  background-color: #d6d8d9;\n  border-color: #c6c8ca;\n}\n#canvas-quiz-stats .alert-dark hr {\n  border-top-color: #b9bbbe;\n}\n#canvas-quiz-stats .alert-dark .alert-link {\n  color: #040505;\n}\n@-webkit-keyframes progress-bar-stripes {\n  from {\n    background-position: 1rem 0;\n  }\n  to {\n    background-position: 0 0;\n  }\n}\n@keyframes progress-bar-stripes {\n  from {\n    background-position: 1rem 0;\n  }\n  to {\n    background-position: 0 0;\n  }\n}\n#canvas-quiz-stats .progress {\n  display: -ms-flexbox;\n  display: flex;\n  height: 1rem;\n  overflow: hidden;\n  line-height: 0;\n  font-size: 0.75rem;\n  background-color: #e9ecef;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .progress-bar {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -ms-flex-pack: center;\n  justify-content: center;\n  overflow: hidden;\n  color: #fff;\n  text-align: center;\n  white-space: nowrap;\n  background-color: #007bff;\n  transition: width 0.6s ease;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .progress-bar {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .progress-bar-striped {\n  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);\n  background-size: 1rem 1rem;\n}\n#canvas-quiz-stats .progress-bar-animated {\n  -webkit-animation: progress-bar-stripes 1s linear infinite;\n  animation: progress-bar-stripes 1s linear infinite;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .progress-bar-animated {\n    -webkit-animation: none;\n    animation: none;\n  }\n}\n#canvas-quiz-stats .media {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: start;\n  align-items: flex-start;\n}\n#canvas-quiz-stats .media-body {\n  -ms-flex: 1;\n  flex: 1;\n}\n#canvas-quiz-stats .list-group {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  padding-left: 0;\n  margin-bottom: 0;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .list-group-item-action {\n  width: 100%;\n  color: #495057;\n  text-align: inherit;\n}\n#canvas-quiz-stats .list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-action:focus {\n  z-index: 1;\n  color: #495057;\n  text-decoration: none;\n  background-color: #f8f9fa;\n}\n#canvas-quiz-stats .list-group-item-action:active {\n  color: #212529;\n  background-color: #e9ecef;\n}\n#canvas-quiz-stats .list-group-item {\n  position: relative;\n  display: block;\n  padding: 0.75rem 1.25rem;\n  background-color: #fff;\n  border: 1px solid rgba(0, 0, 0, 0.125);\n}\n#canvas-quiz-stats .list-group-item:first-child {\n  border-top-left-radius: inherit;\n  border-top-right-radius: inherit;\n}\n#canvas-quiz-stats .list-group-item:last-child {\n  border-bottom-right-radius: inherit;\n  border-bottom-left-radius: inherit;\n}\n#canvas-quiz-stats .list-group-item.disabled,\n#canvas-quiz-stats .list-group-item:disabled {\n  color: #6c757d;\n  pointer-events: none;\n  background-color: #fff;\n}\n#canvas-quiz-stats .list-group-item.active {\n  z-index: 2;\n  color: #fff;\n  background-color: #007bff;\n  border-color: #007bff;\n}\n#canvas-quiz-stats .list-group-item + .list-group-item {\n  border-top-width: 0;\n}\n#canvas-quiz-stats .list-group-item + .list-group-item.active {\n  margin-top: -1px;\n  border-top-width: 1px;\n}\n#canvas-quiz-stats .list-group-horizontal {\n  -ms-flex-direction: row;\n  flex-direction: row;\n}\n#canvas-quiz-stats .list-group-horizontal > .list-group-item:first-child {\n  border-bottom-left-radius: 0.25rem;\n  border-top-right-radius: 0;\n}\n#canvas-quiz-stats .list-group-horizontal > .list-group-item:last-child {\n  border-top-right-radius: 0.25rem;\n  border-bottom-left-radius: 0;\n}\n#canvas-quiz-stats .list-group-horizontal > .list-group-item.active {\n  margin-top: 0;\n}\n#canvas-quiz-stats .list-group-horizontal > .list-group-item + .list-group-item {\n  border-top-width: 1px;\n  border-left-width: 0;\n}\n#canvas-quiz-stats .list-group-horizontal > .list-group-item + .list-group-item.active {\n  margin-left: -1px;\n  border-left-width: 1px;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .list-group-horizontal-sm {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item:first-child {\n    border-bottom-left-radius: 0.25rem;\n    border-top-right-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item:last-child {\n    border-top-right-radius: 0.25rem;\n    border-bottom-left-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item.active {\n    margin-top: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item + .list-group-item {\n    border-top-width: 1px;\n    border-left-width: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-sm > .list-group-item + .list-group-item.active {\n    margin-left: -1px;\n    border-left-width: 1px;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .list-group-horizontal-md {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item:first-child {\n    border-bottom-left-radius: 0.25rem;\n    border-top-right-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item:last-child {\n    border-top-right-radius: 0.25rem;\n    border-bottom-left-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item.active {\n    margin-top: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item + .list-group-item {\n    border-top-width: 1px;\n    border-left-width: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-md > .list-group-item + .list-group-item.active {\n    margin-left: -1px;\n    border-left-width: 1px;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .list-group-horizontal-lg {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item:first-child {\n    border-bottom-left-radius: 0.25rem;\n    border-top-right-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item:last-child {\n    border-top-right-radius: 0.25rem;\n    border-bottom-left-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item.active {\n    margin-top: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item + .list-group-item {\n    border-top-width: 1px;\n    border-left-width: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-lg > .list-group-item + .list-group-item.active {\n    margin-left: -1px;\n    border-left-width: 1px;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .list-group-horizontal-xl {\n    -ms-flex-direction: row;\n    flex-direction: row;\n  }\n  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item:first-child {\n    border-bottom-left-radius: 0.25rem;\n    border-top-right-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item:last-child {\n    border-top-right-radius: 0.25rem;\n    border-bottom-left-radius: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item.active {\n    margin-top: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item + .list-group-item {\n    border-top-width: 1px;\n    border-left-width: 0;\n  }\n  #canvas-quiz-stats .list-group-horizontal-xl > .list-group-item + .list-group-item.active {\n    margin-left: -1px;\n    border-left-width: 1px;\n  }\n}\n#canvas-quiz-stats .list-group-flush {\n  border-radius: 0;\n}\n#canvas-quiz-stats .list-group-flush > .list-group-item {\n  border-width: 0 0 1px;\n}\n#canvas-quiz-stats .list-group-flush > .list-group-item:last-child {\n  border-bottom-width: 0;\n}\n#canvas-quiz-stats .list-group-item-primary {\n  color: #004085;\n  background-color: #b8daff;\n}\n#canvas-quiz-stats .list-group-item-primary.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-primary.list-group-item-action:focus {\n  color: #004085;\n  background-color: #9fcdff;\n}\n#canvas-quiz-stats .list-group-item-primary.list-group-item-action.active {\n  color: #fff;\n  background-color: #004085;\n  border-color: #004085;\n}\n#canvas-quiz-stats .list-group-item-secondary {\n  color: #383d41;\n  background-color: #d6d8db;\n}\n#canvas-quiz-stats .list-group-item-secondary.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-secondary.list-group-item-action:focus {\n  color: #383d41;\n  background-color: #c8cbcf;\n}\n#canvas-quiz-stats .list-group-item-secondary.list-group-item-action.active {\n  color: #fff;\n  background-color: #383d41;\n  border-color: #383d41;\n}\n#canvas-quiz-stats .list-group-item-success {\n  color: #155724;\n  background-color: #c3e6cb;\n}\n#canvas-quiz-stats .list-group-item-success.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-success.list-group-item-action:focus {\n  color: #155724;\n  background-color: #b1dfbb;\n}\n#canvas-quiz-stats .list-group-item-success.list-group-item-action.active {\n  color: #fff;\n  background-color: #155724;\n  border-color: #155724;\n}\n#canvas-quiz-stats .list-group-item-info {\n  color: #0c5460;\n  background-color: #bee5eb;\n}\n#canvas-quiz-stats .list-group-item-info.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-info.list-group-item-action:focus {\n  color: #0c5460;\n  background-color: #abdde5;\n}\n#canvas-quiz-stats .list-group-item-info.list-group-item-action.active {\n  color: #fff;\n  background-color: #0c5460;\n  border-color: #0c5460;\n}\n#canvas-quiz-stats .list-group-item-warning {\n  color: #856404;\n  background-color: #ffeeba;\n}\n#canvas-quiz-stats .list-group-item-warning.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-warning.list-group-item-action:focus {\n  color: #856404;\n  background-color: #ffe8a1;\n}\n#canvas-quiz-stats .list-group-item-warning.list-group-item-action.active {\n  color: #fff;\n  background-color: #856404;\n  border-color: #856404;\n}\n#canvas-quiz-stats .list-group-item-danger {\n  color: #721c24;\n  background-color: #f5c6cb;\n}\n#canvas-quiz-stats .list-group-item-danger.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-danger.list-group-item-action:focus {\n  color: #721c24;\n  background-color: #f1b0b7;\n}\n#canvas-quiz-stats .list-group-item-danger.list-group-item-action.active {\n  color: #fff;\n  background-color: #721c24;\n  border-color: #721c24;\n}\n#canvas-quiz-stats .list-group-item-light {\n  color: #818182;\n  background-color: #fdfdfe;\n}\n#canvas-quiz-stats .list-group-item-light.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-light.list-group-item-action:focus {\n  color: #818182;\n  background-color: #ececf6;\n}\n#canvas-quiz-stats .list-group-item-light.list-group-item-action.active {\n  color: #fff;\n  background-color: #818182;\n  border-color: #818182;\n}\n#canvas-quiz-stats .list-group-item-dark {\n  color: #1b1e21;\n  background-color: #c6c8ca;\n}\n#canvas-quiz-stats .list-group-item-dark.list-group-item-action:hover,\n#canvas-quiz-stats .list-group-item-dark.list-group-item-action:focus {\n  color: #1b1e21;\n  background-color: #b9bbbe;\n}\n#canvas-quiz-stats .list-group-item-dark.list-group-item-action.active {\n  color: #fff;\n  background-color: #1b1e21;\n  border-color: #1b1e21;\n}\n#canvas-quiz-stats .close {\n  float: right;\n  font-size: 1.5rem;\n  font-weight: 700;\n  line-height: 1;\n  color: #000;\n  text-shadow: 0 1px 0 #fff;\n  opacity: 0.5;\n}\n#canvas-quiz-stats .close:hover {\n  color: #000;\n  text-decoration: none;\n}\n#canvas-quiz-stats .close:not(:disabled):not(.disabled):hover,\n#canvas-quiz-stats .close:not(:disabled):not(.disabled):focus {\n  opacity: 0.75;\n}\n#canvas-quiz-stats button.close {\n  padding: 0;\n  background-color: transparent;\n  border: 0;\n}\n#canvas-quiz-stats a.close.disabled {\n  pointer-events: none;\n}\n#canvas-quiz-stats .toast {\n  -ms-flex-preferred-size: 350px;\n  flex-basis: 350px;\n  max-width: 350px;\n  font-size: 0.875rem;\n  background-color: rgba(255, 255, 255, 0.85);\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, 0.1);\n  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);\n  opacity: 0;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .toast:not(:last-child) {\n  margin-bottom: 0.75rem;\n}\n#canvas-quiz-stats .toast.showing {\n  opacity: 1;\n}\n#canvas-quiz-stats .toast.show {\n  display: block;\n  opacity: 1;\n}\n#canvas-quiz-stats .toast.hide {\n  display: none;\n}\n#canvas-quiz-stats .toast-header {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n  align-items: center;\n  padding: 0.25rem 0.75rem;\n  color: #6c757d;\n  background-color: rgba(255, 255, 255, 0.85);\n  background-clip: padding-box;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.05);\n  border-top-left-radius: calc(0.25rem - 1px);\n  border-top-right-radius: calc(0.25rem - 1px);\n}\n#canvas-quiz-stats .toast-body {\n  padding: 0.75rem;\n}\n#canvas-quiz-stats .modal-open {\n  overflow: hidden;\n}\n#canvas-quiz-stats .modal-open .modal {\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n#canvas-quiz-stats .modal {\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 1050;\n  display: none;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  outline: 0;\n}\n#canvas-quiz-stats .modal-dialog {\n  position: relative;\n  width: auto;\n  margin: 0.5rem;\n  pointer-events: none;\n}\n#canvas-quiz-stats .modal.fade .modal-dialog {\n  transition: -webkit-transform 0.3s ease-out;\n  transition: transform 0.3s ease-out;\n  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;\n  -webkit-transform: translate(0, -50px);\n  transform: translate(0, -50px);\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .modal.fade .modal-dialog {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .modal.show .modal-dialog {\n  -webkit-transform: none;\n  transform: none;\n}\n#canvas-quiz-stats .modal.modal-static .modal-dialog {\n  -webkit-transform: scale(1.02);\n  transform: scale(1.02);\n}\n#canvas-quiz-stats .modal-dialog-scrollable {\n  display: -ms-flexbox;\n  display: flex;\n  max-height: calc(100% - 1rem);\n}\n#canvas-quiz-stats .modal-dialog-scrollable .modal-content {\n  max-height: calc(100vh - 1rem);\n  overflow: hidden;\n}\n#canvas-quiz-stats .modal-dialog-scrollable .modal-header,\n#canvas-quiz-stats .modal-dialog-scrollable .modal-footer {\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n}\n#canvas-quiz-stats .modal-dialog-scrollable .modal-body {\n  overflow-y: auto;\n}\n#canvas-quiz-stats .modal-dialog-centered {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n  align-items: center;\n  min-height: calc(100% - 1rem);\n}\n#canvas-quiz-stats .modal-dialog-centered::before {\n  display: block;\n  height: calc(100vh - 1rem);\n  height: -webkit-min-content;\n  height: -moz-min-content;\n  height: min-content;\n  content: \"\";\n}\n#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable {\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -ms-flex-pack: center;\n  justify-content: center;\n  height: 100%;\n}\n#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable .modal-content {\n  max-height: none;\n}\n#canvas-quiz-stats .modal-dialog-centered.modal-dialog-scrollable::before {\n  content: none;\n}\n#canvas-quiz-stats .modal-content {\n  position: relative;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  width: 100%;\n  pointer-events: auto;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  border-radius: 0.3rem;\n  outline: 0;\n}\n#canvas-quiz-stats .modal-backdrop {\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 1040;\n  width: 100vw;\n  height: 100vh;\n  background-color: #000;\n}\n#canvas-quiz-stats .modal-backdrop.fade {\n  opacity: 0;\n}\n#canvas-quiz-stats .modal-backdrop.show {\n  opacity: 0.5;\n}\n#canvas-quiz-stats .modal-header {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: start;\n  align-items: flex-start;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  padding: 1rem 1rem;\n  border-bottom: 1px solid #dee2e6;\n  border-top-left-radius: calc(0.3rem - 1px);\n  border-top-right-radius: calc(0.3rem - 1px);\n}\n#canvas-quiz-stats .modal-header .close {\n  padding: 1rem 1rem;\n  margin: -1rem -1rem -1rem auto;\n}\n#canvas-quiz-stats .modal-title {\n  margin-bottom: 0;\n  line-height: 1.5;\n}\n#canvas-quiz-stats .modal-body {\n  position: relative;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n  padding: 1rem;\n}\n#canvas-quiz-stats .modal-footer {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  -ms-flex-align: center;\n  align-items: center;\n  -ms-flex-pack: end;\n  justify-content: flex-end;\n  padding: 0.75rem;\n  border-top: 1px solid #dee2e6;\n  border-bottom-right-radius: calc(0.3rem - 1px);\n  border-bottom-left-radius: calc(0.3rem - 1px);\n}\n#canvas-quiz-stats .modal-footer > * {\n  margin: 0.25rem;\n}\n#canvas-quiz-stats .modal-scrollbar-measure {\n  position: absolute;\n  top: -9999px;\n  width: 50px;\n  height: 50px;\n  overflow: scroll;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .modal-dialog {\n    max-width: 500px;\n    margin: 1.75rem auto;\n  }\n  #canvas-quiz-stats .modal-dialog-scrollable {\n    max-height: calc(100% - 3.5rem);\n  }\n  #canvas-quiz-stats .modal-dialog-scrollable .modal-content {\n    max-height: calc(100vh - 3.5rem);\n  }\n  #canvas-quiz-stats .modal-dialog-centered {\n    min-height: calc(100% - 3.5rem);\n  }\n  #canvas-quiz-stats .modal-dialog-centered::before {\n    height: calc(100vh - 3.5rem);\n    height: -webkit-min-content;\n    height: -moz-min-content;\n    height: min-content;\n  }\n  #canvas-quiz-stats .modal-sm {\n    max-width: 300px;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .modal-lg,\n  #canvas-quiz-stats .modal-xl {\n    max-width: 800px;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .modal-xl {\n    max-width: 1140px;\n  }\n}\n#canvas-quiz-stats .tooltip {\n  position: absolute;\n  z-index: 1070;\n  display: block;\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n  font-style: normal;\n  font-weight: 400;\n  line-height: 1.5;\n  text-align: left;\n  text-align: start;\n  text-decoration: none;\n  text-shadow: none;\n  text-transform: none;\n  letter-spacing: normal;\n  word-break: normal;\n  word-spacing: normal;\n  white-space: normal;\n  line-break: auto;\n  font-size: 0.875rem;\n  word-wrap: break-word;\n  opacity: 0;\n}\n#canvas-quiz-stats .tooltip.show {\n  opacity: 0.9;\n}\n#canvas-quiz-stats .tooltip .arrow {\n  position: absolute;\n  display: block;\n  width: 0.8rem;\n  height: 0.4rem;\n}\n#canvas-quiz-stats .tooltip .arrow::before {\n  position: absolute;\n  content: \"\";\n  border-color: transparent;\n  border-style: solid;\n}\n#canvas-quiz-stats .bs-tooltip-top,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"top\"] {\n  padding: 0.4rem 0;\n}\n#canvas-quiz-stats .bs-tooltip-top .arrow,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"top\"] .arrow {\n  bottom: 0;\n}\n#canvas-quiz-stats .bs-tooltip-top .arrow::before,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"top\"] .arrow::before {\n  top: 0;\n  border-width: 0.4rem 0.4rem 0;\n  border-top-color: #000;\n}\n#canvas-quiz-stats .bs-tooltip-right,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"right\"] {\n  padding: 0 0.4rem;\n}\n#canvas-quiz-stats .bs-tooltip-right .arrow,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"right\"] .arrow {\n  left: 0;\n  width: 0.4rem;\n  height: 0.8rem;\n}\n#canvas-quiz-stats .bs-tooltip-right .arrow::before,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"right\"] .arrow::before {\n  right: 0;\n  border-width: 0.4rem 0.4rem 0.4rem 0;\n  border-right-color: #000;\n}\n#canvas-quiz-stats .bs-tooltip-bottom,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"bottom\"] {\n  padding: 0.4rem 0;\n}\n#canvas-quiz-stats .bs-tooltip-bottom .arrow,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"bottom\"] .arrow {\n  top: 0;\n}\n#canvas-quiz-stats .bs-tooltip-bottom .arrow::before,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"bottom\"] .arrow::before {\n  bottom: 0;\n  border-width: 0 0.4rem 0.4rem;\n  border-bottom-color: #000;\n}\n#canvas-quiz-stats .bs-tooltip-left,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"left\"] {\n  padding: 0 0.4rem;\n}\n#canvas-quiz-stats .bs-tooltip-left .arrow,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"left\"] .arrow {\n  right: 0;\n  width: 0.4rem;\n  height: 0.8rem;\n}\n#canvas-quiz-stats .bs-tooltip-left .arrow::before,\n#canvas-quiz-stats .bs-tooltip-auto[x-placement^=\"left\"] .arrow::before {\n  left: 0;\n  border-width: 0.4rem 0 0.4rem 0.4rem;\n  border-left-color: #000;\n}\n#canvas-quiz-stats .tooltip-inner {\n  max-width: 200px;\n  padding: 0.25rem 0.5rem;\n  color: #fff;\n  text-align: center;\n  background-color: #000;\n  border-radius: 0.25rem;\n}\n#canvas-quiz-stats .popover {\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1060;\n  display: block;\n  max-width: 276px;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n  font-style: normal;\n  font-weight: 400;\n  line-height: 1.5;\n  text-align: left;\n  text-align: start;\n  text-decoration: none;\n  text-shadow: none;\n  text-transform: none;\n  letter-spacing: normal;\n  word-break: normal;\n  word-spacing: normal;\n  white-space: normal;\n  line-break: auto;\n  font-size: 0.875rem;\n  word-wrap: break-word;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  border-radius: 0.3rem;\n}\n#canvas-quiz-stats .popover .arrow {\n  position: absolute;\n  display: block;\n  width: 1rem;\n  height: 0.5rem;\n  margin: 0 0.3rem;\n}\n#canvas-quiz-stats .popover .arrow::before,\n#canvas-quiz-stats .popover .arrow::after {\n  position: absolute;\n  display: block;\n  content: \"\";\n  border-color: transparent;\n  border-style: solid;\n}\n#canvas-quiz-stats .bs-popover-top,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"top\"] {\n  margin-bottom: 0.5rem;\n}\n#canvas-quiz-stats .bs-popover-top > .arrow,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"top\"] > .arrow {\n  bottom: calc(-0.5rem - 1px);\n}\n#canvas-quiz-stats .bs-popover-top > .arrow::before,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"top\"] > .arrow::before {\n  bottom: 0;\n  border-width: 0.5rem 0.5rem 0;\n  border-top-color: rgba(0, 0, 0, 0.25);\n}\n#canvas-quiz-stats .bs-popover-top > .arrow::after,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"top\"] > .arrow::after {\n  bottom: 1px;\n  border-width: 0.5rem 0.5rem 0;\n  border-top-color: #fff;\n}\n#canvas-quiz-stats .bs-popover-right,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"right\"] {\n  margin-left: 0.5rem;\n}\n#canvas-quiz-stats .bs-popover-right > .arrow,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"right\"] > .arrow {\n  left: calc(-0.5rem - 1px);\n  width: 0.5rem;\n  height: 1rem;\n  margin: 0.3rem 0;\n}\n#canvas-quiz-stats .bs-popover-right > .arrow::before,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"right\"] > .arrow::before {\n  left: 0;\n  border-width: 0.5rem 0.5rem 0.5rem 0;\n  border-right-color: rgba(0, 0, 0, 0.25);\n}\n#canvas-quiz-stats .bs-popover-right > .arrow::after,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"right\"] > .arrow::after {\n  left: 1px;\n  border-width: 0.5rem 0.5rem 0.5rem 0;\n  border-right-color: #fff;\n}\n#canvas-quiz-stats .bs-popover-bottom,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"bottom\"] {\n  margin-top: 0.5rem;\n}\n#canvas-quiz-stats .bs-popover-bottom > .arrow,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"bottom\"] > .arrow {\n  top: calc(-0.5rem - 1px);\n}\n#canvas-quiz-stats .bs-popover-bottom > .arrow::before,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"bottom\"] > .arrow::before {\n  top: 0;\n  border-width: 0 0.5rem 0.5rem 0.5rem;\n  border-bottom-color: rgba(0, 0, 0, 0.25);\n}\n#canvas-quiz-stats .bs-popover-bottom > .arrow::after,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"bottom\"] > .arrow::after {\n  top: 1px;\n  border-width: 0 0.5rem 0.5rem 0.5rem;\n  border-bottom-color: #fff;\n}\n#canvas-quiz-stats .bs-popover-bottom .popover-header::before,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"bottom\"] .popover-header::before {\n  position: absolute;\n  top: 0;\n  left: 50%;\n  display: block;\n  width: 1rem;\n  margin-left: -0.5rem;\n  content: \"\";\n  border-bottom: 1px solid #f7f7f7;\n}\n#canvas-quiz-stats .bs-popover-left,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"left\"] {\n  margin-right: 0.5rem;\n}\n#canvas-quiz-stats .bs-popover-left > .arrow,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"left\"] > .arrow {\n  right: calc(-0.5rem - 1px);\n  width: 0.5rem;\n  height: 1rem;\n  margin: 0.3rem 0;\n}\n#canvas-quiz-stats .bs-popover-left > .arrow::before,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"left\"] > .arrow::before {\n  right: 0;\n  border-width: 0.5rem 0 0.5rem 0.5rem;\n  border-left-color: rgba(0, 0, 0, 0.25);\n}\n#canvas-quiz-stats .bs-popover-left > .arrow::after,\n#canvas-quiz-stats .bs-popover-auto[x-placement^=\"left\"] > .arrow::after {\n  right: 1px;\n  border-width: 0.5rem 0 0.5rem 0.5rem;\n  border-left-color: #fff;\n}\n#canvas-quiz-stats .popover-header {\n  padding: 0.5rem 0.75rem;\n  margin-bottom: 0;\n  font-size: 1rem;\n  background-color: #f7f7f7;\n  border-bottom: 1px solid #ebebeb;\n  border-top-left-radius: calc(0.3rem - 1px);\n  border-top-right-radius: calc(0.3rem - 1px);\n}\n#canvas-quiz-stats .popover-header:empty {\n  display: none;\n}\n#canvas-quiz-stats .popover-body {\n  padding: 0.5rem 0.75rem;\n  color: #212529;\n}\n#canvas-quiz-stats .carousel {\n  position: relative;\n}\n#canvas-quiz-stats .carousel.pointer-event {\n  -ms-touch-action: pan-y;\n  touch-action: pan-y;\n}\n#canvas-quiz-stats .carousel-inner {\n  position: relative;\n  width: 100%;\n  overflow: hidden;\n}\n#canvas-quiz-stats .carousel-inner::after {\n  display: block;\n  clear: both;\n  content: \"\";\n}\n#canvas-quiz-stats .carousel-item {\n  position: relative;\n  display: none;\n  float: left;\n  width: 100%;\n  margin-right: -100%;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  transition: -webkit-transform 0.6s ease-in-out;\n  transition: transform 0.6s ease-in-out;\n  transition: transform 0.6s ease-in-out, -webkit-transform 0.6s ease-in-out;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .carousel-item {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .carousel-item.active,\n#canvas-quiz-stats .carousel-item-next,\n#canvas-quiz-stats .carousel-item-prev {\n  display: block;\n}\n#canvas-quiz-stats .carousel-item-next:not(.carousel-item-left),\n#canvas-quiz-stats .active.carousel-item-right {\n  -webkit-transform: translateX(100%);\n  transform: translateX(100%);\n}\n#canvas-quiz-stats .carousel-item-prev:not(.carousel-item-right),\n#canvas-quiz-stats .active.carousel-item-left {\n  -webkit-transform: translateX(-100%);\n  transform: translateX(-100%);\n}\n#canvas-quiz-stats .carousel-fade .carousel-item {\n  opacity: 0;\n  transition-property: opacity;\n  -webkit-transform: none;\n  transform: none;\n}\n#canvas-quiz-stats .carousel-fade .carousel-item.active,\n#canvas-quiz-stats .carousel-fade .carousel-item-next.carousel-item-left,\n#canvas-quiz-stats .carousel-fade .carousel-item-prev.carousel-item-right {\n  z-index: 1;\n  opacity: 1;\n}\n#canvas-quiz-stats .carousel-fade .active.carousel-item-left,\n#canvas-quiz-stats .carousel-fade .active.carousel-item-right {\n  z-index: 0;\n  opacity: 0;\n  transition: opacity 0s 0.6s;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .carousel-fade .active.carousel-item-left,\n  #canvas-quiz-stats .carousel-fade .active.carousel-item-right {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .carousel-control-prev,\n#canvas-quiz-stats .carousel-control-next {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  z-index: 1;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n  align-items: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  width: 15%;\n  color: #fff;\n  text-align: center;\n  opacity: 0.5;\n  transition: opacity 0.15s ease;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .carousel-control-prev,\n  #canvas-quiz-stats .carousel-control-next {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .carousel-control-prev:hover,\n#canvas-quiz-stats .carousel-control-prev:focus,\n#canvas-quiz-stats .carousel-control-next:hover,\n#canvas-quiz-stats .carousel-control-next:focus {\n  color: #fff;\n  text-decoration: none;\n  outline: 0;\n  opacity: 0.9;\n}\n#canvas-quiz-stats .carousel-control-prev {\n  left: 0;\n}\n#canvas-quiz-stats .carousel-control-next {\n  right: 0;\n}\n#canvas-quiz-stats .carousel-control-prev-icon,\n#canvas-quiz-stats .carousel-control-next-icon {\n  display: inline-block;\n  width: 20px;\n  height: 20px;\n  background: no-repeat 50% / 100% 100%;\n}\n#canvas-quiz-stats .carousel-control-prev-icon {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .carousel-control-next-icon {\n  background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3e%3c/svg%3e\");\n}\n#canvas-quiz-stats .carousel-indicators {\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  z-index: 15;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n  justify-content: center;\n  padding-left: 0;\n  margin-right: 15%;\n  margin-left: 15%;\n  list-style: none;\n}\n#canvas-quiz-stats .carousel-indicators li {\n  box-sizing: content-box;\n  -ms-flex: 0 1 auto;\n  flex: 0 1 auto;\n  width: 30px;\n  height: 3px;\n  margin-right: 3px;\n  margin-left: 3px;\n  text-indent: -999px;\n  cursor: pointer;\n  background-color: #fff;\n  background-clip: padding-box;\n  border-top: 10px solid transparent;\n  border-bottom: 10px solid transparent;\n  opacity: 0.5;\n  transition: opacity 0.6s ease;\n}\n@media (prefers-reduced-motion: reduce) {\n  #canvas-quiz-stats .carousel-indicators li {\n    transition: none;\n  }\n}\n#canvas-quiz-stats .carousel-indicators .active {\n  opacity: 1;\n}\n#canvas-quiz-stats .carousel-caption {\n  position: absolute;\n  right: 15%;\n  bottom: 20px;\n  left: 15%;\n  z-index: 10;\n  padding-top: 20px;\n  padding-bottom: 20px;\n  color: #fff;\n  text-align: center;\n}\n@-webkit-keyframes spinner-border {\n  to {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n@keyframes spinner-border {\n  to {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n#canvas-quiz-stats .spinner-border {\n  display: inline-block;\n  width: 2rem;\n  height: 2rem;\n  vertical-align: text-bottom;\n  border: 0.25em solid currentColor;\n  border-right-color: transparent;\n  border-radius: 50%;\n  -webkit-animation: spinner-border 0.75s linear infinite;\n  animation: spinner-border 0.75s linear infinite;\n}\n#canvas-quiz-stats .spinner-border-sm {\n  width: 1rem;\n  height: 1rem;\n  border-width: 0.2em;\n}\n@-webkit-keyframes spinner-grow {\n  0% {\n    -webkit-transform: scale(0);\n    transform: scale(0);\n  }\n  50% {\n    opacity: 1;\n    -webkit-transform: none;\n    transform: none;\n  }\n}\n@keyframes spinner-grow {\n  0% {\n    -webkit-transform: scale(0);\n    transform: scale(0);\n  }\n  50% {\n    opacity: 1;\n    -webkit-transform: none;\n    transform: none;\n  }\n}\n#canvas-quiz-stats .spinner-grow {\n  display: inline-block;\n  width: 2rem;\n  height: 2rem;\n  vertical-align: text-bottom;\n  background-color: currentColor;\n  border-radius: 50%;\n  opacity: 0;\n  -webkit-animation: spinner-grow 0.75s linear infinite;\n  animation: spinner-grow 0.75s linear infinite;\n}\n#canvas-quiz-stats .spinner-grow-sm {\n  width: 1rem;\n  height: 1rem;\n}\n#canvas-quiz-stats .align-baseline {\n  vertical-align: baseline !important;\n}\n#canvas-quiz-stats .align-top {\n  vertical-align: top !important;\n}\n#canvas-quiz-stats .align-middle {\n  vertical-align: middle !important;\n}\n#canvas-quiz-stats .align-bottom {\n  vertical-align: bottom !important;\n}\n#canvas-quiz-stats .align-text-bottom {\n  vertical-align: text-bottom !important;\n}\n#canvas-quiz-stats .align-text-top {\n  vertical-align: text-top !important;\n}\n#canvas-quiz-stats .bg-primary {\n  background-color: #007bff !important;\n}\n#canvas-quiz-stats a.bg-primary:hover,\n#canvas-quiz-stats a.bg-primary:focus,\n#canvas-quiz-stats button.bg-primary:hover,\n#canvas-quiz-stats button.bg-primary:focus {\n  background-color: #0062cc !important;\n}\n#canvas-quiz-stats .bg-secondary {\n  background-color: #6c757d !important;\n}\n#canvas-quiz-stats a.bg-secondary:hover,\n#canvas-quiz-stats a.bg-secondary:focus,\n#canvas-quiz-stats button.bg-secondary:hover,\n#canvas-quiz-stats button.bg-secondary:focus {\n  background-color: #545b62 !important;\n}\n#canvas-quiz-stats .bg-success {\n  background-color: #28a745 !important;\n}\n#canvas-quiz-stats a.bg-success:hover,\n#canvas-quiz-stats a.bg-success:focus,\n#canvas-quiz-stats button.bg-success:hover,\n#canvas-quiz-stats button.bg-success:focus {\n  background-color: #1e7e34 !important;\n}\n#canvas-quiz-stats .bg-info {\n  background-color: #17a2b8 !important;\n}\n#canvas-quiz-stats a.bg-info:hover,\n#canvas-quiz-stats a.bg-info:focus,\n#canvas-quiz-stats button.bg-info:hover,\n#canvas-quiz-stats button.bg-info:focus {\n  background-color: #117a8b !important;\n}\n#canvas-quiz-stats .bg-warning {\n  background-color: #ffc107 !important;\n}\n#canvas-quiz-stats a.bg-warning:hover,\n#canvas-quiz-stats a.bg-warning:focus,\n#canvas-quiz-stats button.bg-warning:hover,\n#canvas-quiz-stats button.bg-warning:focus {\n  background-color: #d39e00 !important;\n}\n#canvas-quiz-stats .bg-danger {\n  background-color: #dc3545 !important;\n}\n#canvas-quiz-stats a.bg-danger:hover,\n#canvas-quiz-stats a.bg-danger:focus,\n#canvas-quiz-stats button.bg-danger:hover,\n#canvas-quiz-stats button.bg-danger:focus {\n  background-color: #bd2130 !important;\n}\n#canvas-quiz-stats .bg-light {\n  background-color: #f8f9fa !important;\n}\n#canvas-quiz-stats a.bg-light:hover,\n#canvas-quiz-stats a.bg-light:focus,\n#canvas-quiz-stats button.bg-light:hover,\n#canvas-quiz-stats button.bg-light:focus {\n  background-color: #dae0e5 !important;\n}\n#canvas-quiz-stats .bg-dark {\n  background-color: #343a40 !important;\n}\n#canvas-quiz-stats a.bg-dark:hover,\n#canvas-quiz-stats a.bg-dark:focus,\n#canvas-quiz-stats button.bg-dark:hover,\n#canvas-quiz-stats button.bg-dark:focus {\n  background-color: #1d2124 !important;\n}\n#canvas-quiz-stats .bg-white {\n  background-color: #fff !important;\n}\n#canvas-quiz-stats .bg-transparent {\n  background-color: transparent !important;\n}\n#canvas-quiz-stats .border {\n  border: 1px solid #dee2e6 !important;\n}\n#canvas-quiz-stats .border-top {\n  border-top: 1px solid #dee2e6 !important;\n}\n#canvas-quiz-stats .border-right {\n  border-right: 1px solid #dee2e6 !important;\n}\n#canvas-quiz-stats .border-bottom {\n  border-bottom: 1px solid #dee2e6 !important;\n}\n#canvas-quiz-stats .border-left {\n  border-left: 1px solid #dee2e6 !important;\n}\n#canvas-quiz-stats .border-0 {\n  border: 0 !important;\n}\n#canvas-quiz-stats .border-top-0 {\n  border-top: 0 !important;\n}\n#canvas-quiz-stats .border-right-0 {\n  border-right: 0 !important;\n}\n#canvas-quiz-stats .border-bottom-0 {\n  border-bottom: 0 !important;\n}\n#canvas-quiz-stats .border-left-0 {\n  border-left: 0 !important;\n}\n#canvas-quiz-stats .border-primary {\n  border-color: #007bff !important;\n}\n#canvas-quiz-stats .border-secondary {\n  border-color: #6c757d !important;\n}\n#canvas-quiz-stats .border-success {\n  border-color: #28a745 !important;\n}\n#canvas-quiz-stats .border-info {\n  border-color: #17a2b8 !important;\n}\n#canvas-quiz-stats .border-warning {\n  border-color: #ffc107 !important;\n}\n#canvas-quiz-stats .border-danger {\n  border-color: #dc3545 !important;\n}\n#canvas-quiz-stats .border-light {\n  border-color: #f8f9fa !important;\n}\n#canvas-quiz-stats .border-dark {\n  border-color: #343a40 !important;\n}\n#canvas-quiz-stats .border-white {\n  border-color: #fff !important;\n}\n#canvas-quiz-stats .rounded-sm {\n  border-radius: 0.2rem !important;\n}\n#canvas-quiz-stats .rounded {\n  border-radius: 0.25rem !important;\n}\n#canvas-quiz-stats .rounded-top {\n  border-top-left-radius: 0.25rem !important;\n  border-top-right-radius: 0.25rem !important;\n}\n#canvas-quiz-stats .rounded-right {\n  border-top-right-radius: 0.25rem !important;\n  border-bottom-right-radius: 0.25rem !important;\n}\n#canvas-quiz-stats .rounded-bottom {\n  border-bottom-right-radius: 0.25rem !important;\n  border-bottom-left-radius: 0.25rem !important;\n}\n#canvas-quiz-stats .rounded-left {\n  border-top-left-radius: 0.25rem !important;\n  border-bottom-left-radius: 0.25rem !important;\n}\n#canvas-quiz-stats .rounded-lg {\n  border-radius: 0.3rem !important;\n}\n#canvas-quiz-stats .rounded-circle {\n  border-radius: 50% !important;\n}\n#canvas-quiz-stats .rounded-pill {\n  border-radius: 50rem !important;\n}\n#canvas-quiz-stats .rounded-0 {\n  border-radius: 0 !important;\n}\n#canvas-quiz-stats .clearfix::after {\n  display: block;\n  clear: both;\n  content: \"\";\n}\n#canvas-quiz-stats .d-none {\n  display: none !important;\n}\n#canvas-quiz-stats .d-inline {\n  display: inline !important;\n}\n#canvas-quiz-stats .d-inline-block {\n  display: inline-block !important;\n}\n#canvas-quiz-stats .d-block {\n  display: block !important;\n}\n#canvas-quiz-stats .d-table {\n  display: table !important;\n}\n#canvas-quiz-stats .d-table-row {\n  display: table-row !important;\n}\n#canvas-quiz-stats .d-table-cell {\n  display: table-cell !important;\n}\n#canvas-quiz-stats .d-flex {\n  display: -ms-flexbox !important;\n  display: flex !important;\n}\n#canvas-quiz-stats .d-inline-flex {\n  display: -ms-inline-flexbox !important;\n  display: inline-flex !important;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .d-sm-none {\n    display: none !important;\n  }\n  #canvas-quiz-stats .d-sm-inline {\n    display: inline !important;\n  }\n  #canvas-quiz-stats .d-sm-inline-block {\n    display: inline-block !important;\n  }\n  #canvas-quiz-stats .d-sm-block {\n    display: block !important;\n  }\n  #canvas-quiz-stats .d-sm-table {\n    display: table !important;\n  }\n  #canvas-quiz-stats .d-sm-table-row {\n    display: table-row !important;\n  }\n  #canvas-quiz-stats .d-sm-table-cell {\n    display: table-cell !important;\n  }\n  #canvas-quiz-stats .d-sm-flex {\n    display: -ms-flexbox !important;\n    display: flex !important;\n  }\n  #canvas-quiz-stats .d-sm-inline-flex {\n    display: -ms-inline-flexbox !important;\n    display: inline-flex !important;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .d-md-none {\n    display: none !important;\n  }\n  #canvas-quiz-stats .d-md-inline {\n    display: inline !important;\n  }\n  #canvas-quiz-stats .d-md-inline-block {\n    display: inline-block !important;\n  }\n  #canvas-quiz-stats .d-md-block {\n    display: block !important;\n  }\n  #canvas-quiz-stats .d-md-table {\n    display: table !important;\n  }\n  #canvas-quiz-stats .d-md-table-row {\n    display: table-row !important;\n  }\n  #canvas-quiz-stats .d-md-table-cell {\n    display: table-cell !important;\n  }\n  #canvas-quiz-stats .d-md-flex {\n    display: -ms-flexbox !important;\n    display: flex !important;\n  }\n  #canvas-quiz-stats .d-md-inline-flex {\n    display: -ms-inline-flexbox !important;\n    display: inline-flex !important;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .d-lg-none {\n    display: none !important;\n  }\n  #canvas-quiz-stats .d-lg-inline {\n    display: inline !important;\n  }\n  #canvas-quiz-stats .d-lg-inline-block {\n    display: inline-block !important;\n  }\n  #canvas-quiz-stats .d-lg-block {\n    display: block !important;\n  }\n  #canvas-quiz-stats .d-lg-table {\n    display: table !important;\n  }\n  #canvas-quiz-stats .d-lg-table-row {\n    display: table-row !important;\n  }\n  #canvas-quiz-stats .d-lg-table-cell {\n    display: table-cell !important;\n  }\n  #canvas-quiz-stats .d-lg-flex {\n    display: -ms-flexbox !important;\n    display: flex !important;\n  }\n  #canvas-quiz-stats .d-lg-inline-flex {\n    display: -ms-inline-flexbox !important;\n    display: inline-flex !important;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .d-xl-none {\n    display: none !important;\n  }\n  #canvas-quiz-stats .d-xl-inline {\n    display: inline !important;\n  }\n  #canvas-quiz-stats .d-xl-inline-block {\n    display: inline-block !important;\n  }\n  #canvas-quiz-stats .d-xl-block {\n    display: block !important;\n  }\n  #canvas-quiz-stats .d-xl-table {\n    display: table !important;\n  }\n  #canvas-quiz-stats .d-xl-table-row {\n    display: table-row !important;\n  }\n  #canvas-quiz-stats .d-xl-table-cell {\n    display: table-cell !important;\n  }\n  #canvas-quiz-stats .d-xl-flex {\n    display: -ms-flexbox !important;\n    display: flex !important;\n  }\n  #canvas-quiz-stats .d-xl-inline-flex {\n    display: -ms-inline-flexbox !important;\n    display: inline-flex !important;\n  }\n}\n@media print {\n  #canvas-quiz-stats .d-print-none {\n    display: none !important;\n  }\n  #canvas-quiz-stats .d-print-inline {\n    display: inline !important;\n  }\n  #canvas-quiz-stats .d-print-inline-block {\n    display: inline-block !important;\n  }\n  #canvas-quiz-stats .d-print-block {\n    display: block !important;\n  }\n  #canvas-quiz-stats .d-print-table {\n    display: table !important;\n  }\n  #canvas-quiz-stats .d-print-table-row {\n    display: table-row !important;\n  }\n  #canvas-quiz-stats .d-print-table-cell {\n    display: table-cell !important;\n  }\n  #canvas-quiz-stats .d-print-flex {\n    display: -ms-flexbox !important;\n    display: flex !important;\n  }\n  #canvas-quiz-stats .d-print-inline-flex {\n    display: -ms-inline-flexbox !important;\n    display: inline-flex !important;\n  }\n}\n#canvas-quiz-stats .embed-responsive {\n  position: relative;\n  display: block;\n  width: 100%;\n  padding: 0;\n  overflow: hidden;\n}\n#canvas-quiz-stats .embed-responsive::before {\n  display: block;\n  content: \"\";\n}\n#canvas-quiz-stats .embed-responsive .embed-responsive-item,\n#canvas-quiz-stats .embed-responsive iframe,\n#canvas-quiz-stats .embed-responsive embed,\n#canvas-quiz-stats .embed-responsive object,\n#canvas-quiz-stats .embed-responsive video {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  border: 0;\n}\n#canvas-quiz-stats .embed-responsive-21by9::before {\n  padding-top: 42.857143%;\n}\n#canvas-quiz-stats .embed-responsive-16by9::before {\n  padding-top: 56.25%;\n}\n#canvas-quiz-stats .embed-responsive-4by3::before {\n  padding-top: 75%;\n}\n#canvas-quiz-stats .embed-responsive-1by1::before {\n  padding-top: 100%;\n}\n#canvas-quiz-stats .flex-row {\n  -ms-flex-direction: row !important;\n  flex-direction: row !important;\n}\n#canvas-quiz-stats .flex-column {\n  -ms-flex-direction: column !important;\n  flex-direction: column !important;\n}\n#canvas-quiz-stats .flex-row-reverse {\n  -ms-flex-direction: row-reverse !important;\n  flex-direction: row-reverse !important;\n}\n#canvas-quiz-stats .flex-column-reverse {\n  -ms-flex-direction: column-reverse !important;\n  flex-direction: column-reverse !important;\n}\n#canvas-quiz-stats .flex-wrap {\n  -ms-flex-wrap: wrap !important;\n  flex-wrap: wrap !important;\n}\n#canvas-quiz-stats .flex-nowrap {\n  -ms-flex-wrap: nowrap !important;\n  flex-wrap: nowrap !important;\n}\n#canvas-quiz-stats .flex-wrap-reverse {\n  -ms-flex-wrap: wrap-reverse !important;\n  flex-wrap: wrap-reverse !important;\n}\n#canvas-quiz-stats .flex-fill {\n  -ms-flex: 1 1 auto !important;\n  flex: 1 1 auto !important;\n}\n#canvas-quiz-stats .flex-grow-0 {\n  -ms-flex-positive: 0 !important;\n  flex-grow: 0 !important;\n}\n#canvas-quiz-stats .flex-grow-1 {\n  -ms-flex-positive: 1 !important;\n  flex-grow: 1 !important;\n}\n#canvas-quiz-stats .flex-shrink-0 {\n  -ms-flex-negative: 0 !important;\n  flex-shrink: 0 !important;\n}\n#canvas-quiz-stats .flex-shrink-1 {\n  -ms-flex-negative: 1 !important;\n  flex-shrink: 1 !important;\n}\n#canvas-quiz-stats .justify-content-start {\n  -ms-flex-pack: start !important;\n  justify-content: flex-start !important;\n}\n#canvas-quiz-stats .justify-content-end {\n  -ms-flex-pack: end !important;\n  justify-content: flex-end !important;\n}\n#canvas-quiz-stats .justify-content-center {\n  -ms-flex-pack: center !important;\n  justify-content: center !important;\n}\n#canvas-quiz-stats .justify-content-between {\n  -ms-flex-pack: justify !important;\n  justify-content: space-between !important;\n}\n#canvas-quiz-stats .justify-content-around {\n  -ms-flex-pack: distribute !important;\n  justify-content: space-around !important;\n}\n#canvas-quiz-stats .align-items-start {\n  -ms-flex-align: start !important;\n  align-items: flex-start !important;\n}\n#canvas-quiz-stats .align-items-end {\n  -ms-flex-align: end !important;\n  align-items: flex-end !important;\n}\n#canvas-quiz-stats .align-items-center {\n  -ms-flex-align: center !important;\n  align-items: center !important;\n}\n#canvas-quiz-stats .align-items-baseline {\n  -ms-flex-align: baseline !important;\n  align-items: baseline !important;\n}\n#canvas-quiz-stats .align-items-stretch {\n  -ms-flex-align: stretch !important;\n  align-items: stretch !important;\n}\n#canvas-quiz-stats .align-content-start {\n  -ms-flex-line-pack: start !important;\n  align-content: flex-start !important;\n}\n#canvas-quiz-stats .align-content-end {\n  -ms-flex-line-pack: end !important;\n  align-content: flex-end !important;\n}\n#canvas-quiz-stats .align-content-center {\n  -ms-flex-line-pack: center !important;\n  align-content: center !important;\n}\n#canvas-quiz-stats .align-content-between {\n  -ms-flex-line-pack: justify !important;\n  align-content: space-between !important;\n}\n#canvas-quiz-stats .align-content-around {\n  -ms-flex-line-pack: distribute !important;\n  align-content: space-around !important;\n}\n#canvas-quiz-stats .align-content-stretch {\n  -ms-flex-line-pack: stretch !important;\n  align-content: stretch !important;\n}\n#canvas-quiz-stats .align-self-auto {\n  -ms-flex-item-align: auto !important;\n  align-self: auto !important;\n}\n#canvas-quiz-stats .align-self-start {\n  -ms-flex-item-align: start !important;\n  align-self: flex-start !important;\n}\n#canvas-quiz-stats .align-self-end {\n  -ms-flex-item-align: end !important;\n  align-self: flex-end !important;\n}\n#canvas-quiz-stats .align-self-center {\n  -ms-flex-item-align: center !important;\n  align-self: center !important;\n}\n#canvas-quiz-stats .align-self-baseline {\n  -ms-flex-item-align: baseline !important;\n  align-self: baseline !important;\n}\n#canvas-quiz-stats .align-self-stretch {\n  -ms-flex-item-align: stretch !important;\n  align-self: stretch !important;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .flex-sm-row {\n    -ms-flex-direction: row !important;\n    flex-direction: row !important;\n  }\n  #canvas-quiz-stats .flex-sm-column {\n    -ms-flex-direction: column !important;\n    flex-direction: column !important;\n  }\n  #canvas-quiz-stats .flex-sm-row-reverse {\n    -ms-flex-direction: row-reverse !important;\n    flex-direction: row-reverse !important;\n  }\n  #canvas-quiz-stats .flex-sm-column-reverse {\n    -ms-flex-direction: column-reverse !important;\n    flex-direction: column-reverse !important;\n  }\n  #canvas-quiz-stats .flex-sm-wrap {\n    -ms-flex-wrap: wrap !important;\n    flex-wrap: wrap !important;\n  }\n  #canvas-quiz-stats .flex-sm-nowrap {\n    -ms-flex-wrap: nowrap !important;\n    flex-wrap: nowrap !important;\n  }\n  #canvas-quiz-stats .flex-sm-wrap-reverse {\n    -ms-flex-wrap: wrap-reverse !important;\n    flex-wrap: wrap-reverse !important;\n  }\n  #canvas-quiz-stats .flex-sm-fill {\n    -ms-flex: 1 1 auto !important;\n    flex: 1 1 auto !important;\n  }\n  #canvas-quiz-stats .flex-sm-grow-0 {\n    -ms-flex-positive: 0 !important;\n    flex-grow: 0 !important;\n  }\n  #canvas-quiz-stats .flex-sm-grow-1 {\n    -ms-flex-positive: 1 !important;\n    flex-grow: 1 !important;\n  }\n  #canvas-quiz-stats .flex-sm-shrink-0 {\n    -ms-flex-negative: 0 !important;\n    flex-shrink: 0 !important;\n  }\n  #canvas-quiz-stats .flex-sm-shrink-1 {\n    -ms-flex-negative: 1 !important;\n    flex-shrink: 1 !important;\n  }\n  #canvas-quiz-stats .justify-content-sm-start {\n    -ms-flex-pack: start !important;\n    justify-content: flex-start !important;\n  }\n  #canvas-quiz-stats .justify-content-sm-end {\n    -ms-flex-pack: end !important;\n    justify-content: flex-end !important;\n  }\n  #canvas-quiz-stats .justify-content-sm-center {\n    -ms-flex-pack: center !important;\n    justify-content: center !important;\n  }\n  #canvas-quiz-stats .justify-content-sm-between {\n    -ms-flex-pack: justify !important;\n    justify-content: space-between !important;\n  }\n  #canvas-quiz-stats .justify-content-sm-around {\n    -ms-flex-pack: distribute !important;\n    justify-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-items-sm-start {\n    -ms-flex-align: start !important;\n    align-items: flex-start !important;\n  }\n  #canvas-quiz-stats .align-items-sm-end {\n    -ms-flex-align: end !important;\n    align-items: flex-end !important;\n  }\n  #canvas-quiz-stats .align-items-sm-center {\n    -ms-flex-align: center !important;\n    align-items: center !important;\n  }\n  #canvas-quiz-stats .align-items-sm-baseline {\n    -ms-flex-align: baseline !important;\n    align-items: baseline !important;\n  }\n  #canvas-quiz-stats .align-items-sm-stretch {\n    -ms-flex-align: stretch !important;\n    align-items: stretch !important;\n  }\n  #canvas-quiz-stats .align-content-sm-start {\n    -ms-flex-line-pack: start !important;\n    align-content: flex-start !important;\n  }\n  #canvas-quiz-stats .align-content-sm-end {\n    -ms-flex-line-pack: end !important;\n    align-content: flex-end !important;\n  }\n  #canvas-quiz-stats .align-content-sm-center {\n    -ms-flex-line-pack: center !important;\n    align-content: center !important;\n  }\n  #canvas-quiz-stats .align-content-sm-between {\n    -ms-flex-line-pack: justify !important;\n    align-content: space-between !important;\n  }\n  #canvas-quiz-stats .align-content-sm-around {\n    -ms-flex-line-pack: distribute !important;\n    align-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-content-sm-stretch {\n    -ms-flex-line-pack: stretch !important;\n    align-content: stretch !important;\n  }\n  #canvas-quiz-stats .align-self-sm-auto {\n    -ms-flex-item-align: auto !important;\n    align-self: auto !important;\n  }\n  #canvas-quiz-stats .align-self-sm-start {\n    -ms-flex-item-align: start !important;\n    align-self: flex-start !important;\n  }\n  #canvas-quiz-stats .align-self-sm-end {\n    -ms-flex-item-align: end !important;\n    align-self: flex-end !important;\n  }\n  #canvas-quiz-stats .align-self-sm-center {\n    -ms-flex-item-align: center !important;\n    align-self: center !important;\n  }\n  #canvas-quiz-stats .align-self-sm-baseline {\n    -ms-flex-item-align: baseline !important;\n    align-self: baseline !important;\n  }\n  #canvas-quiz-stats .align-self-sm-stretch {\n    -ms-flex-item-align: stretch !important;\n    align-self: stretch !important;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .flex-md-row {\n    -ms-flex-direction: row !important;\n    flex-direction: row !important;\n  }\n  #canvas-quiz-stats .flex-md-column {\n    -ms-flex-direction: column !important;\n    flex-direction: column !important;\n  }\n  #canvas-quiz-stats .flex-md-row-reverse {\n    -ms-flex-direction: row-reverse !important;\n    flex-direction: row-reverse !important;\n  }\n  #canvas-quiz-stats .flex-md-column-reverse {\n    -ms-flex-direction: column-reverse !important;\n    flex-direction: column-reverse !important;\n  }\n  #canvas-quiz-stats .flex-md-wrap {\n    -ms-flex-wrap: wrap !important;\n    flex-wrap: wrap !important;\n  }\n  #canvas-quiz-stats .flex-md-nowrap {\n    -ms-flex-wrap: nowrap !important;\n    flex-wrap: nowrap !important;\n  }\n  #canvas-quiz-stats .flex-md-wrap-reverse {\n    -ms-flex-wrap: wrap-reverse !important;\n    flex-wrap: wrap-reverse !important;\n  }\n  #canvas-quiz-stats .flex-md-fill {\n    -ms-flex: 1 1 auto !important;\n    flex: 1 1 auto !important;\n  }\n  #canvas-quiz-stats .flex-md-grow-0 {\n    -ms-flex-positive: 0 !important;\n    flex-grow: 0 !important;\n  }\n  #canvas-quiz-stats .flex-md-grow-1 {\n    -ms-flex-positive: 1 !important;\n    flex-grow: 1 !important;\n  }\n  #canvas-quiz-stats .flex-md-shrink-0 {\n    -ms-flex-negative: 0 !important;\n    flex-shrink: 0 !important;\n  }\n  #canvas-quiz-stats .flex-md-shrink-1 {\n    -ms-flex-negative: 1 !important;\n    flex-shrink: 1 !important;\n  }\n  #canvas-quiz-stats .justify-content-md-start {\n    -ms-flex-pack: start !important;\n    justify-content: flex-start !important;\n  }\n  #canvas-quiz-stats .justify-content-md-end {\n    -ms-flex-pack: end !important;\n    justify-content: flex-end !important;\n  }\n  #canvas-quiz-stats .justify-content-md-center {\n    -ms-flex-pack: center !important;\n    justify-content: center !important;\n  }\n  #canvas-quiz-stats .justify-content-md-between {\n    -ms-flex-pack: justify !important;\n    justify-content: space-between !important;\n  }\n  #canvas-quiz-stats .justify-content-md-around {\n    -ms-flex-pack: distribute !important;\n    justify-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-items-md-start {\n    -ms-flex-align: start !important;\n    align-items: flex-start !important;\n  }\n  #canvas-quiz-stats .align-items-md-end {\n    -ms-flex-align: end !important;\n    align-items: flex-end !important;\n  }\n  #canvas-quiz-stats .align-items-md-center {\n    -ms-flex-align: center !important;\n    align-items: center !important;\n  }\n  #canvas-quiz-stats .align-items-md-baseline {\n    -ms-flex-align: baseline !important;\n    align-items: baseline !important;\n  }\n  #canvas-quiz-stats .align-items-md-stretch {\n    -ms-flex-align: stretch !important;\n    align-items: stretch !important;\n  }\n  #canvas-quiz-stats .align-content-md-start {\n    -ms-flex-line-pack: start !important;\n    align-content: flex-start !important;\n  }\n  #canvas-quiz-stats .align-content-md-end {\n    -ms-flex-line-pack: end !important;\n    align-content: flex-end !important;\n  }\n  #canvas-quiz-stats .align-content-md-center {\n    -ms-flex-line-pack: center !important;\n    align-content: center !important;\n  }\n  #canvas-quiz-stats .align-content-md-between {\n    -ms-flex-line-pack: justify !important;\n    align-content: space-between !important;\n  }\n  #canvas-quiz-stats .align-content-md-around {\n    -ms-flex-line-pack: distribute !important;\n    align-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-content-md-stretch {\n    -ms-flex-line-pack: stretch !important;\n    align-content: stretch !important;\n  }\n  #canvas-quiz-stats .align-self-md-auto {\n    -ms-flex-item-align: auto !important;\n    align-self: auto !important;\n  }\n  #canvas-quiz-stats .align-self-md-start {\n    -ms-flex-item-align: start !important;\n    align-self: flex-start !important;\n  }\n  #canvas-quiz-stats .align-self-md-end {\n    -ms-flex-item-align: end !important;\n    align-self: flex-end !important;\n  }\n  #canvas-quiz-stats .align-self-md-center {\n    -ms-flex-item-align: center !important;\n    align-self: center !important;\n  }\n  #canvas-quiz-stats .align-self-md-baseline {\n    -ms-flex-item-align: baseline !important;\n    align-self: baseline !important;\n  }\n  #canvas-quiz-stats .align-self-md-stretch {\n    -ms-flex-item-align: stretch !important;\n    align-self: stretch !important;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .flex-lg-row {\n    -ms-flex-direction: row !important;\n    flex-direction: row !important;\n  }\n  #canvas-quiz-stats .flex-lg-column {\n    -ms-flex-direction: column !important;\n    flex-direction: column !important;\n  }\n  #canvas-quiz-stats .flex-lg-row-reverse {\n    -ms-flex-direction: row-reverse !important;\n    flex-direction: row-reverse !important;\n  }\n  #canvas-quiz-stats .flex-lg-column-reverse {\n    -ms-flex-direction: column-reverse !important;\n    flex-direction: column-reverse !important;\n  }\n  #canvas-quiz-stats .flex-lg-wrap {\n    -ms-flex-wrap: wrap !important;\n    flex-wrap: wrap !important;\n  }\n  #canvas-quiz-stats .flex-lg-nowrap {\n    -ms-flex-wrap: nowrap !important;\n    flex-wrap: nowrap !important;\n  }\n  #canvas-quiz-stats .flex-lg-wrap-reverse {\n    -ms-flex-wrap: wrap-reverse !important;\n    flex-wrap: wrap-reverse !important;\n  }\n  #canvas-quiz-stats .flex-lg-fill {\n    -ms-flex: 1 1 auto !important;\n    flex: 1 1 auto !important;\n  }\n  #canvas-quiz-stats .flex-lg-grow-0 {\n    -ms-flex-positive: 0 !important;\n    flex-grow: 0 !important;\n  }\n  #canvas-quiz-stats .flex-lg-grow-1 {\n    -ms-flex-positive: 1 !important;\n    flex-grow: 1 !important;\n  }\n  #canvas-quiz-stats .flex-lg-shrink-0 {\n    -ms-flex-negative: 0 !important;\n    flex-shrink: 0 !important;\n  }\n  #canvas-quiz-stats .flex-lg-shrink-1 {\n    -ms-flex-negative: 1 !important;\n    flex-shrink: 1 !important;\n  }\n  #canvas-quiz-stats .justify-content-lg-start {\n    -ms-flex-pack: start !important;\n    justify-content: flex-start !important;\n  }\n  #canvas-quiz-stats .justify-content-lg-end {\n    -ms-flex-pack: end !important;\n    justify-content: flex-end !important;\n  }\n  #canvas-quiz-stats .justify-content-lg-center {\n    -ms-flex-pack: center !important;\n    justify-content: center !important;\n  }\n  #canvas-quiz-stats .justify-content-lg-between {\n    -ms-flex-pack: justify !important;\n    justify-content: space-between !important;\n  }\n  #canvas-quiz-stats .justify-content-lg-around {\n    -ms-flex-pack: distribute !important;\n    justify-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-items-lg-start {\n    -ms-flex-align: start !important;\n    align-items: flex-start !important;\n  }\n  #canvas-quiz-stats .align-items-lg-end {\n    -ms-flex-align: end !important;\n    align-items: flex-end !important;\n  }\n  #canvas-quiz-stats .align-items-lg-center {\n    -ms-flex-align: center !important;\n    align-items: center !important;\n  }\n  #canvas-quiz-stats .align-items-lg-baseline {\n    -ms-flex-align: baseline !important;\n    align-items: baseline !important;\n  }\n  #canvas-quiz-stats .align-items-lg-stretch {\n    -ms-flex-align: stretch !important;\n    align-items: stretch !important;\n  }\n  #canvas-quiz-stats .align-content-lg-start {\n    -ms-flex-line-pack: start !important;\n    align-content: flex-start !important;\n  }\n  #canvas-quiz-stats .align-content-lg-end {\n    -ms-flex-line-pack: end !important;\n    align-content: flex-end !important;\n  }\n  #canvas-quiz-stats .align-content-lg-center {\n    -ms-flex-line-pack: center !important;\n    align-content: center !important;\n  }\n  #canvas-quiz-stats .align-content-lg-between {\n    -ms-flex-line-pack: justify !important;\n    align-content: space-between !important;\n  }\n  #canvas-quiz-stats .align-content-lg-around {\n    -ms-flex-line-pack: distribute !important;\n    align-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-content-lg-stretch {\n    -ms-flex-line-pack: stretch !important;\n    align-content: stretch !important;\n  }\n  #canvas-quiz-stats .align-self-lg-auto {\n    -ms-flex-item-align: auto !important;\n    align-self: auto !important;\n  }\n  #canvas-quiz-stats .align-self-lg-start {\n    -ms-flex-item-align: start !important;\n    align-self: flex-start !important;\n  }\n  #canvas-quiz-stats .align-self-lg-end {\n    -ms-flex-item-align: end !important;\n    align-self: flex-end !important;\n  }\n  #canvas-quiz-stats .align-self-lg-center {\n    -ms-flex-item-align: center !important;\n    align-self: center !important;\n  }\n  #canvas-quiz-stats .align-self-lg-baseline {\n    -ms-flex-item-align: baseline !important;\n    align-self: baseline !important;\n  }\n  #canvas-quiz-stats .align-self-lg-stretch {\n    -ms-flex-item-align: stretch !important;\n    align-self: stretch !important;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .flex-xl-row {\n    -ms-flex-direction: row !important;\n    flex-direction: row !important;\n  }\n  #canvas-quiz-stats .flex-xl-column {\n    -ms-flex-direction: column !important;\n    flex-direction: column !important;\n  }\n  #canvas-quiz-stats .flex-xl-row-reverse {\n    -ms-flex-direction: row-reverse !important;\n    flex-direction: row-reverse !important;\n  }\n  #canvas-quiz-stats .flex-xl-column-reverse {\n    -ms-flex-direction: column-reverse !important;\n    flex-direction: column-reverse !important;\n  }\n  #canvas-quiz-stats .flex-xl-wrap {\n    -ms-flex-wrap: wrap !important;\n    flex-wrap: wrap !important;\n  }\n  #canvas-quiz-stats .flex-xl-nowrap {\n    -ms-flex-wrap: nowrap !important;\n    flex-wrap: nowrap !important;\n  }\n  #canvas-quiz-stats .flex-xl-wrap-reverse {\n    -ms-flex-wrap: wrap-reverse !important;\n    flex-wrap: wrap-reverse !important;\n  }\n  #canvas-quiz-stats .flex-xl-fill {\n    -ms-flex: 1 1 auto !important;\n    flex: 1 1 auto !important;\n  }\n  #canvas-quiz-stats .flex-xl-grow-0 {\n    -ms-flex-positive: 0 !important;\n    flex-grow: 0 !important;\n  }\n  #canvas-quiz-stats .flex-xl-grow-1 {\n    -ms-flex-positive: 1 !important;\n    flex-grow: 1 !important;\n  }\n  #canvas-quiz-stats .flex-xl-shrink-0 {\n    -ms-flex-negative: 0 !important;\n    flex-shrink: 0 !important;\n  }\n  #canvas-quiz-stats .flex-xl-shrink-1 {\n    -ms-flex-negative: 1 !important;\n    flex-shrink: 1 !important;\n  }\n  #canvas-quiz-stats .justify-content-xl-start {\n    -ms-flex-pack: start !important;\n    justify-content: flex-start !important;\n  }\n  #canvas-quiz-stats .justify-content-xl-end {\n    -ms-flex-pack: end !important;\n    justify-content: flex-end !important;\n  }\n  #canvas-quiz-stats .justify-content-xl-center {\n    -ms-flex-pack: center !important;\n    justify-content: center !important;\n  }\n  #canvas-quiz-stats .justify-content-xl-between {\n    -ms-flex-pack: justify !important;\n    justify-content: space-between !important;\n  }\n  #canvas-quiz-stats .justify-content-xl-around {\n    -ms-flex-pack: distribute !important;\n    justify-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-items-xl-start {\n    -ms-flex-align: start !important;\n    align-items: flex-start !important;\n  }\n  #canvas-quiz-stats .align-items-xl-end {\n    -ms-flex-align: end !important;\n    align-items: flex-end !important;\n  }\n  #canvas-quiz-stats .align-items-xl-center {\n    -ms-flex-align: center !important;\n    align-items: center !important;\n  }\n  #canvas-quiz-stats .align-items-xl-baseline {\n    -ms-flex-align: baseline !important;\n    align-items: baseline !important;\n  }\n  #canvas-quiz-stats .align-items-xl-stretch {\n    -ms-flex-align: stretch !important;\n    align-items: stretch !important;\n  }\n  #canvas-quiz-stats .align-content-xl-start {\n    -ms-flex-line-pack: start !important;\n    align-content: flex-start !important;\n  }\n  #canvas-quiz-stats .align-content-xl-end {\n    -ms-flex-line-pack: end !important;\n    align-content: flex-end !important;\n  }\n  #canvas-quiz-stats .align-content-xl-center {\n    -ms-flex-line-pack: center !important;\n    align-content: center !important;\n  }\n  #canvas-quiz-stats .align-content-xl-between {\n    -ms-flex-line-pack: justify !important;\n    align-content: space-between !important;\n  }\n  #canvas-quiz-stats .align-content-xl-around {\n    -ms-flex-line-pack: distribute !important;\n    align-content: space-around !important;\n  }\n  #canvas-quiz-stats .align-content-xl-stretch {\n    -ms-flex-line-pack: stretch !important;\n    align-content: stretch !important;\n  }\n  #canvas-quiz-stats .align-self-xl-auto {\n    -ms-flex-item-align: auto !important;\n    align-self: auto !important;\n  }\n  #canvas-quiz-stats .align-self-xl-start {\n    -ms-flex-item-align: start !important;\n    align-self: flex-start !important;\n  }\n  #canvas-quiz-stats .align-self-xl-end {\n    -ms-flex-item-align: end !important;\n    align-self: flex-end !important;\n  }\n  #canvas-quiz-stats .align-self-xl-center {\n    -ms-flex-item-align: center !important;\n    align-self: center !important;\n  }\n  #canvas-quiz-stats .align-self-xl-baseline {\n    -ms-flex-item-align: baseline !important;\n    align-self: baseline !important;\n  }\n  #canvas-quiz-stats .align-self-xl-stretch {\n    -ms-flex-item-align: stretch !important;\n    align-self: stretch !important;\n  }\n}\n#canvas-quiz-stats .float-left {\n  float: left !important;\n}\n#canvas-quiz-stats .float-right {\n  float: right !important;\n}\n#canvas-quiz-stats .float-none {\n  float: none !important;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .float-sm-left {\n    float: left !important;\n  }\n  #canvas-quiz-stats .float-sm-right {\n    float: right !important;\n  }\n  #canvas-quiz-stats .float-sm-none {\n    float: none !important;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .float-md-left {\n    float: left !important;\n  }\n  #canvas-quiz-stats .float-md-right {\n    float: right !important;\n  }\n  #canvas-quiz-stats .float-md-none {\n    float: none !important;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .float-lg-left {\n    float: left !important;\n  }\n  #canvas-quiz-stats .float-lg-right {\n    float: right !important;\n  }\n  #canvas-quiz-stats .float-lg-none {\n    float: none !important;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .float-xl-left {\n    float: left !important;\n  }\n  #canvas-quiz-stats .float-xl-right {\n    float: right !important;\n  }\n  #canvas-quiz-stats .float-xl-none {\n    float: none !important;\n  }\n}\n#canvas-quiz-stats .user-select-all {\n  -webkit-user-select: all !important;\n  -moz-user-select: all !important;\n  -ms-user-select: all !important;\n  user-select: all !important;\n}\n#canvas-quiz-stats .user-select-auto {\n  -webkit-user-select: auto !important;\n  -moz-user-select: auto !important;\n  -ms-user-select: auto !important;\n  user-select: auto !important;\n}\n#canvas-quiz-stats .user-select-none {\n  -webkit-user-select: none !important;\n  -moz-user-select: none !important;\n  -ms-user-select: none !important;\n  user-select: none !important;\n}\n#canvas-quiz-stats .overflow-auto {\n  overflow: auto !important;\n}\n#canvas-quiz-stats .overflow-hidden {\n  overflow: hidden !important;\n}\n#canvas-quiz-stats .position-static {\n  position: static !important;\n}\n#canvas-quiz-stats .position-relative {\n  position: relative !important;\n}\n#canvas-quiz-stats .position-absolute {\n  position: absolute !important;\n}\n#canvas-quiz-stats .position-fixed {\n  position: fixed !important;\n}\n#canvas-quiz-stats .position-sticky {\n  position: -webkit-sticky !important;\n  position: sticky !important;\n}\n#canvas-quiz-stats .fixed-top {\n  position: fixed;\n  top: 0;\n  right: 0;\n  left: 0;\n  z-index: 1030;\n}\n#canvas-quiz-stats .fixed-bottom {\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  z-index: 1030;\n}\n@supports ((position: -webkit-sticky) or (position: sticky)) {\n  #canvas-quiz-stats .sticky-top {\n    position: -webkit-sticky;\n    position: sticky;\n    top: 0;\n    z-index: 1020;\n  }\n}\n#canvas-quiz-stats .sr-only {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n#canvas-quiz-stats .sr-only-focusable:active,\n#canvas-quiz-stats .sr-only-focusable:focus {\n  position: static;\n  width: auto;\n  height: auto;\n  overflow: visible;\n  clip: auto;\n  white-space: normal;\n}\n#canvas-quiz-stats .shadow-sm {\n  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;\n}\n#canvas-quiz-stats .shadow {\n  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;\n}\n#canvas-quiz-stats .shadow-lg {\n  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;\n}\n#canvas-quiz-stats .shadow-none {\n  box-shadow: none !important;\n}\n#canvas-quiz-stats .w-25 {\n  width: 25% !important;\n}\n#canvas-quiz-stats .w-50 {\n  width: 50% !important;\n}\n#canvas-quiz-stats .w-75 {\n  width: 75% !important;\n}\n#canvas-quiz-stats .w-100 {\n  width: 100% !important;\n}\n#canvas-quiz-stats .w-auto {\n  width: auto !important;\n}\n#canvas-quiz-stats .h-25 {\n  height: 25% !important;\n}\n#canvas-quiz-stats .h-50 {\n  height: 50% !important;\n}\n#canvas-quiz-stats .h-75 {\n  height: 75% !important;\n}\n#canvas-quiz-stats .h-100 {\n  height: 100% !important;\n}\n#canvas-quiz-stats .h-auto {\n  height: auto !important;\n}\n#canvas-quiz-stats .mw-100 {\n  max-width: 100% !important;\n}\n#canvas-quiz-stats .mh-100 {\n  max-height: 100% !important;\n}\n#canvas-quiz-stats .min-vw-100 {\n  min-width: 100vw !important;\n}\n#canvas-quiz-stats .min-vh-100 {\n  min-height: 100vh !important;\n}\n#canvas-quiz-stats .vw-100 {\n  width: 100vw !important;\n}\n#canvas-quiz-stats .vh-100 {\n  height: 100vh !important;\n}\n#canvas-quiz-stats .m-0 {\n  margin: 0 !important;\n}\n#canvas-quiz-stats .mt-0,\n#canvas-quiz-stats .my-0 {\n  margin-top: 0 !important;\n}\n#canvas-quiz-stats .mr-0,\n#canvas-quiz-stats .mx-0 {\n  margin-right: 0 !important;\n}\n#canvas-quiz-stats .mb-0,\n#canvas-quiz-stats .my-0 {\n  margin-bottom: 0 !important;\n}\n#canvas-quiz-stats .ml-0,\n#canvas-quiz-stats .mx-0 {\n  margin-left: 0 !important;\n}\n#canvas-quiz-stats .m-1 {\n  margin: 0.25rem !important;\n}\n#canvas-quiz-stats .mt-1,\n#canvas-quiz-stats .my-1 {\n  margin-top: 0.25rem !important;\n}\n#canvas-quiz-stats .mr-1,\n#canvas-quiz-stats .mx-1 {\n  margin-right: 0.25rem !important;\n}\n#canvas-quiz-stats .mb-1,\n#canvas-quiz-stats .my-1 {\n  margin-bottom: 0.25rem !important;\n}\n#canvas-quiz-stats .ml-1,\n#canvas-quiz-stats .mx-1 {\n  margin-left: 0.25rem !important;\n}\n#canvas-quiz-stats .m-2 {\n  margin: 0.5rem !important;\n}\n#canvas-quiz-stats .mt-2,\n#canvas-quiz-stats .my-2 {\n  margin-top: 0.5rem !important;\n}\n#canvas-quiz-stats .mr-2,\n#canvas-quiz-stats .mx-2 {\n  margin-right: 0.5rem !important;\n}\n#canvas-quiz-stats .mb-2,\n#canvas-quiz-stats .my-2 {\n  margin-bottom: 0.5rem !important;\n}\n#canvas-quiz-stats .ml-2,\n#canvas-quiz-stats .mx-2 {\n  margin-left: 0.5rem !important;\n}\n#canvas-quiz-stats .m-3 {\n  margin: 1rem !important;\n}\n#canvas-quiz-stats .mt-3,\n#canvas-quiz-stats .my-3 {\n  margin-top: 1rem !important;\n}\n#canvas-quiz-stats .mr-3,\n#canvas-quiz-stats .mx-3 {\n  margin-right: 1rem !important;\n}\n#canvas-quiz-stats .mb-3,\n#canvas-quiz-stats .my-3 {\n  margin-bottom: 1rem !important;\n}\n#canvas-quiz-stats .ml-3,\n#canvas-quiz-stats .mx-3 {\n  margin-left: 1rem !important;\n}\n#canvas-quiz-stats .m-4 {\n  margin: 1.5rem !important;\n}\n#canvas-quiz-stats .mt-4,\n#canvas-quiz-stats .my-4 {\n  margin-top: 1.5rem !important;\n}\n#canvas-quiz-stats .mr-4,\n#canvas-quiz-stats .mx-4 {\n  margin-right: 1.5rem !important;\n}\n#canvas-quiz-stats .mb-4,\n#canvas-quiz-stats .my-4 {\n  margin-bottom: 1.5rem !important;\n}\n#canvas-quiz-stats .ml-4,\n#canvas-quiz-stats .mx-4 {\n  margin-left: 1.5rem !important;\n}\n#canvas-quiz-stats .m-5 {\n  margin: 3rem !important;\n}\n#canvas-quiz-stats .mt-5,\n#canvas-quiz-stats .my-5 {\n  margin-top: 3rem !important;\n}\n#canvas-quiz-stats .mr-5,\n#canvas-quiz-stats .mx-5 {\n  margin-right: 3rem !important;\n}\n#canvas-quiz-stats .mb-5,\n#canvas-quiz-stats .my-5 {\n  margin-bottom: 3rem !important;\n}\n#canvas-quiz-stats .ml-5,\n#canvas-quiz-stats .mx-5 {\n  margin-left: 3rem !important;\n}\n#canvas-quiz-stats .p-0 {\n  padding: 0 !important;\n}\n#canvas-quiz-stats .pt-0,\n#canvas-quiz-stats .py-0 {\n  padding-top: 0 !important;\n}\n#canvas-quiz-stats .pr-0,\n#canvas-quiz-stats .px-0 {\n  padding-right: 0 !important;\n}\n#canvas-quiz-stats .pb-0,\n#canvas-quiz-stats .py-0 {\n  padding-bottom: 0 !important;\n}\n#canvas-quiz-stats .pl-0,\n#canvas-quiz-stats .px-0 {\n  padding-left: 0 !important;\n}\n#canvas-quiz-stats .p-1 {\n  padding: 0.25rem !important;\n}\n#canvas-quiz-stats .pt-1,\n#canvas-quiz-stats .py-1 {\n  padding-top: 0.25rem !important;\n}\n#canvas-quiz-stats .pr-1,\n#canvas-quiz-stats .px-1 {\n  padding-right: 0.25rem !important;\n}\n#canvas-quiz-stats .pb-1,\n#canvas-quiz-stats .py-1 {\n  padding-bottom: 0.25rem !important;\n}\n#canvas-quiz-stats .pl-1,\n#canvas-quiz-stats .px-1 {\n  padding-left: 0.25rem !important;\n}\n#canvas-quiz-stats .p-2 {\n  padding: 0.5rem !important;\n}\n#canvas-quiz-stats .pt-2,\n#canvas-quiz-stats .py-2 {\n  padding-top: 0.5rem !important;\n}\n#canvas-quiz-stats .pr-2,\n#canvas-quiz-stats .px-2 {\n  padding-right: 0.5rem !important;\n}\n#canvas-quiz-stats .pb-2,\n#canvas-quiz-stats .py-2 {\n  padding-bottom: 0.5rem !important;\n}\n#canvas-quiz-stats .pl-2,\n#canvas-quiz-stats .px-2 {\n  padding-left: 0.5rem !important;\n}\n#canvas-quiz-stats .p-3 {\n  padding: 1rem !important;\n}\n#canvas-quiz-stats .pt-3,\n#canvas-quiz-stats .py-3 {\n  padding-top: 1rem !important;\n}\n#canvas-quiz-stats .pr-3,\n#canvas-quiz-stats .px-3 {\n  padding-right: 1rem !important;\n}\n#canvas-quiz-stats .pb-3,\n#canvas-quiz-stats .py-3 {\n  padding-bottom: 1rem !important;\n}\n#canvas-quiz-stats .pl-3,\n#canvas-quiz-stats .px-3 {\n  padding-left: 1rem !important;\n}\n#canvas-quiz-stats .p-4 {\n  padding: 1.5rem !important;\n}\n#canvas-quiz-stats .pt-4,\n#canvas-quiz-stats .py-4 {\n  padding-top: 1.5rem !important;\n}\n#canvas-quiz-stats .pr-4,\n#canvas-quiz-stats .px-4 {\n  padding-right: 1.5rem !important;\n}\n#canvas-quiz-stats .pb-4,\n#canvas-quiz-stats .py-4 {\n  padding-bottom: 1.5rem !important;\n}\n#canvas-quiz-stats .pl-4,\n#canvas-quiz-stats .px-4 {\n  padding-left: 1.5rem !important;\n}\n#canvas-quiz-stats .p-5 {\n  padding: 3rem !important;\n}\n#canvas-quiz-stats .pt-5,\n#canvas-quiz-stats .py-5 {\n  padding-top: 3rem !important;\n}\n#canvas-quiz-stats .pr-5,\n#canvas-quiz-stats .px-5 {\n  padding-right: 3rem !important;\n}\n#canvas-quiz-stats .pb-5,\n#canvas-quiz-stats .py-5 {\n  padding-bottom: 3rem !important;\n}\n#canvas-quiz-stats .pl-5,\n#canvas-quiz-stats .px-5 {\n  padding-left: 3rem !important;\n}\n#canvas-quiz-stats .m-n1 {\n  margin: -0.25rem !important;\n}\n#canvas-quiz-stats .mt-n1,\n#canvas-quiz-stats .my-n1 {\n  margin-top: -0.25rem !important;\n}\n#canvas-quiz-stats .mr-n1,\n#canvas-quiz-stats .mx-n1 {\n  margin-right: -0.25rem !important;\n}\n#canvas-quiz-stats .mb-n1,\n#canvas-quiz-stats .my-n1 {\n  margin-bottom: -0.25rem !important;\n}\n#canvas-quiz-stats .ml-n1,\n#canvas-quiz-stats .mx-n1 {\n  margin-left: -0.25rem !important;\n}\n#canvas-quiz-stats .m-n2 {\n  margin: -0.5rem !important;\n}\n#canvas-quiz-stats .mt-n2,\n#canvas-quiz-stats .my-n2 {\n  margin-top: -0.5rem !important;\n}\n#canvas-quiz-stats .mr-n2,\n#canvas-quiz-stats .mx-n2 {\n  margin-right: -0.5rem !important;\n}\n#canvas-quiz-stats .mb-n2,\n#canvas-quiz-stats .my-n2 {\n  margin-bottom: -0.5rem !important;\n}\n#canvas-quiz-stats .ml-n2,\n#canvas-quiz-stats .mx-n2 {\n  margin-left: -0.5rem !important;\n}\n#canvas-quiz-stats .m-n3 {\n  margin: -1rem !important;\n}\n#canvas-quiz-stats .mt-n3,\n#canvas-quiz-stats .my-n3 {\n  margin-top: -1rem !important;\n}\n#canvas-quiz-stats .mr-n3,\n#canvas-quiz-stats .mx-n3 {\n  margin-right: -1rem !important;\n}\n#canvas-quiz-stats .mb-n3,\n#canvas-quiz-stats .my-n3 {\n  margin-bottom: -1rem !important;\n}\n#canvas-quiz-stats .ml-n3,\n#canvas-quiz-stats .mx-n3 {\n  margin-left: -1rem !important;\n}\n#canvas-quiz-stats .m-n4 {\n  margin: -1.5rem !important;\n}\n#canvas-quiz-stats .mt-n4,\n#canvas-quiz-stats .my-n4 {\n  margin-top: -1.5rem !important;\n}\n#canvas-quiz-stats .mr-n4,\n#canvas-quiz-stats .mx-n4 {\n  margin-right: -1.5rem !important;\n}\n#canvas-quiz-stats .mb-n4,\n#canvas-quiz-stats .my-n4 {\n  margin-bottom: -1.5rem !important;\n}\n#canvas-quiz-stats .ml-n4,\n#canvas-quiz-stats .mx-n4 {\n  margin-left: -1.5rem !important;\n}\n#canvas-quiz-stats .m-n5 {\n  margin: -3rem !important;\n}\n#canvas-quiz-stats .mt-n5,\n#canvas-quiz-stats .my-n5 {\n  margin-top: -3rem !important;\n}\n#canvas-quiz-stats .mr-n5,\n#canvas-quiz-stats .mx-n5 {\n  margin-right: -3rem !important;\n}\n#canvas-quiz-stats .mb-n5,\n#canvas-quiz-stats .my-n5 {\n  margin-bottom: -3rem !important;\n}\n#canvas-quiz-stats .ml-n5,\n#canvas-quiz-stats .mx-n5 {\n  margin-left: -3rem !important;\n}\n#canvas-quiz-stats .m-auto {\n  margin: auto !important;\n}\n#canvas-quiz-stats .mt-auto,\n#canvas-quiz-stats .my-auto {\n  margin-top: auto !important;\n}\n#canvas-quiz-stats .mr-auto,\n#canvas-quiz-stats .mx-auto {\n  margin-right: auto !important;\n}\n#canvas-quiz-stats .mb-auto,\n#canvas-quiz-stats .my-auto {\n  margin-bottom: auto !important;\n}\n#canvas-quiz-stats .ml-auto,\n#canvas-quiz-stats .mx-auto {\n  margin-left: auto !important;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .m-sm-0 {\n    margin: 0 !important;\n  }\n  #canvas-quiz-stats .mt-sm-0,\n  #canvas-quiz-stats .my-sm-0 {\n    margin-top: 0 !important;\n  }\n  #canvas-quiz-stats .mr-sm-0,\n  #canvas-quiz-stats .mx-sm-0 {\n    margin-right: 0 !important;\n  }\n  #canvas-quiz-stats .mb-sm-0,\n  #canvas-quiz-stats .my-sm-0 {\n    margin-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .ml-sm-0,\n  #canvas-quiz-stats .mx-sm-0 {\n    margin-left: 0 !important;\n  }\n  #canvas-quiz-stats .m-sm-1 {\n    margin: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-1,\n  #canvas-quiz-stats .my-sm-1 {\n    margin-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-1,\n  #canvas-quiz-stats .mx-sm-1 {\n    margin-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-1,\n  #canvas-quiz-stats .my-sm-1 {\n    margin-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-1,\n  #canvas-quiz-stats .mx-sm-1 {\n    margin-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .m-sm-2 {\n    margin: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-2,\n  #canvas-quiz-stats .my-sm-2 {\n    margin-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-2,\n  #canvas-quiz-stats .mx-sm-2 {\n    margin-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-2,\n  #canvas-quiz-stats .my-sm-2 {\n    margin-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-2,\n  #canvas-quiz-stats .mx-sm-2 {\n    margin-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .m-sm-3 {\n    margin: 1rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-3,\n  #canvas-quiz-stats .my-sm-3 {\n    margin-top: 1rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-3,\n  #canvas-quiz-stats .mx-sm-3 {\n    margin-right: 1rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-3,\n  #canvas-quiz-stats .my-sm-3 {\n    margin-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-3,\n  #canvas-quiz-stats .mx-sm-3 {\n    margin-left: 1rem !important;\n  }\n  #canvas-quiz-stats .m-sm-4 {\n    margin: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-4,\n  #canvas-quiz-stats .my-sm-4 {\n    margin-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-4,\n  #canvas-quiz-stats .mx-sm-4 {\n    margin-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-4,\n  #canvas-quiz-stats .my-sm-4 {\n    margin-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-4,\n  #canvas-quiz-stats .mx-sm-4 {\n    margin-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .m-sm-5 {\n    margin: 3rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-5,\n  #canvas-quiz-stats .my-sm-5 {\n    margin-top: 3rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-5,\n  #canvas-quiz-stats .mx-sm-5 {\n    margin-right: 3rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-5,\n  #canvas-quiz-stats .my-sm-5 {\n    margin-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-5,\n  #canvas-quiz-stats .mx-sm-5 {\n    margin-left: 3rem !important;\n  }\n  #canvas-quiz-stats .p-sm-0 {\n    padding: 0 !important;\n  }\n  #canvas-quiz-stats .pt-sm-0,\n  #canvas-quiz-stats .py-sm-0 {\n    padding-top: 0 !important;\n  }\n  #canvas-quiz-stats .pr-sm-0,\n  #canvas-quiz-stats .px-sm-0 {\n    padding-right: 0 !important;\n  }\n  #canvas-quiz-stats .pb-sm-0,\n  #canvas-quiz-stats .py-sm-0 {\n    padding-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .pl-sm-0,\n  #canvas-quiz-stats .px-sm-0 {\n    padding-left: 0 !important;\n  }\n  #canvas-quiz-stats .p-sm-1 {\n    padding: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pt-sm-1,\n  #canvas-quiz-stats .py-sm-1 {\n    padding-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pr-sm-1,\n  #canvas-quiz-stats .px-sm-1 {\n    padding-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pb-sm-1,\n  #canvas-quiz-stats .py-sm-1 {\n    padding-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pl-sm-1,\n  #canvas-quiz-stats .px-sm-1 {\n    padding-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .p-sm-2 {\n    padding: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pt-sm-2,\n  #canvas-quiz-stats .py-sm-2 {\n    padding-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pr-sm-2,\n  #canvas-quiz-stats .px-sm-2 {\n    padding-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pb-sm-2,\n  #canvas-quiz-stats .py-sm-2 {\n    padding-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pl-sm-2,\n  #canvas-quiz-stats .px-sm-2 {\n    padding-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .p-sm-3 {\n    padding: 1rem !important;\n  }\n  #canvas-quiz-stats .pt-sm-3,\n  #canvas-quiz-stats .py-sm-3 {\n    padding-top: 1rem !important;\n  }\n  #canvas-quiz-stats .pr-sm-3,\n  #canvas-quiz-stats .px-sm-3 {\n    padding-right: 1rem !important;\n  }\n  #canvas-quiz-stats .pb-sm-3,\n  #canvas-quiz-stats .py-sm-3 {\n    padding-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .pl-sm-3,\n  #canvas-quiz-stats .px-sm-3 {\n    padding-left: 1rem !important;\n  }\n  #canvas-quiz-stats .p-sm-4 {\n    padding: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pt-sm-4,\n  #canvas-quiz-stats .py-sm-4 {\n    padding-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pr-sm-4,\n  #canvas-quiz-stats .px-sm-4 {\n    padding-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pb-sm-4,\n  #canvas-quiz-stats .py-sm-4 {\n    padding-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pl-sm-4,\n  #canvas-quiz-stats .px-sm-4 {\n    padding-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .p-sm-5 {\n    padding: 3rem !important;\n  }\n  #canvas-quiz-stats .pt-sm-5,\n  #canvas-quiz-stats .py-sm-5 {\n    padding-top: 3rem !important;\n  }\n  #canvas-quiz-stats .pr-sm-5,\n  #canvas-quiz-stats .px-sm-5 {\n    padding-right: 3rem !important;\n  }\n  #canvas-quiz-stats .pb-sm-5,\n  #canvas-quiz-stats .py-sm-5 {\n    padding-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .pl-sm-5,\n  #canvas-quiz-stats .px-sm-5 {\n    padding-left: 3rem !important;\n  }\n  #canvas-quiz-stats .m-sm-n1 {\n    margin: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-n1,\n  #canvas-quiz-stats .my-sm-n1 {\n    margin-top: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-n1,\n  #canvas-quiz-stats .mx-sm-n1 {\n    margin-right: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-n1,\n  #canvas-quiz-stats .my-sm-n1 {\n    margin-bottom: -0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-n1,\n  #canvas-quiz-stats .mx-sm-n1 {\n    margin-left: -0.25rem !important;\n  }\n  #canvas-quiz-stats .m-sm-n2 {\n    margin: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-n2,\n  #canvas-quiz-stats .my-sm-n2 {\n    margin-top: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-n2,\n  #canvas-quiz-stats .mx-sm-n2 {\n    margin-right: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-n2,\n  #canvas-quiz-stats .my-sm-n2 {\n    margin-bottom: -0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-n2,\n  #canvas-quiz-stats .mx-sm-n2 {\n    margin-left: -0.5rem !important;\n  }\n  #canvas-quiz-stats .m-sm-n3 {\n    margin: -1rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-n3,\n  #canvas-quiz-stats .my-sm-n3 {\n    margin-top: -1rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-n3,\n  #canvas-quiz-stats .mx-sm-n3 {\n    margin-right: -1rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-n3,\n  #canvas-quiz-stats .my-sm-n3 {\n    margin-bottom: -1rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-n3,\n  #canvas-quiz-stats .mx-sm-n3 {\n    margin-left: -1rem !important;\n  }\n  #canvas-quiz-stats .m-sm-n4 {\n    margin: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-n4,\n  #canvas-quiz-stats .my-sm-n4 {\n    margin-top: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-n4,\n  #canvas-quiz-stats .mx-sm-n4 {\n    margin-right: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-n4,\n  #canvas-quiz-stats .my-sm-n4 {\n    margin-bottom: -1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-n4,\n  #canvas-quiz-stats .mx-sm-n4 {\n    margin-left: -1.5rem !important;\n  }\n  #canvas-quiz-stats .m-sm-n5 {\n    margin: -3rem !important;\n  }\n  #canvas-quiz-stats .mt-sm-n5,\n  #canvas-quiz-stats .my-sm-n5 {\n    margin-top: -3rem !important;\n  }\n  #canvas-quiz-stats .mr-sm-n5,\n  #canvas-quiz-stats .mx-sm-n5 {\n    margin-right: -3rem !important;\n  }\n  #canvas-quiz-stats .mb-sm-n5,\n  #canvas-quiz-stats .my-sm-n5 {\n    margin-bottom: -3rem !important;\n  }\n  #canvas-quiz-stats .ml-sm-n5,\n  #canvas-quiz-stats .mx-sm-n5 {\n    margin-left: -3rem !important;\n  }\n  #canvas-quiz-stats .m-sm-auto {\n    margin: auto !important;\n  }\n  #canvas-quiz-stats .mt-sm-auto,\n  #canvas-quiz-stats .my-sm-auto {\n    margin-top: auto !important;\n  }\n  #canvas-quiz-stats .mr-sm-auto,\n  #canvas-quiz-stats .mx-sm-auto {\n    margin-right: auto !important;\n  }\n  #canvas-quiz-stats .mb-sm-auto,\n  #canvas-quiz-stats .my-sm-auto {\n    margin-bottom: auto !important;\n  }\n  #canvas-quiz-stats .ml-sm-auto,\n  #canvas-quiz-stats .mx-sm-auto {\n    margin-left: auto !important;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .m-md-0 {\n    margin: 0 !important;\n  }\n  #canvas-quiz-stats .mt-md-0,\n  #canvas-quiz-stats .my-md-0 {\n    margin-top: 0 !important;\n  }\n  #canvas-quiz-stats .mr-md-0,\n  #canvas-quiz-stats .mx-md-0 {\n    margin-right: 0 !important;\n  }\n  #canvas-quiz-stats .mb-md-0,\n  #canvas-quiz-stats .my-md-0 {\n    margin-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .ml-md-0,\n  #canvas-quiz-stats .mx-md-0 {\n    margin-left: 0 !important;\n  }\n  #canvas-quiz-stats .m-md-1 {\n    margin: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-md-1,\n  #canvas-quiz-stats .my-md-1 {\n    margin-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-md-1,\n  #canvas-quiz-stats .mx-md-1 {\n    margin-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-md-1,\n  #canvas-quiz-stats .my-md-1 {\n    margin-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-md-1,\n  #canvas-quiz-stats .mx-md-1 {\n    margin-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .m-md-2 {\n    margin: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-md-2,\n  #canvas-quiz-stats .my-md-2 {\n    margin-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-md-2,\n  #canvas-quiz-stats .mx-md-2 {\n    margin-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-md-2,\n  #canvas-quiz-stats .my-md-2 {\n    margin-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-md-2,\n  #canvas-quiz-stats .mx-md-2 {\n    margin-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .m-md-3 {\n    margin: 1rem !important;\n  }\n  #canvas-quiz-stats .mt-md-3,\n  #canvas-quiz-stats .my-md-3 {\n    margin-top: 1rem !important;\n  }\n  #canvas-quiz-stats .mr-md-3,\n  #canvas-quiz-stats .mx-md-3 {\n    margin-right: 1rem !important;\n  }\n  #canvas-quiz-stats .mb-md-3,\n  #canvas-quiz-stats .my-md-3 {\n    margin-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .ml-md-3,\n  #canvas-quiz-stats .mx-md-3 {\n    margin-left: 1rem !important;\n  }\n  #canvas-quiz-stats .m-md-4 {\n    margin: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-md-4,\n  #canvas-quiz-stats .my-md-4 {\n    margin-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-md-4,\n  #canvas-quiz-stats .mx-md-4 {\n    margin-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-md-4,\n  #canvas-quiz-stats .my-md-4 {\n    margin-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-md-4,\n  #canvas-quiz-stats .mx-md-4 {\n    margin-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .m-md-5 {\n    margin: 3rem !important;\n  }\n  #canvas-quiz-stats .mt-md-5,\n  #canvas-quiz-stats .my-md-5 {\n    margin-top: 3rem !important;\n  }\n  #canvas-quiz-stats .mr-md-5,\n  #canvas-quiz-stats .mx-md-5 {\n    margin-right: 3rem !important;\n  }\n  #canvas-quiz-stats .mb-md-5,\n  #canvas-quiz-stats .my-md-5 {\n    margin-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .ml-md-5,\n  #canvas-quiz-stats .mx-md-5 {\n    margin-left: 3rem !important;\n  }\n  #canvas-quiz-stats .p-md-0 {\n    padding: 0 !important;\n  }\n  #canvas-quiz-stats .pt-md-0,\n  #canvas-quiz-stats .py-md-0 {\n    padding-top: 0 !important;\n  }\n  #canvas-quiz-stats .pr-md-0,\n  #canvas-quiz-stats .px-md-0 {\n    padding-right: 0 !important;\n  }\n  #canvas-quiz-stats .pb-md-0,\n  #canvas-quiz-stats .py-md-0 {\n    padding-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .pl-md-0,\n  #canvas-quiz-stats .px-md-0 {\n    padding-left: 0 !important;\n  }\n  #canvas-quiz-stats .p-md-1 {\n    padding: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pt-md-1,\n  #canvas-quiz-stats .py-md-1 {\n    padding-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pr-md-1,\n  #canvas-quiz-stats .px-md-1 {\n    padding-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pb-md-1,\n  #canvas-quiz-stats .py-md-1 {\n    padding-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pl-md-1,\n  #canvas-quiz-stats .px-md-1 {\n    padding-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .p-md-2 {\n    padding: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pt-md-2,\n  #canvas-quiz-stats .py-md-2 {\n    padding-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pr-md-2,\n  #canvas-quiz-stats .px-md-2 {\n    padding-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pb-md-2,\n  #canvas-quiz-stats .py-md-2 {\n    padding-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pl-md-2,\n  #canvas-quiz-stats .px-md-2 {\n    padding-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .p-md-3 {\n    padding: 1rem !important;\n  }\n  #canvas-quiz-stats .pt-md-3,\n  #canvas-quiz-stats .py-md-3 {\n    padding-top: 1rem !important;\n  }\n  #canvas-quiz-stats .pr-md-3,\n  #canvas-quiz-stats .px-md-3 {\n    padding-right: 1rem !important;\n  }\n  #canvas-quiz-stats .pb-md-3,\n  #canvas-quiz-stats .py-md-3 {\n    padding-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .pl-md-3,\n  #canvas-quiz-stats .px-md-3 {\n    padding-left: 1rem !important;\n  }\n  #canvas-quiz-stats .p-md-4 {\n    padding: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pt-md-4,\n  #canvas-quiz-stats .py-md-4 {\n    padding-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pr-md-4,\n  #canvas-quiz-stats .px-md-4 {\n    padding-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pb-md-4,\n  #canvas-quiz-stats .py-md-4 {\n    padding-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pl-md-4,\n  #canvas-quiz-stats .px-md-4 {\n    padding-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .p-md-5 {\n    padding: 3rem !important;\n  }\n  #canvas-quiz-stats .pt-md-5,\n  #canvas-quiz-stats .py-md-5 {\n    padding-top: 3rem !important;\n  }\n  #canvas-quiz-stats .pr-md-5,\n  #canvas-quiz-stats .px-md-5 {\n    padding-right: 3rem !important;\n  }\n  #canvas-quiz-stats .pb-md-5,\n  #canvas-quiz-stats .py-md-5 {\n    padding-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .pl-md-5,\n  #canvas-quiz-stats .px-md-5 {\n    padding-left: 3rem !important;\n  }\n  #canvas-quiz-stats .m-md-n1 {\n    margin: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-md-n1,\n  #canvas-quiz-stats .my-md-n1 {\n    margin-top: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-md-n1,\n  #canvas-quiz-stats .mx-md-n1 {\n    margin-right: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-md-n1,\n  #canvas-quiz-stats .my-md-n1 {\n    margin-bottom: -0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-md-n1,\n  #canvas-quiz-stats .mx-md-n1 {\n    margin-left: -0.25rem !important;\n  }\n  #canvas-quiz-stats .m-md-n2 {\n    margin: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-md-n2,\n  #canvas-quiz-stats .my-md-n2 {\n    margin-top: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-md-n2,\n  #canvas-quiz-stats .mx-md-n2 {\n    margin-right: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-md-n2,\n  #canvas-quiz-stats .my-md-n2 {\n    margin-bottom: -0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-md-n2,\n  #canvas-quiz-stats .mx-md-n2 {\n    margin-left: -0.5rem !important;\n  }\n  #canvas-quiz-stats .m-md-n3 {\n    margin: -1rem !important;\n  }\n  #canvas-quiz-stats .mt-md-n3,\n  #canvas-quiz-stats .my-md-n3 {\n    margin-top: -1rem !important;\n  }\n  #canvas-quiz-stats .mr-md-n3,\n  #canvas-quiz-stats .mx-md-n3 {\n    margin-right: -1rem !important;\n  }\n  #canvas-quiz-stats .mb-md-n3,\n  #canvas-quiz-stats .my-md-n3 {\n    margin-bottom: -1rem !important;\n  }\n  #canvas-quiz-stats .ml-md-n3,\n  #canvas-quiz-stats .mx-md-n3 {\n    margin-left: -1rem !important;\n  }\n  #canvas-quiz-stats .m-md-n4 {\n    margin: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-md-n4,\n  #canvas-quiz-stats .my-md-n4 {\n    margin-top: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-md-n4,\n  #canvas-quiz-stats .mx-md-n4 {\n    margin-right: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-md-n4,\n  #canvas-quiz-stats .my-md-n4 {\n    margin-bottom: -1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-md-n4,\n  #canvas-quiz-stats .mx-md-n4 {\n    margin-left: -1.5rem !important;\n  }\n  #canvas-quiz-stats .m-md-n5 {\n    margin: -3rem !important;\n  }\n  #canvas-quiz-stats .mt-md-n5,\n  #canvas-quiz-stats .my-md-n5 {\n    margin-top: -3rem !important;\n  }\n  #canvas-quiz-stats .mr-md-n5,\n  #canvas-quiz-stats .mx-md-n5 {\n    margin-right: -3rem !important;\n  }\n  #canvas-quiz-stats .mb-md-n5,\n  #canvas-quiz-stats .my-md-n5 {\n    margin-bottom: -3rem !important;\n  }\n  #canvas-quiz-stats .ml-md-n5,\n  #canvas-quiz-stats .mx-md-n5 {\n    margin-left: -3rem !important;\n  }\n  #canvas-quiz-stats .m-md-auto {\n    margin: auto !important;\n  }\n  #canvas-quiz-stats .mt-md-auto,\n  #canvas-quiz-stats .my-md-auto {\n    margin-top: auto !important;\n  }\n  #canvas-quiz-stats .mr-md-auto,\n  #canvas-quiz-stats .mx-md-auto {\n    margin-right: auto !important;\n  }\n  #canvas-quiz-stats .mb-md-auto,\n  #canvas-quiz-stats .my-md-auto {\n    margin-bottom: auto !important;\n  }\n  #canvas-quiz-stats .ml-md-auto,\n  #canvas-quiz-stats .mx-md-auto {\n    margin-left: auto !important;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .m-lg-0 {\n    margin: 0 !important;\n  }\n  #canvas-quiz-stats .mt-lg-0,\n  #canvas-quiz-stats .my-lg-0 {\n    margin-top: 0 !important;\n  }\n  #canvas-quiz-stats .mr-lg-0,\n  #canvas-quiz-stats .mx-lg-0 {\n    margin-right: 0 !important;\n  }\n  #canvas-quiz-stats .mb-lg-0,\n  #canvas-quiz-stats .my-lg-0 {\n    margin-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .ml-lg-0,\n  #canvas-quiz-stats .mx-lg-0 {\n    margin-left: 0 !important;\n  }\n  #canvas-quiz-stats .m-lg-1 {\n    margin: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-1,\n  #canvas-quiz-stats .my-lg-1 {\n    margin-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-1,\n  #canvas-quiz-stats .mx-lg-1 {\n    margin-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-1,\n  #canvas-quiz-stats .my-lg-1 {\n    margin-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-1,\n  #canvas-quiz-stats .mx-lg-1 {\n    margin-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .m-lg-2 {\n    margin: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-2,\n  #canvas-quiz-stats .my-lg-2 {\n    margin-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-2,\n  #canvas-quiz-stats .mx-lg-2 {\n    margin-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-2,\n  #canvas-quiz-stats .my-lg-2 {\n    margin-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-2,\n  #canvas-quiz-stats .mx-lg-2 {\n    margin-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .m-lg-3 {\n    margin: 1rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-3,\n  #canvas-quiz-stats .my-lg-3 {\n    margin-top: 1rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-3,\n  #canvas-quiz-stats .mx-lg-3 {\n    margin-right: 1rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-3,\n  #canvas-quiz-stats .my-lg-3 {\n    margin-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-3,\n  #canvas-quiz-stats .mx-lg-3 {\n    margin-left: 1rem !important;\n  }\n  #canvas-quiz-stats .m-lg-4 {\n    margin: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-4,\n  #canvas-quiz-stats .my-lg-4 {\n    margin-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-4,\n  #canvas-quiz-stats .mx-lg-4 {\n    margin-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-4,\n  #canvas-quiz-stats .my-lg-4 {\n    margin-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-4,\n  #canvas-quiz-stats .mx-lg-4 {\n    margin-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .m-lg-5 {\n    margin: 3rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-5,\n  #canvas-quiz-stats .my-lg-5 {\n    margin-top: 3rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-5,\n  #canvas-quiz-stats .mx-lg-5 {\n    margin-right: 3rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-5,\n  #canvas-quiz-stats .my-lg-5 {\n    margin-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-5,\n  #canvas-quiz-stats .mx-lg-5 {\n    margin-left: 3rem !important;\n  }\n  #canvas-quiz-stats .p-lg-0 {\n    padding: 0 !important;\n  }\n  #canvas-quiz-stats .pt-lg-0,\n  #canvas-quiz-stats .py-lg-0 {\n    padding-top: 0 !important;\n  }\n  #canvas-quiz-stats .pr-lg-0,\n  #canvas-quiz-stats .px-lg-0 {\n    padding-right: 0 !important;\n  }\n  #canvas-quiz-stats .pb-lg-0,\n  #canvas-quiz-stats .py-lg-0 {\n    padding-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .pl-lg-0,\n  #canvas-quiz-stats .px-lg-0 {\n    padding-left: 0 !important;\n  }\n  #canvas-quiz-stats .p-lg-1 {\n    padding: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pt-lg-1,\n  #canvas-quiz-stats .py-lg-1 {\n    padding-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pr-lg-1,\n  #canvas-quiz-stats .px-lg-1 {\n    padding-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pb-lg-1,\n  #canvas-quiz-stats .py-lg-1 {\n    padding-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pl-lg-1,\n  #canvas-quiz-stats .px-lg-1 {\n    padding-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .p-lg-2 {\n    padding: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pt-lg-2,\n  #canvas-quiz-stats .py-lg-2 {\n    padding-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pr-lg-2,\n  #canvas-quiz-stats .px-lg-2 {\n    padding-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pb-lg-2,\n  #canvas-quiz-stats .py-lg-2 {\n    padding-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pl-lg-2,\n  #canvas-quiz-stats .px-lg-2 {\n    padding-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .p-lg-3 {\n    padding: 1rem !important;\n  }\n  #canvas-quiz-stats .pt-lg-3,\n  #canvas-quiz-stats .py-lg-3 {\n    padding-top: 1rem !important;\n  }\n  #canvas-quiz-stats .pr-lg-3,\n  #canvas-quiz-stats .px-lg-3 {\n    padding-right: 1rem !important;\n  }\n  #canvas-quiz-stats .pb-lg-3,\n  #canvas-quiz-stats .py-lg-3 {\n    padding-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .pl-lg-3,\n  #canvas-quiz-stats .px-lg-3 {\n    padding-left: 1rem !important;\n  }\n  #canvas-quiz-stats .p-lg-4 {\n    padding: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pt-lg-4,\n  #canvas-quiz-stats .py-lg-4 {\n    padding-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pr-lg-4,\n  #canvas-quiz-stats .px-lg-4 {\n    padding-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pb-lg-4,\n  #canvas-quiz-stats .py-lg-4 {\n    padding-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pl-lg-4,\n  #canvas-quiz-stats .px-lg-4 {\n    padding-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .p-lg-5 {\n    padding: 3rem !important;\n  }\n  #canvas-quiz-stats .pt-lg-5,\n  #canvas-quiz-stats .py-lg-5 {\n    padding-top: 3rem !important;\n  }\n  #canvas-quiz-stats .pr-lg-5,\n  #canvas-quiz-stats .px-lg-5 {\n    padding-right: 3rem !important;\n  }\n  #canvas-quiz-stats .pb-lg-5,\n  #canvas-quiz-stats .py-lg-5 {\n    padding-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .pl-lg-5,\n  #canvas-quiz-stats .px-lg-5 {\n    padding-left: 3rem !important;\n  }\n  #canvas-quiz-stats .m-lg-n1 {\n    margin: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-n1,\n  #canvas-quiz-stats .my-lg-n1 {\n    margin-top: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-n1,\n  #canvas-quiz-stats .mx-lg-n1 {\n    margin-right: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-n1,\n  #canvas-quiz-stats .my-lg-n1 {\n    margin-bottom: -0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-n1,\n  #canvas-quiz-stats .mx-lg-n1 {\n    margin-left: -0.25rem !important;\n  }\n  #canvas-quiz-stats .m-lg-n2 {\n    margin: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-n2,\n  #canvas-quiz-stats .my-lg-n2 {\n    margin-top: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-n2,\n  #canvas-quiz-stats .mx-lg-n2 {\n    margin-right: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-n2,\n  #canvas-quiz-stats .my-lg-n2 {\n    margin-bottom: -0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-n2,\n  #canvas-quiz-stats .mx-lg-n2 {\n    margin-left: -0.5rem !important;\n  }\n  #canvas-quiz-stats .m-lg-n3 {\n    margin: -1rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-n3,\n  #canvas-quiz-stats .my-lg-n3 {\n    margin-top: -1rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-n3,\n  #canvas-quiz-stats .mx-lg-n3 {\n    margin-right: -1rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-n3,\n  #canvas-quiz-stats .my-lg-n3 {\n    margin-bottom: -1rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-n3,\n  #canvas-quiz-stats .mx-lg-n3 {\n    margin-left: -1rem !important;\n  }\n  #canvas-quiz-stats .m-lg-n4 {\n    margin: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-n4,\n  #canvas-quiz-stats .my-lg-n4 {\n    margin-top: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-n4,\n  #canvas-quiz-stats .mx-lg-n4 {\n    margin-right: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-n4,\n  #canvas-quiz-stats .my-lg-n4 {\n    margin-bottom: -1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-n4,\n  #canvas-quiz-stats .mx-lg-n4 {\n    margin-left: -1.5rem !important;\n  }\n  #canvas-quiz-stats .m-lg-n5 {\n    margin: -3rem !important;\n  }\n  #canvas-quiz-stats .mt-lg-n5,\n  #canvas-quiz-stats .my-lg-n5 {\n    margin-top: -3rem !important;\n  }\n  #canvas-quiz-stats .mr-lg-n5,\n  #canvas-quiz-stats .mx-lg-n5 {\n    margin-right: -3rem !important;\n  }\n  #canvas-quiz-stats .mb-lg-n5,\n  #canvas-quiz-stats .my-lg-n5 {\n    margin-bottom: -3rem !important;\n  }\n  #canvas-quiz-stats .ml-lg-n5,\n  #canvas-quiz-stats .mx-lg-n5 {\n    margin-left: -3rem !important;\n  }\n  #canvas-quiz-stats .m-lg-auto {\n    margin: auto !important;\n  }\n  #canvas-quiz-stats .mt-lg-auto,\n  #canvas-quiz-stats .my-lg-auto {\n    margin-top: auto !important;\n  }\n  #canvas-quiz-stats .mr-lg-auto,\n  #canvas-quiz-stats .mx-lg-auto {\n    margin-right: auto !important;\n  }\n  #canvas-quiz-stats .mb-lg-auto,\n  #canvas-quiz-stats .my-lg-auto {\n    margin-bottom: auto !important;\n  }\n  #canvas-quiz-stats .ml-lg-auto,\n  #canvas-quiz-stats .mx-lg-auto {\n    margin-left: auto !important;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .m-xl-0 {\n    margin: 0 !important;\n  }\n  #canvas-quiz-stats .mt-xl-0,\n  #canvas-quiz-stats .my-xl-0 {\n    margin-top: 0 !important;\n  }\n  #canvas-quiz-stats .mr-xl-0,\n  #canvas-quiz-stats .mx-xl-0 {\n    margin-right: 0 !important;\n  }\n  #canvas-quiz-stats .mb-xl-0,\n  #canvas-quiz-stats .my-xl-0 {\n    margin-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .ml-xl-0,\n  #canvas-quiz-stats .mx-xl-0 {\n    margin-left: 0 !important;\n  }\n  #canvas-quiz-stats .m-xl-1 {\n    margin: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-1,\n  #canvas-quiz-stats .my-xl-1 {\n    margin-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-1,\n  #canvas-quiz-stats .mx-xl-1 {\n    margin-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-1,\n  #canvas-quiz-stats .my-xl-1 {\n    margin-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-1,\n  #canvas-quiz-stats .mx-xl-1 {\n    margin-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .m-xl-2 {\n    margin: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-2,\n  #canvas-quiz-stats .my-xl-2 {\n    margin-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-2,\n  #canvas-quiz-stats .mx-xl-2 {\n    margin-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-2,\n  #canvas-quiz-stats .my-xl-2 {\n    margin-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-2,\n  #canvas-quiz-stats .mx-xl-2 {\n    margin-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .m-xl-3 {\n    margin: 1rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-3,\n  #canvas-quiz-stats .my-xl-3 {\n    margin-top: 1rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-3,\n  #canvas-quiz-stats .mx-xl-3 {\n    margin-right: 1rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-3,\n  #canvas-quiz-stats .my-xl-3 {\n    margin-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-3,\n  #canvas-quiz-stats .mx-xl-3 {\n    margin-left: 1rem !important;\n  }\n  #canvas-quiz-stats .m-xl-4 {\n    margin: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-4,\n  #canvas-quiz-stats .my-xl-4 {\n    margin-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-4,\n  #canvas-quiz-stats .mx-xl-4 {\n    margin-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-4,\n  #canvas-quiz-stats .my-xl-4 {\n    margin-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-4,\n  #canvas-quiz-stats .mx-xl-4 {\n    margin-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .m-xl-5 {\n    margin: 3rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-5,\n  #canvas-quiz-stats .my-xl-5 {\n    margin-top: 3rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-5,\n  #canvas-quiz-stats .mx-xl-5 {\n    margin-right: 3rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-5,\n  #canvas-quiz-stats .my-xl-5 {\n    margin-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-5,\n  #canvas-quiz-stats .mx-xl-5 {\n    margin-left: 3rem !important;\n  }\n  #canvas-quiz-stats .p-xl-0 {\n    padding: 0 !important;\n  }\n  #canvas-quiz-stats .pt-xl-0,\n  #canvas-quiz-stats .py-xl-0 {\n    padding-top: 0 !important;\n  }\n  #canvas-quiz-stats .pr-xl-0,\n  #canvas-quiz-stats .px-xl-0 {\n    padding-right: 0 !important;\n  }\n  #canvas-quiz-stats .pb-xl-0,\n  #canvas-quiz-stats .py-xl-0 {\n    padding-bottom: 0 !important;\n  }\n  #canvas-quiz-stats .pl-xl-0,\n  #canvas-quiz-stats .px-xl-0 {\n    padding-left: 0 !important;\n  }\n  #canvas-quiz-stats .p-xl-1 {\n    padding: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pt-xl-1,\n  #canvas-quiz-stats .py-xl-1 {\n    padding-top: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pr-xl-1,\n  #canvas-quiz-stats .px-xl-1 {\n    padding-right: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pb-xl-1,\n  #canvas-quiz-stats .py-xl-1 {\n    padding-bottom: 0.25rem !important;\n  }\n  #canvas-quiz-stats .pl-xl-1,\n  #canvas-quiz-stats .px-xl-1 {\n    padding-left: 0.25rem !important;\n  }\n  #canvas-quiz-stats .p-xl-2 {\n    padding: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pt-xl-2,\n  #canvas-quiz-stats .py-xl-2 {\n    padding-top: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pr-xl-2,\n  #canvas-quiz-stats .px-xl-2 {\n    padding-right: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pb-xl-2,\n  #canvas-quiz-stats .py-xl-2 {\n    padding-bottom: 0.5rem !important;\n  }\n  #canvas-quiz-stats .pl-xl-2,\n  #canvas-quiz-stats .px-xl-2 {\n    padding-left: 0.5rem !important;\n  }\n  #canvas-quiz-stats .p-xl-3 {\n    padding: 1rem !important;\n  }\n  #canvas-quiz-stats .pt-xl-3,\n  #canvas-quiz-stats .py-xl-3 {\n    padding-top: 1rem !important;\n  }\n  #canvas-quiz-stats .pr-xl-3,\n  #canvas-quiz-stats .px-xl-3 {\n    padding-right: 1rem !important;\n  }\n  #canvas-quiz-stats .pb-xl-3,\n  #canvas-quiz-stats .py-xl-3 {\n    padding-bottom: 1rem !important;\n  }\n  #canvas-quiz-stats .pl-xl-3,\n  #canvas-quiz-stats .px-xl-3 {\n    padding-left: 1rem !important;\n  }\n  #canvas-quiz-stats .p-xl-4 {\n    padding: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pt-xl-4,\n  #canvas-quiz-stats .py-xl-4 {\n    padding-top: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pr-xl-4,\n  #canvas-quiz-stats .px-xl-4 {\n    padding-right: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pb-xl-4,\n  #canvas-quiz-stats .py-xl-4 {\n    padding-bottom: 1.5rem !important;\n  }\n  #canvas-quiz-stats .pl-xl-4,\n  #canvas-quiz-stats .px-xl-4 {\n    padding-left: 1.5rem !important;\n  }\n  #canvas-quiz-stats .p-xl-5 {\n    padding: 3rem !important;\n  }\n  #canvas-quiz-stats .pt-xl-5,\n  #canvas-quiz-stats .py-xl-5 {\n    padding-top: 3rem !important;\n  }\n  #canvas-quiz-stats .pr-xl-5,\n  #canvas-quiz-stats .px-xl-5 {\n    padding-right: 3rem !important;\n  }\n  #canvas-quiz-stats .pb-xl-5,\n  #canvas-quiz-stats .py-xl-5 {\n    padding-bottom: 3rem !important;\n  }\n  #canvas-quiz-stats .pl-xl-5,\n  #canvas-quiz-stats .px-xl-5 {\n    padding-left: 3rem !important;\n  }\n  #canvas-quiz-stats .m-xl-n1 {\n    margin: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-n1,\n  #canvas-quiz-stats .my-xl-n1 {\n    margin-top: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-n1,\n  #canvas-quiz-stats .mx-xl-n1 {\n    margin-right: -0.25rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-n1,\n  #canvas-quiz-stats .my-xl-n1 {\n    margin-bottom: -0.25rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-n1,\n  #canvas-quiz-stats .mx-xl-n1 {\n    margin-left: -0.25rem !important;\n  }\n  #canvas-quiz-stats .m-xl-n2 {\n    margin: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-n2,\n  #canvas-quiz-stats .my-xl-n2 {\n    margin-top: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-n2,\n  #canvas-quiz-stats .mx-xl-n2 {\n    margin-right: -0.5rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-n2,\n  #canvas-quiz-stats .my-xl-n2 {\n    margin-bottom: -0.5rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-n2,\n  #canvas-quiz-stats .mx-xl-n2 {\n    margin-left: -0.5rem !important;\n  }\n  #canvas-quiz-stats .m-xl-n3 {\n    margin: -1rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-n3,\n  #canvas-quiz-stats .my-xl-n3 {\n    margin-top: -1rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-n3,\n  #canvas-quiz-stats .mx-xl-n3 {\n    margin-right: -1rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-n3,\n  #canvas-quiz-stats .my-xl-n3 {\n    margin-bottom: -1rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-n3,\n  #canvas-quiz-stats .mx-xl-n3 {\n    margin-left: -1rem !important;\n  }\n  #canvas-quiz-stats .m-xl-n4 {\n    margin: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-n4,\n  #canvas-quiz-stats .my-xl-n4 {\n    margin-top: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-n4,\n  #canvas-quiz-stats .mx-xl-n4 {\n    margin-right: -1.5rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-n4,\n  #canvas-quiz-stats .my-xl-n4 {\n    margin-bottom: -1.5rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-n4,\n  #canvas-quiz-stats .mx-xl-n4 {\n    margin-left: -1.5rem !important;\n  }\n  #canvas-quiz-stats .m-xl-n5 {\n    margin: -3rem !important;\n  }\n  #canvas-quiz-stats .mt-xl-n5,\n  #canvas-quiz-stats .my-xl-n5 {\n    margin-top: -3rem !important;\n  }\n  #canvas-quiz-stats .mr-xl-n5,\n  #canvas-quiz-stats .mx-xl-n5 {\n    margin-right: -3rem !important;\n  }\n  #canvas-quiz-stats .mb-xl-n5,\n  #canvas-quiz-stats .my-xl-n5 {\n    margin-bottom: -3rem !important;\n  }\n  #canvas-quiz-stats .ml-xl-n5,\n  #canvas-quiz-stats .mx-xl-n5 {\n    margin-left: -3rem !important;\n  }\n  #canvas-quiz-stats .m-xl-auto {\n    margin: auto !important;\n  }\n  #canvas-quiz-stats .mt-xl-auto,\n  #canvas-quiz-stats .my-xl-auto {\n    margin-top: auto !important;\n  }\n  #canvas-quiz-stats .mr-xl-auto,\n  #canvas-quiz-stats .mx-xl-auto {\n    margin-right: auto !important;\n  }\n  #canvas-quiz-stats .mb-xl-auto,\n  #canvas-quiz-stats .my-xl-auto {\n    margin-bottom: auto !important;\n  }\n  #canvas-quiz-stats .ml-xl-auto,\n  #canvas-quiz-stats .mx-xl-auto {\n    margin-left: auto !important;\n  }\n}\n#canvas-quiz-stats .stretched-link::after {\n  position: absolute;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  z-index: 1;\n  pointer-events: auto;\n  content: \"\";\n  background-color: rgba(0, 0, 0, 0);\n}\n#canvas-quiz-stats .text-monospace {\n  font-family: SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace !important;\n}\n#canvas-quiz-stats .text-justify {\n  text-align: justify !important;\n}\n#canvas-quiz-stats .text-wrap {\n  white-space: normal !important;\n}\n#canvas-quiz-stats .text-nowrap {\n  white-space: nowrap !important;\n}\n#canvas-quiz-stats .text-truncate {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n#canvas-quiz-stats .text-left {\n  text-align: left !important;\n}\n#canvas-quiz-stats .text-right {\n  text-align: right !important;\n}\n#canvas-quiz-stats .text-center {\n  text-align: center !important;\n}\n@media (min-width: 576px) {\n  #canvas-quiz-stats .text-sm-left {\n    text-align: left !important;\n  }\n  #canvas-quiz-stats .text-sm-right {\n    text-align: right !important;\n  }\n  #canvas-quiz-stats .text-sm-center {\n    text-align: center !important;\n  }\n}\n@media (min-width: 768px) {\n  #canvas-quiz-stats .text-md-left {\n    text-align: left !important;\n  }\n  #canvas-quiz-stats .text-md-right {\n    text-align: right !important;\n  }\n  #canvas-quiz-stats .text-md-center {\n    text-align: center !important;\n  }\n}\n@media (min-width: 992px) {\n  #canvas-quiz-stats .text-lg-left {\n    text-align: left !important;\n  }\n  #canvas-quiz-stats .text-lg-right {\n    text-align: right !important;\n  }\n  #canvas-quiz-stats .text-lg-center {\n    text-align: center !important;\n  }\n}\n@media (min-width: 1200px) {\n  #canvas-quiz-stats .text-xl-left {\n    text-align: left !important;\n  }\n  #canvas-quiz-stats .text-xl-right {\n    text-align: right !important;\n  }\n  #canvas-quiz-stats .text-xl-center {\n    text-align: center !important;\n  }\n}\n#canvas-quiz-stats .text-lowercase {\n  text-transform: lowercase !important;\n}\n#canvas-quiz-stats .text-uppercase {\n  text-transform: uppercase !important;\n}\n#canvas-quiz-stats .text-capitalize {\n  text-transform: capitalize !important;\n}\n#canvas-quiz-stats .font-weight-light {\n  font-weight: 300 !important;\n}\n#canvas-quiz-stats .font-weight-lighter {\n  font-weight: lighter !important;\n}\n#canvas-quiz-stats .font-weight-normal {\n  font-weight: 400 !important;\n}\n#canvas-quiz-stats .font-weight-bold {\n  font-weight: 700 !important;\n}\n#canvas-quiz-stats .font-weight-bolder {\n  font-weight: bolder !important;\n}\n#canvas-quiz-stats .font-italic {\n  font-style: italic !important;\n}\n#canvas-quiz-stats .text-white {\n  color: #fff !important;\n}\n#canvas-quiz-stats .text-primary {\n  color: #007bff !important;\n}\n#canvas-quiz-stats a.text-primary:hover,\n#canvas-quiz-stats a.text-primary:focus {\n  color: #0056b3 !important;\n}\n#canvas-quiz-stats .text-secondary {\n  color: #6c757d !important;\n}\n#canvas-quiz-stats a.text-secondary:hover,\n#canvas-quiz-stats a.text-secondary:focus {\n  color: #494f54 !important;\n}\n#canvas-quiz-stats .text-success {\n  color: #28a745 !important;\n}\n#canvas-quiz-stats a.text-success:hover,\n#canvas-quiz-stats a.text-success:focus {\n  color: #19692c !important;\n}\n#canvas-quiz-stats .text-info {\n  color: #17a2b8 !important;\n}\n#canvas-quiz-stats a.text-info:hover,\n#canvas-quiz-stats a.text-info:focus {\n  color: #0f6674 !important;\n}\n#canvas-quiz-stats .text-warning {\n  color: #ffc107 !important;\n}\n#canvas-quiz-stats a.text-warning:hover,\n#canvas-quiz-stats a.text-warning:focus {\n  color: #ba8b00 !important;\n}\n#canvas-quiz-stats .text-danger {\n  color: #dc3545 !important;\n}\n#canvas-quiz-stats a.text-danger:hover,\n#canvas-quiz-stats a.text-danger:focus {\n  color: #a71d2a !important;\n}\n#canvas-quiz-stats .text-light {\n  color: #f8f9fa !important;\n}\n#canvas-quiz-stats a.text-light:hover,\n#canvas-quiz-stats a.text-light:focus {\n  color: #cbd3da !important;\n}\n#canvas-quiz-stats .text-dark {\n  color: #343a40 !important;\n}\n#canvas-quiz-stats a.text-dark:hover,\n#canvas-quiz-stats a.text-dark:focus {\n  color: #121416 !important;\n}\n#canvas-quiz-stats .text-body {\n  color: #212529 !important;\n}\n#canvas-quiz-stats .text-muted {\n  color: #6c757d !important;\n}\n#canvas-quiz-stats .text-black-50 {\n  color: rgba(0, 0, 0, 0.5) !important;\n}\n#canvas-quiz-stats .text-white-50 {\n  color: rgba(255, 255, 255, 0.5) !important;\n}\n#canvas-quiz-stats .text-hide {\n  font: 0/0 a;\n  color: transparent;\n  text-shadow: none;\n  background-color: transparent;\n  border: 0;\n}\n#canvas-quiz-stats .text-decoration-none {\n  text-decoration: none !important;\n}\n#canvas-quiz-stats .text-break {\n  word-break: break-word !important;\n  word-wrap: break-word !important;\n}\n#canvas-quiz-stats .text-reset {\n  color: inherit !important;\n}\n#canvas-quiz-stats .visible {\n  visibility: visible !important;\n}\n#canvas-quiz-stats .invisible {\n  visibility: hidden !important;\n}\n@media print {\n  #canvas-quiz-stats *,\n  #canvas-quiz-stats *::before,\n  #canvas-quiz-stats *::after {\n    text-shadow: none !important;\n    box-shadow: none !important;\n  }\n  #canvas-quiz-stats a:not(.btn) {\n    text-decoration: underline;\n  }\n  #canvas-quiz-stats abbr[title]::after {\n    content: \" (\" attr(title) \")\";\n  }\n  #canvas-quiz-stats pre {\n    white-space: pre-wrap !important;\n  }\n  #canvas-quiz-stats pre,\n  #canvas-quiz-stats blockquote {\n    border: 1px solid #adb5bd;\n    page-break-inside: avoid;\n  }\n  #canvas-quiz-stats thead {\n    display: table-header-group;\n  }\n  #canvas-quiz-stats tr,\n  #canvas-quiz-stats img {\n    page-break-inside: avoid;\n  }\n  #canvas-quiz-stats p,\n  #canvas-quiz-stats h2,\n  #canvas-quiz-stats h3 {\n    orphans: 3;\n    widows: 3;\n  }\n  #canvas-quiz-stats h2,\n  #canvas-quiz-stats h3 {\n    page-break-after: avoid;\n  }\n  @page {\n    size: a3;\n  }\n  #canvas-quiz-stats body {\n    min-width: 992px !important;\n  }\n  #canvas-quiz-stats .container {\n    min-width: 992px !important;\n  }\n  #canvas-quiz-stats .navbar {\n    display: none;\n  }\n  #canvas-quiz-stats .badge {\n    border: 1px solid #000;\n  }\n  #canvas-quiz-stats .table {\n    border-collapse: collapse !important;\n  }\n  #canvas-quiz-stats .table td,\n  #canvas-quiz-stats .table th {\n    background-color: #fff !important;\n  }\n  #canvas-quiz-stats .table-bordered th,\n  #canvas-quiz-stats .table-bordered td {\n    border: 1px solid #dee2e6 !important;\n  }\n  #canvas-quiz-stats .table-dark {\n    color: inherit;\n  }\n  #canvas-quiz-stats .table-dark th,\n  #canvas-quiz-stats .table-dark td,\n  #canvas-quiz-stats .table-dark thead th,\n  #canvas-quiz-stats .table-dark tbody + tbody {\n    border-color: #dee2e6;\n  }\n  #canvas-quiz-stats .table .thead-dark th {\n    color: inherit;\n    border-color: #dee2e6;\n  }\n}\n";
-                    el.type = "text/css";
-                    document.head.appendChild(el);
-                })();
