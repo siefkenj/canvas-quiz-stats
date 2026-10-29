@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="csrf-token" content="dev-token" />
+        <title>Rubric JSON harness (fake Gradescope)</title>
+        <style>
+            body {
+                margin: 0;
+                font: 14px/1.4 system-ui, sans-serif;
+                background: #f5f6f8;
+            }
+            .fake-page {
+                padding: 16px 24px;
+            }
+            .fake-page h1 {
+                margin: 0 0 4px;
+            }
+            .panel {
+                background: #fff;
+                border: 1px solid #dde;
+                border-radius: 6px;
+                padding: 12px 16px;
+                margin: 12px 0;
+            }
+            .panel h2 {
+                margin: 0 0 8px;
+                font-size: 15px;
+            }
+            .panel label {
+                margin-right: 16px;
+            }
+            .panel button {
+                margin-right: 8px;
+            }
+            pre {
+                max-height: 320px;
+                overflow: auto;
+                background: #fafafa;
+                border: 1px solid #eee;
+                padding: 8px;
+                font-size: 12px;
+            }
+            .cols {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="fake-page">
+            <h1>Create Rubric</h1>
+            <div>
+                <b>Fake Gradescope page.</b> The "Rubric JSON" button (top right) is the real tool,
+                talking to an in-memory mock of Gradescope's API. Data persists across reloads.
+            </div>
+            <div id="harness"></div>
+        </div>
+        <script type="module" src="/harness.tsx"></script>
+    </body>
+</html>

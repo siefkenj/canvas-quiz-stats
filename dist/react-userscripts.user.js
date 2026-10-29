@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.5
+// @version  1.7
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -17123,7 +17123,7 @@
     return !!(value && supportedTransforms.test(value));
   }
   function style(node, property) {
-    var css = "";
+    var css2 = "";
     var transforms = "";
     if (typeof property === "string") {
       return node.style.getPropertyValue(hyphenateStyleName(property)) || getComputedStyle(node).getPropertyValue(hyphenateStyleName(property));
@@ -17135,13 +17135,13 @@
       } else if (isTransform(key)) {
         transforms += key + "(" + value + ") ";
       } else {
-        css += hyphenateStyleName(key) + ": " + value + ";";
+        css2 += hyphenateStyleName(key) + ": " + value + ";";
       }
     });
     if (transforms) {
-      css += "transform: " + transforms + ";";
+      css2 += "transform: " + transforms + ";";
     }
-    node.style.cssText += ";" + css;
+    node.style.cssText += ";" + css2;
   }
   var propTypes$3 = { exports: {} };
   var ReactPropTypesSecret$1 = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
@@ -17755,12 +17755,12 @@
   var context$1 = /* @__PURE__ */ React.createContext(null);
   context$1.displayName = "CardContext";
   function useMounted() {
-    const mounted = reactExports.useRef(true);
-    const isMounted = reactExports.useRef(() => mounted.current);
+    const mounted2 = reactExports.useRef(true);
+    const isMounted = reactExports.useRef(() => mounted2.current);
     reactExports.useEffect(() => {
-      mounted.current = true;
+      mounted2.current = true;
       return () => {
-        mounted.current = false;
+        mounted2.current = false;
       };
     }, []);
     return isMounted.current;
@@ -19307,9 +19307,9 @@
     observer.observe(body, { childList: true, subtree: true });
     return observer;
   }
-  function injectStyles(css) {
+  function injectStyles(css2) {
     const el2 = document.createElement("style");
-    el2.textContent = css;
+    el2.textContent = css2;
     if (document.head) {
       document.head.appendChild(el2);
     } else {
@@ -20868,7 +20868,7 @@
         document.body.style.padding = "1em";
       }
     }
-    function download() {
+    function download2() {
       FileSaver.saveAs(
         new Blob([JSON.stringify(questions, null, 4)], {
           type: "application/json"
@@ -20876,7 +20876,7 @@
         "quiz-questions.json"
       );
     }
-    return /* @__PURE__ */ React.createElement("div", { className: "my-2" }, spinner && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Spinner, { animation: "border", role: "status" }), " Fetching Quiz Questions"), /* @__PURE__ */ React.createElement("div", { style: { whiteSpace: "pre" } }, result), /* @__PURE__ */ React.createElement("h4", null, "Displaying ", numQuestions, " questions", " ", /* @__PURE__ */ React.createElement(Button, { onClick: print, className: "mr-2" }, "Make Printable"), /* @__PURE__ */ React.createElement(Button, { onClick: download }, "Download Questions")), /* @__PURE__ */ React.createElement("div", { ref: divRef }, questions.map((question, i) => /* @__PURE__ */ React.createElement(Question, { data: question, key: i }))));
+    return /* @__PURE__ */ React.createElement("div", { className: "my-2" }, spinner && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Spinner, { animation: "border", role: "status" }), " Fetching Quiz Questions"), /* @__PURE__ */ React.createElement("div", { style: { whiteSpace: "pre" } }, result), /* @__PURE__ */ React.createElement("h4", null, "Displaying ", numQuestions, " questions", " ", /* @__PURE__ */ React.createElement(Button, { onClick: print, className: "mr-2" }, "Make Printable"), /* @__PURE__ */ React.createElement(Button, { onClick: download2 }, "Download Questions")), /* @__PURE__ */ React.createElement("div", { ref: divRef }, questions.map((question, i) => /* @__PURE__ */ React.createElement(Question, { data: question, key: i }))));
   }
   function ViewSubmissions() {
     const [spinner, setSpinner] = React.useState(false);
@@ -21267,6 +21267,3363 @@
       );
     }
   }
+  const css = `/* Styles for the Rubric JSON tool. They live in the tool's shadow root, so they neither affect
+   Gradescope's page nor are affected by it. */
+
+:host {
+    all: initial;
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1f2937;
+    --blue: #1d4ed8;
+    --border: #d1d5db;
+    --muted: #6b7280;
+}
+
+/* ------------------------------------------------------------------------------ controls */
+
+button {
+    font: inherit;
+    padding: 0.3em 0.8em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+    background: #fff;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+button:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+button.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+button.primary:hover:not(:disabled) {
+    background: #1e40af;
+}
+/* A small spinner inside a button, in the button's text colour. */
+.spinner {
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin-right: 0.45em;
+    vertical-align: -0.1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 2.4s;
+    }
+}
+button.small {
+    font-size: 12px;
+    padding: 0.1em 0.6em;
+}
+.link {
+    border: none;
+    padding: 0;
+    background: none;
+    color: var(--blue);
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+}
+button.link:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline;
+}
+.icon-button {
+    padding: 0.3em;
+    border-color: var(--border);
+}
+.icon {
+    flex: none;
+}
+.segmented {
+    display: inline-flex;
+}
+.segmented button {
+    border-radius: 0;
+    font-size: 13px;
+    padding: 0.2em 0.7em;
+    border-color: var(--border);
+}
+.segmented button + button {
+    border-left: none;
+}
+.segmented button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.segmented button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+.segmented button.on {
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+    color: #1e3a8a;
+}
+
+.launcher {
+    position: fixed;
+    top: 10px;
+    right: 16px;
+    z-index: 2147483000;
+    background: #fff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* -------------------------------------------------------------------------------- dialog */
+
+/* The dialog has a fixed height and never scrolls as a whole: its sections share the height and
+   each scrolls by itself (see "layout" below). */
+dialog {
+    width: min(1200px, 96vw);
+    height: 92vh;
+    max-height: 92vh;
+    overflow: hidden;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    color: inherit;
+}
+dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+header,
+footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.6em 1.25em;
+}
+header {
+    border-bottom: 1px solid #e5e7eb;
+    justify-content: space-between;
+}
+footer {
+    border-top: 1px solid #e5e7eb;
+    justify-content: flex-end;
+}
+footer .hint {
+    margin-right: auto;
+}
+footer .step {
+    margin-right: -0.25em;
+}
+h2 {
+    margin: 0;
+    font-size: 1.15em;
+}
+h3 {
+    margin: 0;
+    font-size: 1.02em;
+}
+.close {
+    border: none;
+    font-size: 1.5em;
+    line-height: 1;
+    padding: 0 0.25em;
+}
+main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0.6em 1.25em 0.75em;
+}
+main > * {
+    flex: none;
+}
+header,
+footer {
+    flex: none;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0.3em 0 0.5em;
+}
+.row.tight {
+    gap: 0.4em;
+    margin: 0;
+}
+.hint {
+    color: var(--muted);
+    font-size: 0.92em;
+}
+.status {
+    color: var(--blue);
+    margin: 0 0 0.5em;
+}
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    padding: 0.5em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+    resize: vertical;
+}
+.banner {
+    padding: 0.5em 0.75em;
+    border-radius: 4px;
+    margin: 0.5em 0;
+}
+main > .banner {
+    max-height: 6em;
+    overflow: auto;
+}
+.banner.error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+}
+.banner.warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+}
+.banner.ok {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+}
+code {
+    font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0 0.25em;
+    border-radius: 3px;
+}
+pre {
+    margin: 0.5em 0 0;
+    font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre-wrap;
+}
+
+/* dropdown menu */
+.menu {
+    position: relative;
+}
+.menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+}
+.menu-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 11;
+    min-width: 12em;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    padding: 0.25em 0;
+    display: flex;
+    flex-direction: column;
+}
+.menu-list button {
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    font-size: 13px;
+    padding: 0.4em 0.9em;
+    justify-content: flex-start;
+}
+
+/* ---------------------------------------------------------------------------------- layout */
+
+/* The reference sections (AI instructions, current rubric) take the height of their content, up
+   to 30% of the dialog (45% when both are open, shared equally), or the height set with the
+   splitter; the new rubric gets the rest. */
+.references {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    min-height: 0;
+    flex: 0 1 auto;
+    max-height: max(30%, 170px);
+}
+.references.both {
+    flex: none;
+    height: max(45%, 336px);
+    max-height: none;
+}
+.references.sized {
+    flex: none;
+    max-height: none;
+}
+.references.closed {
+    flex: none;
+    margin-bottom: 0.6em;
+}
+section.ref {
+    display: flex;
+    min-height: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+section.ref.open {
+    flex: 0 1 auto;
+    min-height: 164px; /* room for the sideways label */
+}
+.references.both > section.ref.open,
+.references.sized > section.ref.open {
+    flex: 1 1 0;
+}
+section.ref.collapsed {
+    flex: none;
+}
+/* Reference sections are for looking things up: a grey sidebar labels them, and they are smaller
+   and muted, so the new rubric leads. Collapsed, each is a grey bar. */
+.ref-sidebar,
+.ref-bar {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+.ref-sidebar {
+    flex: none;
+    width: 28px;
+    padding: 6px 0;
+    border: none;
+    border-radius: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+button.ref-sidebar:hover:not(:disabled),
+button.ref-bar-toggle:hover:not(:disabled) {
+    background: #d1d5db;
+}
+.ref-sidebar .ref-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+.ref-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.ref-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+}
+.ref-tools {
+    flex: none;
+    padding: 4px 6px;
+    border-bottom: 1px solid #eceef1;
+}
+.ref-tools .hint {
+    font-size: 12px;
+}
+.ref-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    padding-right: 6px;
+    width: 100%;
+    min-height: 27px;
+}
+.ref-bar-toggle,
+.ref-bar-label {
+    border: none;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+.ref-bar-toggle .icon {
+    transform: rotate(-90deg);
+}
+.ref-bar .icon-button,
+.ref-tools .icon-button {
+    padding: 0.15em;
+    color: var(--muted);
+    background: #fff;
+}
+section.ref .icon-button .icon,
+.ref-bar .icon-button .icon {
+    width: 14px;
+    height: 14px;
+}
+section.ref .segmented button {
+    font-size: 11.5px;
+    padding: 0.05em 0.55em;
+}
+section.ref .rb {
+    font-size: 11px;
+}
+section.ref .rb-question {
+    background: #fcfcfd;
+}
+section.ref .viewer-text {
+    font-size: 11px;
+}
+
+/* The new rubric: a bar like a collapsed reference section, then the two steps side by side. */
+section.upload {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.new-bar {
+    flex: none;
+    border-bottom: 1px solid #e5e7eb;
+}
+.new-bar .menu-button {
+    font-size: 12px;
+    padding: 0.1em 0.5em;
+    border-color: var(--blue);
+    color: var(--blue);
+    background: #fff;
+}
+.new-bar .menu-button .icon {
+    width: 14px;
+    height: 14px;
+}
+.new-bar .menu-list {
+    left: 0;
+    right: auto;
+}
+label.file-button {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+}
+label.file-button:hover {
+    background: #f3f4f6;
+}
+label.file-button input {
+    display: none;
+}
+.new-bar .link {
+    font-size: 12px;
+}
+section.upload .upload-grid {
+    padding: 0.5em 0.6em 0.6em;
+}
+.upload-input > .step-row,
+.upload-output > .step-row {
+    flex: none;
+    margin: 0 0 0.4em;
+    min-height: 1.6em;
+}
+.step-row h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+}
+.step {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+.splitter {
+    height: 9px;
+    margin: 1px 0 3px;
+    cursor: row-resize;
+    position: relative;
+    touch-action: none;
+}
+.splitter::after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 20px);
+    top: 3px;
+    width: 40px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+}
+.splitter:hover::after,
+.splitter:focus-visible::after {
+    background: var(--blue);
+}
+.splitter:focus-visible {
+    outline: none;
+}
+
+.viewer {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
+.references.sized .viewer,
+.references.both .viewer {
+    flex: 1 1 0;
+}
+.viewer > .rb {
+    padding: 0.5em;
+}
+.viewer-text {
+    margin: 0;
+    padding: 0.5em;
+    background: #fff;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+/* upload */
+.upload-grid {
+    flex: 1 1 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1em;
+}
+@media (max-width: 900px) {
+    .upload-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.6em;
+    }
+    .references {
+        max-height: max(25%, 170px);
+    }
+    .references.both {
+        height: max(40%, 336px);
+    }
+}
+.upload-input {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.upload-input textarea {
+    flex: 1 1 auto;
+    min-height: 4em;
+    resize: none;
+}
+.check-area {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 45%;
+    overflow: auto;
+}
+.upload-output {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.upload-preview {
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fafafa;
+    overflow: auto;
+}
+.preview-body {
+    padding: 0.5em;
+}
+.preview-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    padding: 0.35em 0.6em;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+.select-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+    font-weight: 600;
+}
+.select-all .hint {
+    font-weight: normal;
+}
+.select-all input,
+.rb-qhead .pick {
+    margin: 0;
+    cursor: pointer;
+}
+.preview-empty {
+    text-align: center;
+    padding: 2em 0;
+    margin: 0;
+}
+.check-status {
+    margin: 0.4em 0;
+    font-size: 13px;
+}
+.check-status.idle {
+    color: var(--muted);
+}
+.check-status.good {
+    color: #166534;
+}
+.check-status.bad {
+    color: #991b1b;
+    font-weight: 600;
+}
+.issues {
+    margin: 0.3em 0 0.3em 1.2em;
+    padding: 0;
+    font-size: 12.5px;
+}
+.issues li {
+    margin: 0.2em 0;
+}
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: 11px;
+    padding: 0 0.5em;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.tag input {
+    margin: 0;
+}
+.tag.same {
+    background: #e5e7eb;
+}
+.tag.new {
+    background: #dbeafe;
+}
+.tag.conflict {
+    background: #fde68a;
+}
+.tag.error {
+    background: #fecaca;
+    color: #7f1d1d;
+}
+.results {
+    margin: 0;
+    padding-left: 1.2em;
+}
+.results .ok {
+    color: #166534;
+}
+.results .bad {
+    color: #991b1b;
+}
+.log {
+    background: #f9fafb;
+    padding: 0.5em;
+    border-radius: 4px;
+}
+
+/* ------------------------------------------------------- compact Gradescope-like rubric */
+
+.rb {
+    font-size: 12px;
+    line-height: 1.35;
+}
+.rb-question {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.35em 0.5em 0.45em;
+    margin-bottom: 0.45em;
+}
+.rb-question.skipped {
+    opacity: 0.55;
+}
+.rb-qhead {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-bottom: 0.3em;
+}
+.rb-qnum {
+    font-weight: 700;
+    color: #1f3a5f;
+}
+.rb-qtitle {
+    font-weight: 600;
+}
+.rb-qmeta {
+    color: var(--muted);
+    font-size: 11px;
+}
+.rb-qtotal {
+    font-size: 11px;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 999px;
+    padding: 0 0.45em;
+}
+.rb-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.rb-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 2px 6px;
+    background: #fff;
+}
+.rb-points {
+    flex: none;
+    min-width: 3.2em;
+    font-weight: 700;
+    font-size: 11px;
+    padding-top: 1px;
+}
+.rb-points.positive {
+    color: #1e7d32;
+}
+.rb-points.negative {
+    color: #c62828;
+}
+.rb-points.zero {
+    color: #757575;
+}
+.rb-desc {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.rb-desc p {
+    margin: 0;
+}
+.rb-desc p + p,
+.rb-desc ul + p,
+.rb-desc p + ul {
+    margin-top: 0.3em;
+}
+.rb-desc ul {
+    margin: 0;
+    padding-left: 1.2em;
+}
+.rb-group {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background: #f4f6f8;
+    padding: 3px 6px 4px;
+}
+.rb-group-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5em;
+    margin-bottom: 3px;
+}
+.rb-group-kind {
+    flex: none;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0 0.45em;
+    background: #fff;
+}
+.rb-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: 0.9em;
+}
+.rb-empty {
+    color: var(--muted);
+    font-style: italic;
+}
+.rb-item.added,
+.rb-group.added {
+    background: #dcfce7;
+    border-color: #86efac;
+}
+.rb-item.removed,
+.rb-group.removed {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(127, 29, 29, 0.5);
+    opacity: 0.8;
+}
+.rb-item.changed,
+.rb-group.changed {
+    background: #fef9c3;
+    border-color: #fcd34d;
+}
+.rb-points-change {
+    flex: none;
+    display: inline-flex;
+    gap: 0.3em;
+}
+.rb-points-change s {
+    opacity: 0.6;
+    text-decoration-color: rgba(127, 29, 29, 0.7);
+}
+.rb-points-change .rb-points {
+    min-width: 0;
+}
+.rb-old {
+    text-decoration: line-through;
+    text-decoration-color: rgba(127, 29, 29, 0.6);
+    opacity: 0.65;
+}
+.math {
+    font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+    font-size: 1.08em;
+    white-space: pre-wrap;
+}
+.math.display {
+    display: block;
+    text-align: center;
+    margin: 0.2em 0;
+}
+
+/* ------------------------------------------------------------------- uniform rubric dialog */
+
+dialog.uniform {
+    width: min(860px, 94vw);
+    height: auto;
+    max-height: 90vh;
+}
+dialog.uniform main {
+    display: block;
+    overflow: auto;
+}
+dialog.uniform h3 {
+    margin-right: 0.3em;
+}
+dialog.uniform table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+}
+dialog.uniform th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 0.2em 0.4em;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+dialog.uniform td {
+    padding: 0.2em 0.4em;
+    border-bottom: 1px solid #f1f2f4;
+}
+dialog.uniform input[type="text"],
+dialog.uniform input[type="number"] {
+    font: inherit;
+    box-sizing: border-box;
+    padding: 0.2em 0.4em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+}
+.uniform-items input[type="text"] {
+    width: 100%;
+}
+.uniform-items td.points {
+    white-space: nowrap;
+    width: 1%;
+}
+.uniform-items input[type="number"] {
+    width: 5.5em;
+    margin-right: 0.2em;
+}
+.uniform-items td.row-tools {
+    white-space: nowrap;
+    width: 1%;
+}
+.uniform-items .icon-button {
+    padding: 0.15em;
+    margin-left: 0.15em;
+}
+.uniform-group input[type="text"] {
+    flex: 1 1 16em;
+}
+label.check-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+}
+.uniform-preview tr.skipped td {
+    opacity: 0.5;
+}
+.uniform-preview td.worth {
+    white-space: nowrap;
+    color: var(--muted);
+}
+.uniform-preview td.item-points {
+    white-space: nowrap;
+    font-size: 12px;
+}
+.uniform-preview td.fit {
+    color: #166534;
+}
+.uniform-preview td.misfit {
+    color: #92400e;
+    font-size: 12px;
+}
+
+/* -------------------------------------------------- very short windows: scroll as a whole */
+
+@media (max-height: 560px) {
+    dialog {
+        height: auto;
+    }
+    dialog > main {
+        overflow: auto;
+    }
+    .references,
+    section.ref,
+    section.upload,
+    .upload-grid {
+        flex: none;
+        max-height: none;
+    }
+    .references.both {
+        height: auto;
+    }
+    section.ref.open {
+        min-height: 0;
+    }
+    .upload-grid {
+        grid-template-rows: auto;
+    }
+    .viewer,
+    .upload-preview {
+        max-height: 60vh;
+    }
+    .upload-input textarea {
+        height: 50vh;
+    }
+    .splitter {
+        display: none;
+    }
+}
+`;
+  const RUBRIC_FORMAT = "gradescope-rubric";
+  const RUBRIC_FORMAT_VERSION = 1;
+  const DEFAULT_ITEM_DESCRIPTIONS = [
+    "Correct",
+    "Click here to replace this description."
+  ];
+  const asArray = (v2) => Array.isArray(v2) ? v2 : v2 && typeof v2 === "object" ? Object.values(v2) : [];
+  function weightToPoints(weight, scoring) {
+    const w2 = typeof weight === "number" ? weight : parseFloat(weight);
+    const points = scoring === "negative" ? -w2 : w2;
+    return points === 0 ? 0 : points;
+  }
+  function pointsToWeight(points, scoring) {
+    const w2 = scoring === "negative" ? -points : points;
+    return String(w2 === 0 ? 0 : w2);
+  }
+  class Assignment {
+    constructor(payload) {
+      this.payload = payload;
+      this.questions = function flatten(list, out = []) {
+        for (const q2 of asArray(list)) {
+          out.push(q2);
+          flatten(asArray(q2.children), out);
+        }
+        return out;
+      }(payload.questions);
+      this.byNumber = new Map(this.questions.map((q2) => [String(q2.full_index), q2]));
+    }
+    get courseId() {
+      return this.payload.assignment.course_id;
+    }
+    get assignmentId() {
+      return this.payload.assignment.id;
+    }
+    get title() {
+      return this.payload.assignment.title;
+    }
+    question(number) {
+      return this.byNumber.get(number);
+    }
+    isParent(q2) {
+      return asArray(q2.children).length > 0;
+    }
+    /** Questions that can carry a rubric (Gradescope ignores rubrics on parent questions). */
+    get leafQuestions() {
+      return this.questions.filter((q2) => !this.isParent(q2));
+    }
+    /**
+     * The question's top-level rubric entries (ungrouped items and groups) in order. An item whose
+     * group no longer exists counts as ungrouped, so it is shown, compared, and deleted too.
+     */
+    entries(questionId) {
+      const items = asArray(this.payload.rubric_items).filter(
+        (i) => i.question_id === questionId
+      );
+      const groups = asArray(this.payload.rubric_item_groups).filter(
+        (g) => g.question_id === questionId
+      );
+      const groupIds = new Set(groups.map((g) => g.id));
+      const byPosition = (a, b) => a.position - b.position;
+      const entries = [
+        ...items.filter((i) => i.group_id == null || !groupIds.has(i.group_id)).map((item) => ({ kind: "item", item, position: item.position })),
+        ...groups.map((group) => ({
+          kind: "group",
+          group,
+          items: items.filter((i) => i.group_id === group.id).sort(byPosition),
+          position: group.position
+        }))
+      ];
+      return entries.sort(byPosition);
+    }
+    /** True if the question has no rubric, or only the item Gradescope creates by default. */
+    hasOnlyDefaultRubric(questionId) {
+      const entries = this.entries(questionId);
+      if (entries.length === 0) {
+        return true;
+      }
+      if (entries.length > 1 || entries[0].kind !== "item") {
+        return false;
+      }
+      const { item } = entries[0];
+      return parseFloat(item.weight) === 0 && DEFAULT_ITEM_DESCRIPTIONS.includes(item.description.trim());
+    }
+    /** The question's current rubric in the rubric JSON format. */
+    toRubricQuestion(q2) {
+      const scoring = q2.scoring_type;
+      const rubric = this.entries(q2.id).map(
+        (e) => e.kind === "item" ? {
+          type: "item",
+          points: weightToPoints(e.item.weight, scoring),
+          description: e.item.description
+        } : {
+          type: "group",
+          description: e.group.description,
+          mutually_exclusive: !!e.group.mutually_exclusive,
+          items: e.items.map((i) => ({
+            type: "item",
+            points: weightToPoints(i.weight, scoring),
+            description: i.description
+          }))
+        }
+      );
+      return {
+        number: String(q2.full_index),
+        title: q2.title ?? "",
+        weight: parseFloat(q2.weight),
+        scoring,
+        rubric
+      };
+    }
+    /** The whole assignment's rubric, as shown, copied, and downloaded in the JSON view. */
+    toRubricFile() {
+      return {
+        format: RUBRIC_FORMAT,
+        version: RUBRIC_FORMAT_VERSION,
+        assignment: {
+          course_id: this.courseId,
+          assignment_id: this.assignmentId,
+          title: this.title
+        },
+        questions: this.leafQuestions.map((q2) => this.toRubricQuestion(q2))
+      };
+    }
+  }
+  function sameRubric(a, b) {
+    const text = (s) => s.replace(/\r\n/g, "\n").trim();
+    const sameItem = (x2, y2) => x2.type === "item" && y2.type === "item" && x2.points === y2.points && text(x2.description) === text(y2.description);
+    return a.length === b.length && a.every((x2, n2) => {
+      const y2 = b[n2];
+      if (x2.type === "item") {
+        return sameItem(x2, y2);
+      }
+      return y2.type === "group" && text(x2.description) === text(y2.description) && x2.mutually_exclusive === y2.mutually_exclusive && x2.items.length === y2.items.length && x2.items.every((i, k) => sameItem(i, y2.items[k]));
+    });
+  }
+  function pageFetch() {
+    if (typeof content !== "undefined" && typeof (content == null ? void 0 : content.fetch) === "function") {
+      return content.fetch.bind(content);
+    }
+    return window.fetch.bind(window);
+  }
+  class HttpError extends Error {
+    constructor(method, url, status, statusText) {
+      super(`${method} ${url} failed: ${status} ${statusText}`);
+      this.method = method;
+      this.url = url;
+      this.status = status;
+    }
+  }
+  class GradescopeClient {
+    constructor(options2) {
+      this.payload = null;
+      this.options = options2;
+    }
+    get base() {
+      return `${this.options.origin}/courses/${this.options.courseId}`;
+    }
+    async request(method, url, body) {
+      const doFetch = this.options.fetch ?? pageFetch();
+      const absolute = new URL(url, this.options.origin).href;
+      const res = await doFetch(absolute, {
+        method,
+        credentials: "include",
+        headers: {
+          Accept: "application/json, text/javascript, */*; q=0.01",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": this.options.csrfToken,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: body === void 0 ? void 0 : JSON.stringify(body)
+      });
+      if (!res.ok) {
+        throw new HttpError(method, absolute, res.status, res.statusText);
+      }
+      const text = await res.text();
+      try {
+        return text ? JSON.parse(text) : null;
+      } catch {
+        return text;
+      }
+    }
+    /** Fetch the assignment's questions and rubric. */
+    async load() {
+      this.payload = await this.request(
+        "GET",
+        `${this.base}/assignments/${this.options.assignmentId}/rubric/edit.json`
+      );
+      return new Assignment(this.payload);
+    }
+    url(questionId, key, fallback) {
+      var _a, _b, _c, _d;
+      return ((_d = (_c = (_b = (_a = this.payload) == null ? void 0 : _a.urls) == null ? void 0 : _b.question_urls) == null ? void 0 : _c[questionId]) == null ? void 0 : _d[key]) ?? `${this.base}/questions/${questionId}/${fallback}`;
+    }
+    async createItem(questionId, description, weight) {
+      var _a;
+      const res = await this.request("POST", this.url(questionId, "rubric_item", "rubric_items"), {
+        rubric_item: { description, weight, group_id: null }
+      });
+      const id2 = (res == null ? void 0 : res.id) ?? ((_a = res == null ? void 0 : res.rubric_item) == null ? void 0 : _a.id);
+      if (!Number.isInteger(id2)) {
+        throw new Error(`Creating an item returned no id: ${JSON.stringify(res).slice(0, 200)}`);
+      }
+      return id2;
+    }
+    async createGroup(questionId, description, mutuallyExclusive, items) {
+      var _a;
+      const res = await this.request(
+        "POST",
+        this.url(questionId, "create_group_with_items", "rubric/create_group_with_items"),
+        {
+          rubric_item_group: {
+            description,
+            ...mutuallyExclusive ? { mutually_exclusive: true } : {}
+          },
+          rubric_items: items
+        }
+      );
+      const id2 = (_a = res == null ? void 0 : res.rubric_item_group) == null ? void 0 : _a.id;
+      if (!Number.isInteger(id2)) {
+        throw new Error(`Creating a group returned no id: ${JSON.stringify(res).slice(0, 200)}`);
+      }
+      return id2;
+    }
+    /** Delete a rubric item. A 404 means it is already gone, which is fine. */
+    async deleteItem(questionId, itemId) {
+      await this.ignore404(
+        () => this.request("DELETE", `${this.url(questionId, "rubric_item", "rubric_items")}/${itemId}`)
+      );
+    }
+    /** Delete a rubric item group. A 404 means it is already gone, which is fine. */
+    async deleteGroup(questionId, groupId) {
+      await this.ignore404(
+        () => this.request(
+          "DELETE",
+          `${this.url(questionId, "rubric_item_groups", "rubric_item_groups")}/${groupId}`
+        )
+      );
+    }
+    /** Set the top-level order of a question's ungrouped items and groups. */
+    async setPositions(questionId, entries) {
+      const rubric_items = {};
+      const rubric_item_groups = {};
+      entries.forEach(({ kind, id: id2 }, position) => {
+        (kind === "group" ? rubric_item_groups : rubric_items)[id2] = { position };
+      });
+      await this.request(
+        "PATCH",
+        this.url(questionId, "update_rubric_entries", "rubric/update_entries"),
+        { question_id: questionId, rubric_items, rubric_item_groups }
+      );
+    }
+    async ignore404(f) {
+      try {
+        await f();
+      } catch (e) {
+        if (!(e instanceof HttpError && e.status === 404)) {
+          throw e;
+        }
+      }
+    }
+  }
+  function diffSequence(before, after, key) {
+    const a = before.map(key);
+    const b = after.map(key);
+    const n2 = a.length;
+    const m2 = b.length;
+    const lcs = Array.from({ length: n2 + 1 }, () => new Array(m2 + 1).fill(0));
+    for (let i2 = n2 - 1; i2 >= 0; i2--) {
+      for (let j2 = m2 - 1; j2 >= 0; j2--) {
+        lcs[i2][j2] = a[i2] === b[j2] ? lcs[i2 + 1][j2 + 1] + 1 : Math.max(lcs[i2 + 1][j2], lcs[i2][j2 + 1]);
+      }
+    }
+    const out = [];
+    let i = 0;
+    let j = 0;
+    while (i < n2 && j < m2) {
+      if (a[i] === b[j]) {
+        out.push({ mark: "same", value: after[j], other: before[i] });
+        i++;
+        j++;
+      } else if (lcs[i + 1][j] >= lcs[i][j + 1]) {
+        out.push({ mark: "removed", value: before[i++] });
+      } else {
+        out.push({ mark: "added", value: after[j++] });
+      }
+    }
+    while (i < n2) {
+      out.push({ mark: "removed", value: before[i++] });
+    }
+    while (j < m2) {
+      out.push({ mark: "added", value: after[j++] });
+    }
+    return out;
+  }
+  const norm = (s) => s.replace(/\r\n/g, "\n").trim();
+  const itemKey = (i) => `${i.points}\0${norm(i.description)}`;
+  const entryKey$1 = (e) => e.type === "item" ? `item\0${itemKey(e)}` : `group\0${e.mutually_exclusive}\0${norm(e.description)}`;
+  function viewEntry(e, mark) {
+    return e.type === "item" ? { kind: "item", mark, points: e.points, description: e.description } : {
+      kind: "group",
+      mark,
+      description: e.description,
+      mutually_exclusive: e.mutually_exclusive,
+      items: e.items.map((i) => ({ mark, points: i.points, description: i.description }))
+    };
+  }
+  function plainEntries(rubric) {
+    return rubric.map((e) => viewEntry(e, "same"));
+  }
+  function pairRuns(diff, matches) {
+    const out = [];
+    let k = 0;
+    while (k < diff.length) {
+      if (diff[k].mark === "same") {
+        out.push({ mark: "same", value: diff[k].value, old: diff[k].other });
+        k++;
+        continue;
+      }
+      const run = [];
+      while (k < diff.length && diff[k].mark !== "same") {
+        run.push(diff[k++]);
+      }
+      const used = /* @__PURE__ */ new Set();
+      const partners = /* @__PURE__ */ new Map();
+      run.forEach((r2, idx) => {
+        if (r2.mark === "added") {
+          const match = run.find((x2) => x2.mark === "removed" && !used.has(x2) && matches(x2.value, r2.value));
+          if (match) {
+            used.add(match);
+            partners.set(idx, match.value);
+          }
+        }
+      });
+      run.forEach((r2, idx) => {
+        if (used.has(r2)) {
+          return;
+        }
+        const old = partners.get(idx);
+        out.push(old === void 0 ? { mark: r2.mark, value: r2.value } : { mark: "changed", value: r2.value, old });
+      });
+    }
+    return out;
+  }
+  function diffItems(before, after) {
+    return pairRuns(diffSequence(before, after, itemKey), (a, b) => norm(a.description) === norm(b.description)).map(
+      ({ mark, value, old }) => ({
+        mark,
+        points: value.points,
+        description: value.description,
+        ...mark === "changed" ? { oldPoints: old.points } : {}
+      })
+    );
+  }
+  function groupView(before, after, mark) {
+    return {
+      kind: "group",
+      mark,
+      description: after.description,
+      mutually_exclusive: after.mutually_exclusive,
+      items: diffItems(before.items, after.items),
+      ...norm(before.description) !== norm(after.description) ? { oldDescription: before.description } : {},
+      ...before.mutually_exclusive !== after.mutually_exclusive ? { oldMutuallyExclusive: before.mutually_exclusive } : {}
+    };
+  }
+  function diffEntries(before, after) {
+    const matches = (a, b) => a.type === "group" ? b.type === "group" : b.type === "item" && norm(a.description) === norm(b.description);
+    return pairRuns(diffSequence(before, after, entryKey$1), matches).map(({ mark, value, old }) => {
+      if (value.type === "group" && (old == null ? void 0 : old.type) === "group") {
+        return groupView(old, value, mark);
+      }
+      if (mark === "changed" && value.type === "item" && (old == null ? void 0 : old.type) === "item") {
+        return { kind: "item", mark, points: value.points, description: value.description, oldPoints: old.points };
+      }
+      return viewEntry(value, mark);
+    });
+  }
+  const fmtPoints = (p2) => (p2 > 0 ? `+${p2}` : `${p2}`).padStart(5);
+  function rubricLines(rubric) {
+    const lines = [];
+    const push = (prefix, description, indent) => {
+      const [first, ...rest] = norm(description).split("\n");
+      lines.push(`${prefix}${first}`);
+      for (const line of rest) {
+        lines.push(`${indent}${line}`);
+      }
+    };
+    for (const e of rubric) {
+      if (e.type === "item") {
+        push(`${fmtPoints(e.points)}  `, e.description, " ".repeat(7));
+      } else {
+        push(`[group${e.mutually_exclusive ? ", mutually exclusive" : ""}] `, e.description, "    ");
+        for (const i of e.items) {
+          push(`    ${fmtPoints(i.points)}  `, i.description, " ".repeat(11));
+        }
+      }
+    }
+    return lines;
+  }
+  function rubricText(questions) {
+    return questions.map((q2) => {
+      const head = `Q${q2.number}${q2.title ? ` ${q2.title}` : ""} (${q2.weight} point${q2.weight === 1 ? "" : "s"}, ${q2.scoring} scoring)`;
+      const body = rubricLines(q2.rubric);
+      return [head, ...body.length ? body : ["    (no rubric items)"]].join("\n");
+    }).join("\n\n") + "\n";
+  }
+  function useModal(ref, open2) {
+    React.useEffect(() => {
+      const d = ref.current;
+      if (d && open2 && !d.open) {
+        d.showModal();
+      } else if (d && !open2 && d.open) {
+        d.close();
+      }
+    }, [open2]);
+  }
+  function Icon({ children }) {
+    return /* @__PURE__ */ React.createElement(
+      "svg",
+      {
+        className: "icon",
+        width: "16",
+        height: "16",
+        viewBox: "0 0 24 24",
+        fill: "none",
+        stroke: "currentColor",
+        strokeWidth: "2",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        "aria-hidden": "true"
+      },
+      children
+    );
+  }
+  const DownloadIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M12 3v12" }), /* @__PURE__ */ React.createElement("path", { d: "M7 10l5 5 5-5" }), /* @__PURE__ */ React.createElement("path", { d: "M5 21h14" }));
+  const CopyIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("rect", { x: "9", y: "9", width: "12", height: "12", rx: "2" }), /* @__PURE__ */ React.createElement("path", { d: "M5 15V5a2 2 0 0 1 2-2h10" }));
+  const RefreshIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M21 12a9 9 0 1 1-3-6.7" }), /* @__PURE__ */ React.createElement("path", { d: "M21 3v6h-6" }));
+  const ChevronDownIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M6 9l6 6 6-6" }));
+  const FileIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" }), /* @__PURE__ */ React.createElement("path", { d: "M14 3v6h6" }));
+  const PlusIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M12 5v14" }), /* @__PURE__ */ React.createElement("path", { d: "M5 12h14" }));
+  const SparkleIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" }), /* @__PURE__ */ React.createElement("path", { d: "M19 17v4" }), /* @__PURE__ */ React.createElement("path", { d: "M17 19h4" }));
+  const ArrowUpIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M12 19V5" }), /* @__PURE__ */ React.createElement("path", { d: "M6 11l6-6 6 6" }));
+  const ArrowDownIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M12 5v14" }), /* @__PURE__ */ React.createElement("path", { d: "M6 13l6 6 6-6" }));
+  const TrashIcon = () => /* @__PURE__ */ React.createElement(Icon, null, /* @__PURE__ */ React.createElement("path", { d: "M4 7h16" }), /* @__PURE__ */ React.createElement("path", { d: "M10 11v6" }), /* @__PURE__ */ React.createElement("path", { d: "M14 11v6" }), /* @__PURE__ */ React.createElement("path", { d: "M6 7l1 13h10l1-13" }), /* @__PURE__ */ React.createElement("path", { d: "M9 7V4h6v3" }));
+  function aiInstructions(assignment) {
+    const file = assignment.toRubricFile();
+    const rows = assignment.leafQuestions.map((q2) => {
+      const status = assignment.hasOnlyDefaultRubric(q2.id) ? "empty (Gradescope's default item only)" : `${assignment.entries(q2.id).length} existing entries`;
+      const title = q2.title ? q2.title.replace(/\|/g, "\\|") : "";
+      return `| \`${q2.full_index}\` | ${title} | ${parseFloat(q2.weight)} | ${q2.scoring_type} | ${status} |`;
+    });
+    const parents = assignment.questions.filter((q2) => assignment.isParent(q2));
+    const example = {
+      format: RUBRIC_FORMAT,
+      version: RUBRIC_FORMAT_VERSION,
+      assignment: file.assignment,
+      questions: [
+        {
+          number: "1",
+          weight: 2,
+          scoring: "positive",
+          rubric: [
+            {
+              type: "item",
+              points: 1,
+              description: "**Correct claim**: You claim that $$f(x)=x^2$$ is not injective on $$\\mathbb{R}$$."
+            },
+            {
+              type: "group",
+              description: "**Proof**",
+              mutually_exclusive: false,
+              items: [
+                {
+                  type: "item",
+                  points: 1,
+                  description: "**Counterexample**: You give $$x \\neq y$$ with $$f(x)=f(y)$$, e.g. $$x=1$$, $$y=-1$$."
+                },
+                {
+                  type: "item",
+                  points: -0.5,
+                  description: "**Missing braces**: You wrote the set $$\\{1,-1\\}$$ as $$1,-1$$."
+                }
+              ]
+            },
+            { type: "item", points: 0, description: "Incorrect" }
+          ]
+        }
+      ]
+    };
+    return `# Writing a Gradescope rubric JSON file
+
+These instructions describe the JSON file that the *Rubric JSON* tool (part of the Canvas Quiz
+Stats userscript) uploads to Gradescope. The uploader checks the file strictly and rejects
+anything that does not follow these rules **exactly**, so follow them to the letter.
+
+## This assignment
+
+- Assignment: **${assignment.title}** (course id \`${assignment.courseId}\`, assignment id \`${assignment.assignmentId}\`)
+- Questions that can have a rubric:
+
+| number | title | weight | scoring | current rubric |
+| --- | --- | --- | --- | --- |
+${rows.join("\n")}
+${parents.length ? `
+Questions ${parents.map((q2) => `\`${q2.full_index}\``).join(", ")} only group their parts; they cannot have a rubric.
+` : ""}
+The best starting point is the current rubric as JSON (the dialog's JSON view), which has this exact
+structure filled in with the current rubric.
+
+## File structure
+
+An illustrative file for a 2-point, positively scored question \`"1"\` (use the numbers,
+weights and scoring from the table above):
+
+\`\`\`json
+${JSON.stringify(example, null, 2)}
+\`\`\`
+
+### Top level
+An object with exactly these keys:
+- \`"format"\`: the string \`"${RUBRIC_FORMAT}"\`.
+- \`"version"\`: the number \`${RUBRIC_FORMAT_VERSION}\`.
+- \`"assignment"\`: an object with \`"course_id"\` (\`${assignment.courseId}\`) and \`"assignment_id"\`
+  (\`${assignment.assignmentId}\`), both numbers, and optionally \`"title"\` (a string; not uploaded).
+- \`"questions"\`: a non-empty array of questions.
+
+### Questions
+Each question is an object with exactly these keys:
+- \`"number"\`: the question number from the table above, as a **string** (\`"3.1"\`, not \`3.1\`).
+- \`"weight"\`: a number equal to the question's weight in the table. (The rubric cannot change it.)
+- \`"scoring"\`: \`"positive"\` or \`"negative"\`, equal to the table.
+- \`"rubric"\`: a non-empty array of rubric entries, in the order they should appear.
+- \`"title"\` (optional): a string. It is informational and not uploaded.
+
+Include only the questions whose rubric you want to set; questions that are left out are not
+touched. Each question may appear only once.
+
+### Rubric entries
+An entry is either an **item** or a **group**.
+
+An item has exactly these keys:
+- \`"type"\`: \`"item"\`.
+- \`"points"\`: a number with at most two decimal places.
+- \`"description"\`: a non-empty string (Gradescope markdown, see below).
+
+A group has exactly these keys:
+- \`"type"\`: \`"group"\`.
+- \`"description"\`: a non-empty string, shown as the group's heading.
+- \`"mutually_exclusive"\`: \`true\` if graders may apply at most one of its items, otherwise \`false\`.
+- \`"items"\`: a non-empty array of items (groups cannot be nested).
+
+### Points
+\`"points"\` is always **the change to the student's score** when the item is applied:
+- Under **positive** scoring the student starts at 0. Use positive points for credit and negative
+  points for penalties. The positive items should add up to the question's weight (an exclusive
+  group counts only its best item); the uploader warns if they don't.
+- Under **negative** scoring the student starts at full marks. Use negative points for deductions
+  (e.g. \`-1\`) and \`0\` for "Correct". The uploader converts this to Gradescope's own convention,
+  and warns about positive points (which would give more than full marks).
+- Use \`0\` for feedback-only items such as "Incorrect" or "Blank".
+
+## Descriptions: Gradescope markdown
+
+Descriptions are markdown, as rendered by Gradescope:
+- \`**bold**\`, \`*italic*\`, bullet lists (\`* item\`), and paragraphs separated by a blank line.
+- **Inline math is \`$$...$$\`** and **display math is \`$$$...$$$\`**. A single \`$\` is *not* math
+  and is rejected. \`\\(...\\)\` and \`\\[...\\]\` are not rendered and are rejected.
+- Math is LaTeX: \`\\mathbb{Z}\`, \`\\in\`, \`\\subseteq\`, \`\\Rightarrow\`, \`\\le\`, \`\\neq\`, \`\\frac{a}{b}\`.
+- Set braces must be escaped: \`$$\\{x \\in \\mathbb{Z} : x > 0\\}$$\`. Plain \`{ }\` are invisible in LaTeX.
+
+### Backslashes in JSON
+JSON strings use backslash escapes, so **every LaTeX backslash must be written twice** in the
+JSON file: \`"$$\\\\frac{1}{2}$$"\`, \`"$$\\\\{0\\\\}$$"\`. With a single backslash, \`"\\frac"\` becomes a
+form feed followed by "rac", \`"\\text"\` a tab followed by "ext", and \`"\\neq"\` a line break
+followed by "eq". The uploader detects these and rejects the file.
+
+## What the uploader checks
+
+Errors (the upload is blocked until every one is fixed):
+- The file is valid JSON with exactly the keys described above (unknown keys are errors, including
+  look-alikes such as \`"weight"\` for an item, \`"exclusive"\`, or \`"text"\`).
+- Types are exact: numbers are not quoted, \`"number"\` is a string, \`"mutually_exclusive"\` is a boolean.
+- \`"format"\`, \`"version"\`, and the assignment ids match.
+- Every question number exists on this assignment, is not a question that only groups parts, and
+  appears once; its \`"weight"\` and \`"scoring"\` match Gradescope.
+- No empty rubrics, groups, or descriptions, and no Gradescope placeholder text.
+- Points have at most two decimal places.
+- Math delimiters pair up, there is no single \`$\`, no \`\\(\` \`\\)\` \`\\[\` \`\\]\`, braces balance inside
+  math, and there are no control characters (from LaTeX backslashes lost to JSON escaping).
+
+The checks of descriptions, points, and empty rubrics or groups only apply to questions whose
+rubric would change. A rubric downloaded from Gradescope can always be uploaded again unchanged,
+even if what is already on Gradescope breaks these rules.
+
+Warnings (shown to the user before uploading; fix them unless they are intended):
+- Under positive scoring, the positive items don't add up to the question's weight.
+- Under negative scoring, an item has positive points (deductions must be negative).
+- An item is worth more than the whole question.
+- A \`{\` in math that doesn't start a LaTeX argument (probably an unescaped set brace).
+- Typst-style or ASCII math (\`RR\`, \`ZZ\`, \`<=\`, \`=>\`), or a line break inside math.
+- Two items in a question with the same description.
+- The assignment title differs from the one on Gradescope.
+
+## How the upload works
+
+The user pastes the JSON (or picks a file) in the *Rubric JSON* dialog on the assignment's rubric
+page and sees a preview of every question before anything is changed:
+- A question whose rubric is empty (only Gradescope's default item) is filled in.
+- A question that already has a rubric is shown with a diff; uploading it deletes the old items.
+- A question whose rubric already matches the file is marked "No change".
+- Every question that would change is ticked; the user can untick questions to leave them as they
+  are.
+`;
+  }
+  const SYMBOLS = {
+    in: "∈",
+    notin: "∉",
+    ni: "∋",
+    subseteq: "⊆",
+    subset: "⊂",
+    supseteq: "⊇",
+    supset: "⊃",
+    subsetneq: "⊊",
+    cup: "∪",
+    cap: "∩",
+    setminus: "∖",
+    emptyset: "∅",
+    varnothing: "∅",
+    bigcup: "⋃",
+    bigcap: "⋂",
+    forall: "∀",
+    exists: "∃",
+    nexists: "∄",
+    neg: "¬",
+    lnot: "¬",
+    land: "∧",
+    wedge: "∧",
+    lor: "∨",
+    vee: "∨",
+    Rightarrow: "⇒",
+    implies: "⟹",
+    Leftarrow: "⇐",
+    impliedby: "⟸",
+    Longleftarrow: "⟸",
+    Longrightarrow: "⟹",
+    iff: "⟺",
+    Leftrightarrow: "⇔",
+    to: "→",
+    rightarrow: "→",
+    leftarrow: "←",
+    mapsto: "↦",
+    leftrightarrow: "↔",
+    le: "≤",
+    leq: "≤",
+    ge: "≥",
+    geq: "≥",
+    neq: "≠",
+    ne: "≠",
+    approx: "≈",
+    equiv: "≡",
+    cong: "≅",
+    sim: "∼",
+    infty: "∞",
+    cdot: "·",
+    times: "×",
+    div: "÷",
+    pm: "±",
+    mp: "∓",
+    circ: "∘",
+    dots: "…",
+    ldots: "…",
+    cdots: "⋯",
+    vdots: "⋮",
+    mid: "∣",
+    nmid: "∤",
+    langle: "⟨",
+    rangle: "⟩",
+    lfloor: "⌊",
+    rfloor: "⌋",
+    lceil: "⌈",
+    rceil: "⌉",
+    sum: "∑",
+    prod: "∏",
+    int: "∫",
+    partial: "∂",
+    nabla: "∇",
+    prime: "′",
+    ell: "ℓ",
+    alpha: "α",
+    beta: "β",
+    gamma: "γ",
+    delta: "δ",
+    epsilon: "ϵ",
+    varepsilon: "ε",
+    zeta: "ζ",
+    eta: "η",
+    theta: "θ",
+    iota: "ι",
+    kappa: "κ",
+    lambda: "λ",
+    mu: "μ",
+    nu: "ν",
+    xi: "ξ",
+    pi: "π",
+    rho: "ρ",
+    sigma: "σ",
+    tau: "τ",
+    phi: "ϕ",
+    varphi: "φ",
+    chi: "χ",
+    psi: "ψ",
+    omega: "ω",
+    Gamma: "Γ",
+    Delta: "Δ",
+    Theta: "Θ",
+    Lambda: "Λ",
+    Pi: "Π",
+    Sigma: "Σ",
+    Phi: "Φ",
+    Psi: "Ψ",
+    Omega: "Ω",
+    gcd: "gcd",
+    lcm: "lcm",
+    max: "max",
+    min: "min",
+    log: "log",
+    ln: "ln",
+    sin: "sin",
+    cos: "cos",
+    tan: "tan",
+    exp: "exp",
+    lim: "lim",
+    sup: "sup",
+    inf: "inf",
+    deg: "deg",
+    det: "det",
+    mod: "mod",
+    bmod: "mod",
+    qed: "∎",
+    square: "□",
+    checkmark: "✓"
+  };
+  const BLACKBOARD = { R: "ℝ", Z: "ℤ", N: "ℕ", Q: "ℚ", C: "ℂ", P: "ℙ", F: "𝔽" };
+  const SUPER = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+    "+": "⁺",
+    "-": "⁻",
+    "=": "⁼",
+    "(": "⁽",
+    ")": "⁾",
+    n: "ⁿ",
+    i: "ⁱ",
+    k: "ᵏ",
+    "*": "*",
+    "′": "′"
+  };
+  const SUB = {
+    "0": "₀",
+    "1": "₁",
+    "2": "₂",
+    "3": "₃",
+    "4": "₄",
+    "5": "₅",
+    "6": "₆",
+    "7": "₇",
+    "8": "₈",
+    "9": "₉",
+    "+": "₊",
+    "-": "₋",
+    "=": "₌",
+    "(": "₍",
+    ")": "₎",
+    a: "ₐ",
+    e: "ₑ",
+    i: "ᵢ",
+    j: "ⱼ",
+    k: "ₖ",
+    n: "ₙ",
+    m: "ₘ",
+    o: "ₒ",
+    x: "ₓ",
+    t: "ₜ"
+  };
+  function script(text, table, marker) {
+    const chars = [...text];
+    if (chars.length && chars.every((c) => c in table)) {
+      return chars.map((c) => table[c]).join("");
+    }
+    return chars.length === 1 ? `${marker}${text}` : `${marker}(${text})`;
+  }
+  function latexToText(tex) {
+    const OPEN = "";
+    const CLOSE = "";
+    let s = tex.replace(/\\\\/g, " ").replace(/\\\{/g, OPEN).replace(/\\\}/g, CLOSE).replace(/\\(?:left|right|big|Big|bigg|Bigg)(?![a-zA-Z])\s*\.?/g, "").replace(/\\mathbb\s*\{\s*([A-Z])\s*\}/g, (_, c) => BLACKBOARD[c] ?? c).replace(/\\mathbb\s*([A-Z])/g, (_, c) => BLACKBOARD[c] ?? c).replace(/\\(?:text|mathrm|mathbf|mathit|mathsf|mathcal|operatorname|textbf|textit|boldsymbol)\s*\{([^{}]*)\}/g, "$1");
+    for (let k = 0; k < 4; k++) {
+      s = s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, (_, a, b) => {
+        const wrap = (x2) => /^(\d+(\.\d+)?|[A-Za-z]′*)$/.test(x2.trim()) ? x2.trim() : `(${x2.trim()})`;
+        return `${wrap(a)}/${wrap(b)}`;
+      }).replace(/\\sqrt\s*\{([^{}]*)\}/g, "√($1)").replace(/\\(?:overline|bar)\s*\{([^{}]*)\}/g, "$1̅");
+    }
+    s = s.replace(/\\[,;:! ]|\\q?quad(?![a-zA-Z])/g, " ").replace(/\\([a-zA-Z]+)/g, (m2, name) => SYMBOLS[name] ?? m2).replace(/\^\{([^{}]*)\}|\^(\S)/g, (_, a, b) => script(a ?? b, SUPER, "^")).replace(/_\{([^{}]*)\}|_(\S)/g, (_, a, b) => script(a ?? b, SUB, "_")).replace(/\\([%$&#_])/g, "$1").replace(/[{}]/g, "").replace(new RegExp(OPEN, "g"), "{").replace(new RegExp(CLOSE, "g"), "}").replace(/'/g, "′");
+    return s.replace(/\s+/g, " ").trim();
+  }
+  function MathSpan({ tex, display }) {
+    return /* @__PURE__ */ React.createElement("span", { className: display ? "math display" : "math", title: `LaTeX: ${tex.trim()}` }, latexToText(tex));
+  }
+  function inlineText(text, key) {
+    const out = [];
+    const re2 = new RegExp("\\*\\*([^*]+)\\*\\*|(?<![\\w*])\\*(?!\\s)([^*]+?)\\*(?![\\w*])|`([^`]+)`", "g");
+    let last = 0;
+    let m2;
+    let n2 = 0;
+    while (m2 = re2.exec(text)) {
+      if (m2.index > last) {
+        out.push(text.slice(last, m2.index));
+      }
+      const k = `${key}-${n2++}`;
+      if (m2[1] !== void 0) {
+        out.push(/* @__PURE__ */ React.createElement("strong", { key: k }, inlineText(m2[1], k)));
+      } else if (m2[2] !== void 0) {
+        out.push(/* @__PURE__ */ React.createElement("em", { key: k }, inlineText(m2[2], k)));
+      } else {
+        out.push(/* @__PURE__ */ React.createElement("code", { key: k }, m2[3]));
+      }
+      last = m2.index + m2[0].length;
+    }
+    if (last < text.length) {
+      out.push(text.slice(last));
+    }
+    return out.map((x2) => typeof x2 === "string" ? x2.replace(/\\\$/g, "$") : x2);
+  }
+  function inline(text, key) {
+    const maths = [];
+    const protectedText = text.replace(new RegExp("(?<!\\\\)\\$\\$\\$([\\s\\S]+?)\\$\\$\\$|(?<!\\\\)\\$\\$([\\s\\S]+?)\\$\\$", "g"), (_, d, i) => {
+      maths.push({ tex: d ?? i, display: d !== void 0 });
+      return `${maths.length - 1}`;
+    });
+    const restore = (nodes2, k) => nodes2.flatMap((node, idx) => {
+      if (typeof node !== "string") {
+        if (React.isValidElement(node)) {
+          const el2 = node;
+          const children = React.Children.toArray(el2.props.children);
+          return [React.cloneElement(el2, {}, ...restore(children, `${k}-${idx}`))];
+        }
+        return [node];
+      }
+      return node.split(/(\d+)/).map(
+        (part, j) => j % 2 === 1 ? /* @__PURE__ */ React.createElement(MathSpan, { key: `${k}-${idx}-m${j}`, ...maths[Number(part)] }) : part
+      );
+    });
+    return restore(inlineText(protectedText, key), key);
+  }
+  function GsMarkdown({ text }) {
+    const blocks = text.replace(/\r\n/g, "\n").trim().split(/\n\s*\n/);
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, blocks.map((block, b) => {
+      const lines = block.split("\n");
+      const out = [];
+      let list = [];
+      let para = [];
+      const flushList = () => {
+        if (list.length) {
+          out.push(
+            /* @__PURE__ */ React.createElement("ul", { key: `l${out.length}` }, list.map((item, k) => /* @__PURE__ */ React.createElement("li", { key: k }, inline(item, `${b}-l${out.length}-${k}`))))
+          );
+          list = [];
+        }
+      };
+      const flushPara = () => {
+        if (para.length) {
+          out.push(
+            /* @__PURE__ */ React.createElement("p", { key: `p${out.length}` }, para.flatMap((line, k) => [
+              ...k ? [/* @__PURE__ */ React.createElement("br", { key: `br${k}` })] : [],
+              ...inline(line, `${b}-p${out.length}-${k}`)
+            ]))
+          );
+          para = [];
+        }
+      };
+      for (const line of lines) {
+        const m2 = line.match(/^\s*[*-]\s+(.*)$/);
+        if (m2) {
+          flushPara();
+          list.push(m2[1]);
+        } else {
+          flushList();
+          para.push(line);
+        }
+      }
+      flushPara();
+      flushList();
+      return /* @__PURE__ */ React.createElement(React.Fragment, { key: b }, out);
+    }));
+  }
+  const isObject = (v2) => typeof v2 === "object" && v2 !== null && !Array.isArray(v2);
+  function typeName(v2) {
+    return v2 === null ? "null" : Array.isArray(v2) ? "an array" : `a ${typeof v2}`;
+  }
+  const KEY_HINTS = {
+    weight: 'use "points" for rubric items ("weight" is only for questions)',
+    score: 'use "points"',
+    value: 'use "points"',
+    text: 'use "description"',
+    title: 'use "description"',
+    comment: 'use "description"',
+    exclusive: 'use "mutually_exclusive"',
+    mutuallyExclusive: 'use "mutually_exclusive"',
+    group: 'groups are entries with "type": "group"',
+    group_id: 'groups are entries with "type": "group" that contain their "items"',
+    rubric_items: "this looks like Gradescope's raw data; use the format of the dialog's JSON view",
+    rubric_item_groups: "this looks like Gradescope's raw data; use the format of the dialog's JSON view",
+    full_index: 'use "number"',
+    index: 'use "number"',
+    id: 'ids are not part of the format; questions are matched by "number"',
+    question: 'questions are matched by "number"',
+    scoring_type: 'use "scoring"',
+    entries: 'use "rubric"',
+    items: '"items" only belongs in an entry with "type": "group"'
+  };
+  function validateRubricText(text, assignment) {
+    const errors = [];
+    const warnings = [];
+    const plans = [];
+    const result = (file) => ({
+      file,
+      errors,
+      warnings,
+      plans
+    });
+    let data;
+    try {
+      data = JSON.parse(text.replace(/^﻿/, ""));
+    } catch (e) {
+      errors.push({ path: "(file)", message: `Not valid JSON: ${describeJsonError(e, text)}` });
+      return result(null);
+    }
+    const error = (path, message2, question) => errors.push({ path, message: message2, question });
+    const warn = (path, message2, question) => warnings.push({ path, message: message2, question });
+    const deferred = /* @__PURE__ */ new Map();
+    const issuesFor = (question) => {
+      if (!deferred.has(question)) {
+        deferred.set(question, { errors: [], warnings: [] });
+      }
+      return deferred.get(question);
+    };
+    const contentError = (path, message2, question) => issuesFor(question).errors.push({ path, message: message2, question });
+    const contentWarn = (path, message2, question) => issuesFor(question).warnings.push({ path, message: message2, question });
+    function checkKeys(obj, path, required, optional = [], question) {
+      let ok2 = true;
+      for (const key of required) {
+        if (!(key in obj)) {
+          error(path, `Missing required key "${key}".`, question);
+          ok2 = false;
+        }
+      }
+      for (const key of Object.keys(obj)) {
+        if (!required.includes(key) && !optional.includes(key)) {
+          const hint = KEY_HINTS[key] ? ` (${KEY_HINTS[key]})` : "";
+          error(
+            path,
+            `Unknown key "${key}"${hint}. Allowed keys: ${[...required, ...optional].map((k) => `"${k}"`).join(", ")}.`,
+            question
+          );
+        }
+      }
+      return ok2;
+    }
+    if (!isObject(data)) {
+      error("(file)", `The file must contain a JSON object, not ${typeName(data)}.`);
+      return result(null);
+    }
+    checkKeys(data, "(file)", ["format", "version", "assignment", "questions"]);
+    if ("format" in data && data.format !== RUBRIC_FORMAT) {
+      error("format", `Must be "${RUBRIC_FORMAT}", not ${JSON.stringify(data.format)}.`);
+    }
+    if ("version" in data && data.version !== RUBRIC_FORMAT_VERSION) {
+      error(
+        "version",
+        `Must be the number ${RUBRIC_FORMAT_VERSION}, not ${JSON.stringify(data.version)}.`
+      );
+    }
+    const a = data.assignment;
+    if ("assignment" in data) {
+      if (!isObject(a)) {
+        error("assignment", `Must be an object, not ${typeName(a)}.`);
+      } else {
+        checkKeys(a, "assignment", ["course_id", "assignment_id"], ["title"]);
+        for (const [key, expected] of [
+          ["course_id", assignment.courseId],
+          ["assignment_id", assignment.assignmentId]
+        ]) {
+          if (!(key in a)) {
+            continue;
+          }
+          if (typeof a[key] !== "number" || !Number.isInteger(a[key])) {
+            error(`assignment.${key}`, `Must be an integer, not ${JSON.stringify(a[key])}.`);
+          } else if (a[key] !== expected) {
+            error(
+              `assignment.${key}`,
+              `This file is for ${key === "course_id" ? "course" : "assignment"} ${a[key]}, but this page is ${key === "course_id" ? "course" : "assignment"} ${expected}.`
+            );
+          }
+        }
+        if ("title" in a) {
+          if (typeof a.title !== "string") {
+            error("assignment.title", `Must be a string, not ${typeName(a.title)}.`);
+          } else if (a.title.trim() !== assignment.title.trim()) {
+            warn(
+              "assignment.title",
+              `The title "${a.title}" differs from this assignment's title "${assignment.title}". (The title is not uploaded.)`
+            );
+          }
+        }
+      }
+    }
+    const questions = data.questions;
+    const validQuestions = [];
+    if ("questions" in data) {
+      if (!Array.isArray(questions)) {
+        error("questions", `Must be an array, not ${typeName(questions)}.`);
+      } else if (questions.length === 0) {
+        error("questions", "Must contain at least one question.");
+      } else {
+        const seen = /* @__PURE__ */ new Map();
+        questions.forEach((q2, n2) => {
+          const parsed = checkQuestion(q2, `questions[${n2}]`, seen, n2);
+          if (parsed) {
+            validQuestions.push(parsed);
+          }
+        });
+      }
+    }
+    function checkQuestion(q2, path, seen, n2) {
+      if (!isObject(q2)) {
+        error(path, `Each question must be an object, not ${typeName(q2)}.`);
+        return null;
+      }
+      const errorsBefore = errors.length;
+      const number = typeof q2.number === "string" ? q2.number : void 0;
+      const label = number ?? `#${n2 + 1}`;
+      checkKeys(q2, path, ["number", "weight", "scoring", "rubric"], ["title"], label);
+      let gs;
+      if ("number" in q2) {
+        if (typeof q2.number !== "string") {
+          error(
+            `${path}.number`,
+            `Must be a string such as "3.1", not ${JSON.stringify(q2.number)}.`,
+            label
+          );
+        } else if (!(gs = assignment.question(q2.number))) {
+          error(
+            `${path}.number`,
+            `This assignment has no question "${q2.number}". Its questions are: ${assignment.leafQuestions.map((x2) => x2.full_index).join(", ")}.`,
+            label
+          );
+        } else if (assignment.isParent(gs)) {
+          error(
+            `${path}.number`,
+            `Question ${q2.number} has parts (${(gs.children ?? []).map((c) => c.full_index).join(", ")}); rubrics belong to the parts, not to ${q2.number}.`,
+            label
+          );
+          gs = void 0;
+        } else if (seen.has(q2.number)) {
+          error(
+            `${path}.number`,
+            `Question ${q2.number} appears twice (also at questions[${seen.get(q2.number)}]).`,
+            label
+          );
+          gs = void 0;
+        } else {
+          seen.set(q2.number, n2);
+        }
+      }
+      if ("title" in q2 && typeof q2.title !== "string") {
+        error(`${path}.title`, `Must be a string, not ${typeName(q2.title)}.`, label);
+      }
+      if ("weight" in q2) {
+        if (typeof q2.weight !== "number" || !Number.isFinite(q2.weight)) {
+          error(`${path}.weight`, `Must be a number, not ${JSON.stringify(q2.weight)}.`, label);
+        } else if (gs && Math.abs(q2.weight - parseFloat(gs.weight)) > 1e-9) {
+          error(
+            `${path}.weight`,
+            `Question ${gs.full_index} is worth ${parseFloat(gs.weight)} on Gradescope, not ${q2.weight}. (Weights are set in Gradescope's assignment outline, not by the rubric.)`,
+            label
+          );
+        }
+      }
+      if ("scoring" in q2) {
+        if (q2.scoring !== "positive" && q2.scoring !== "negative") {
+          error(
+            `${path}.scoring`,
+            `Must be "positive" or "negative", not ${JSON.stringify(q2.scoring)}.`,
+            label
+          );
+        } else if (gs && q2.scoring !== gs.scoring_type) {
+          error(
+            `${path}.scoring`,
+            `Question ${gs.full_index} uses ${gs.scoring_type} scoring on Gradescope, not ${q2.scoring}. (Change the scoring type in Gradescope's rubric settings, or fix the file.)`,
+            label
+          );
+        }
+      }
+      const rubric = [];
+      if ("rubric" in q2) {
+        if (!Array.isArray(q2.rubric)) {
+          error(`${path}.rubric`, `Must be an array, not ${typeName(q2.rubric)}.`, label);
+        } else if (q2.rubric.length === 0) {
+          contentError(`${path}.rubric`, "Must contain at least one rubric entry.", label);
+        } else {
+          q2.rubric.forEach((e, k) => {
+            const entry = checkEntry(e, `${path}.rubric[${k}]`, label, false, gs);
+            if (entry) {
+              rubric.push(entry);
+            }
+          });
+        }
+      }
+      if (errors.length > errorsBefore || !gs) {
+        return null;
+      }
+      const parsed = {
+        number: String(gs.full_index),
+        title: typeof q2.title === "string" ? q2.title : void 0,
+        weight: q2.weight,
+        scoring: q2.scoring,
+        rubric
+      };
+      checkQuestionHeuristics(parsed, path);
+      return parsed;
+    }
+    function checkEntry(e, path, question, inGroup, gs) {
+      if (!isObject(e)) {
+        error(path, `Each rubric entry must be an object, not ${typeName(e)}.`, question);
+        return null;
+      }
+      const errorsBefore = errors.length;
+      if (!("type" in e)) {
+        const guess = "items" in e ? ' (it has "items", so probably "group")' : ' (probably "item")';
+        error(path, `Missing required key "type"${guess}.`, question);
+        return null;
+      }
+      if (e.type === "item") {
+        checkKeys(e, path, ["type", "points", "description"], [], question);
+        const points = checkPoints(e.points, `${path}.points`, question, gs);
+        const description = checkDescription(e.description, `${path}.description`, question);
+        if (errors.length > errorsBefore || points === null || description === null) {
+          return null;
+        }
+        return { type: "item", points, description };
+      }
+      if (e.type === "group") {
+        if (inGroup) {
+          error(path, "Groups cannot be nested inside groups.", question);
+          return null;
+        }
+        checkKeys(e, path, ["type", "description", "mutually_exclusive", "items"], [], question);
+        const description = checkDescription(e.description, `${path}.description`, question);
+        if ("mutually_exclusive" in e && typeof e.mutually_exclusive !== "boolean") {
+          error(
+            `${path}.mutually_exclusive`,
+            `Must be true or false, not ${JSON.stringify(e.mutually_exclusive)}.`,
+            question
+          );
+        }
+        const items = [];
+        if ("items" in e) {
+          if (!Array.isArray(e.items)) {
+            error(`${path}.items`, `Must be an array, not ${typeName(e.items)}.`, question);
+          } else if (e.items.length === 0) {
+            contentError(`${path}.items`, "A group must contain at least one item.", question);
+          } else {
+            e.items.forEach((i, k) => {
+              const item = checkEntry(i, `${path}.items[${k}]`, question, true, gs);
+              if ((item == null ? void 0 : item.type) === "item") {
+                items.push(item);
+              }
+            });
+          }
+        }
+        if (errors.length > errorsBefore || description === null) {
+          return null;
+        }
+        return {
+          type: "group",
+          description,
+          mutually_exclusive: e.mutually_exclusive,
+          items
+        };
+      }
+      error(
+        `${path}.type`,
+        `Must be "item" or "group", not ${JSON.stringify(e.type)}.`,
+        question
+      );
+      return null;
+    }
+    function checkPoints(p2, path, question, gs) {
+      if (p2 === void 0) {
+        return null;
+      }
+      if (typeof p2 !== "number" || !Number.isFinite(p2)) {
+        error(path, `Must be a number, not ${JSON.stringify(p2)}.`, question);
+        return null;
+      }
+      if (Math.abs(p2 * 100 - Math.round(p2 * 100)) > 1e-6) {
+        contentError(path, `${p2} has more than two decimal places.`, question);
+      }
+      const weight = gs ? parseFloat(gs.weight) : NaN;
+      if (weight > 0 && Math.abs(p2) > weight) {
+        contentWarn(
+          path,
+          `${p2} points is more than the whole question is worth (${weight}).`,
+          question
+        );
+      }
+      return p2 === 0 ? 0 : p2;
+    }
+    function checkDescription(d, path, question) {
+      if (d === void 0) {
+        return null;
+      }
+      if (typeof d !== "string") {
+        error(path, `Must be a string, not ${typeName(d)}.`, question);
+        return null;
+      }
+      if (d.trim() === "") {
+        contentError(path, "Must not be empty.", question);
+        return d;
+      }
+      const problems = descriptionErrors(d);
+      if (DEFAULT_ITEM_DESCRIPTIONS.slice(1).includes(d.trim())) {
+        problems.unshift(`"${d.trim()}" is Gradescope's placeholder text.`);
+      }
+      for (const message2 of problems) {
+        contentError(path, message2, question);
+      }
+      if (problems.length === 0) {
+        for (const message2 of descriptionWarnings(d)) {
+          contentWarn(path, message2, question);
+        }
+      }
+      return d;
+    }
+    function checkQuestionHeuristics(q2, path) {
+      if (q2.scoring === "positive") {
+        const max = maxPositivePoints(q2.rubric);
+        if (Math.abs(max - q2.weight) > 1e-9) {
+          contentWarn(
+            `${path}.rubric`,
+            `The positive items add up to at most ${max} points, but the question is worth ${q2.weight}.`,
+            q2.number
+          );
+        }
+      } else {
+        const max = maxPositivePoints(q2.rubric);
+        if (max > 0) {
+          contentWarn(
+            `${path}.rubric`,
+            `Under negative scoring students start with full marks (${q2.weight}), so positive items (up to ${max} point${max === 1 ? "" : "s"}) would give more than full marks. Deductions are negative points, e.g. -1.`,
+            q2.number
+          );
+        }
+      }
+      const descriptions = q2.rubric.flatMap(
+        (e) => e.type === "item" ? [e.description] : e.items.map((i) => i.description)
+      );
+      const dupes = descriptions.filter((d, k) => descriptions.indexOf(d) !== k);
+      for (const d of new Set(dupes)) {
+        contentWarn(
+          `${path}.rubric`,
+          `Two items have the same description: "${d.slice(0, 60)}".`,
+          q2.number
+        );
+      }
+    }
+    for (const next of validQuestions) {
+      const question = assignment.question(next.number);
+      const current = assignment.toRubricQuestion(question);
+      const status = sameRubric(current.rubric, next.rubric) ? "unchanged" : assignment.hasOnlyDefaultRubric(question.id) ? "create" : "conflict";
+      plans.push({ number: next.number, question, current, next, status });
+    }
+    const unchanged = new Set(plans.filter((p2) => p2.status === "unchanged").map((p2) => p2.number));
+    for (const [question, issues] of deferred) {
+      if (!unchanged.has(question)) {
+        errors.push(...issues.errors);
+        warnings.push(...issues.warnings);
+      }
+    }
+    return result(errors.length === 0 ? data : null);
+  }
+  function maxPositivePoints(rubric) {
+    let total = 0;
+    for (const e of rubric) {
+      if (e.type === "item") {
+        total += Math.max(e.points, 0);
+      } else {
+        const positive = e.items.map((i) => i.points).filter((p2) => p2 > 0);
+        if (positive.length) {
+          total += e.mutually_exclusive ? Math.max(...positive) : positive.reduce((x2, y2) => x2 + y2, 0);
+        }
+      }
+    }
+    return Math.round(total * 100) / 100;
+  }
+  function describeJsonError(e, text) {
+    let message2 = e instanceof Error ? e.message : String(e);
+    const m2 = message2.match(/position (\d+)/);
+    if (m2 && !/line \d+/.test(message2)) {
+      const before = text.slice(0, +m2[1]);
+      const line = before.split("\n").length;
+      const column = before.length - before.lastIndexOf("\n");
+      message2 += ` (line ${line}, column ${column})`;
+    }
+    if (/escape/i.test(message2)) {
+      message2 += '. In JSON, every LaTeX backslash must be written twice: "\\\\in", "\\\\{", "\\\\frac".';
+    }
+    return message2;
+  }
+  function mathSegments(d) {
+    const segments = [];
+    let open2 = null;
+    const re2 = new RegExp("(?<!\\\\)\\$+", "g");
+    let m2;
+    while (m2 = re2.exec(d)) {
+      const len = m2[0].length;
+      if (len === 1) {
+        return {
+          segments,
+          error: `A single "$" at character ${m2.index + 1}. Gradescope writes inline math as $$...$$ and display math as $$$...$$$; a single $ is not math (write \\$ for a literal dollar sign).`
+        };
+      }
+      if (len > 3) {
+        return {
+          segments,
+          error: `"${m2[0]}" at character ${m2.index + 1}: use $$...$$ (inline) or $$$...$$$ (display), and put a space between adjacent math.`
+        };
+      }
+      if (!open2) {
+        open2 = { len, at: m2.index + len };
+      } else if (open2.len === len) {
+        segments.push({ display: len === 3, body: d.slice(open2.at, m2.index) });
+        open2 = null;
+      } else {
+        return {
+          segments,
+          error: `Math opened with ${"$".repeat(open2.len)} is closed with ${m2[0]} at character ${m2.index + 1}.`
+        };
+      }
+    }
+    if (open2) {
+      return {
+        segments,
+        error: `Math opened with ${"$".repeat(open2.len)} at character ${open2.at - open2.len + 1} is never closed.`
+      };
+    }
+    return { segments };
+  }
+  const CONTROL_CHARACTER_HINTS = {
+    "	": "a tab (\\t, as in \\text, \\times, \\to, \\theta)",
+    "\f": "a form feed (\\f, as in \\frac)",
+    "\b": "a backspace (\\b, as in \\beta, \\bar, \\begin)",
+    "\r": "a carriage return (\\r, as in \\right, \\rho)",
+    "\v": "a vertical tab (\\v, as in \\vec, \\varepsilon)"
+  };
+  function descriptionErrors(d) {
+    const errors = [];
+    const controls = d.replace(/\r\n/g, "\n").match(/[\u0000-\u0009\u000B-\u001F]/g);
+    if (controls) {
+      const kinds = [...new Set(controls)].map(
+        (c) => CONTROL_CHARACTER_HINTS[c] ?? `the control character U+${c.charCodeAt(0).toString(16).padStart(4, "0")}`
+      );
+      errors.push(
+        `Contains ${kinds.join(" and ")}. A LaTeX command probably lost its backslash to JSON escaping: in JSON, write every backslash twice, e.g. "\\\\frac", "\\\\text".`
+      );
+    }
+    const delimiter = d.match(new RegExp("(?<!\\\\)\\\\[()[\\]]"));
+    if (delimiter) {
+      errors.push(
+        `Contains "${delimiter[0]}". Gradescope does not render \\( \\) or \\[ \\]; write inline math as $$...$$ and display math as $$$...$$$.`
+      );
+    }
+    const { segments, error } = mathSegments(d);
+    if (error) {
+      errors.push(error);
+    }
+    for (const { body } of segments) {
+      if (body.trim() === "") {
+        errors.push("Contains empty math ($$ $$).");
+        continue;
+      }
+      const unbalanced = braceBalance(body);
+      if (unbalanced) {
+        errors.push(`Unbalanced braces in the math "${body.trim().slice(0, 60)}": ${unbalanced}`);
+      }
+    }
+    return errors;
+  }
+  function descriptionWarnings(d) {
+    const warnings = [];
+    const { segments } = mathSegments(d);
+    for (const { body } of segments) {
+      const shown = `"${body.trim().slice(0, 60)}"`;
+      if (unescapedSetBrace(body)) {
+        warnings.push(
+          `The math ${shown} contains a "{" that does not start a LaTeX argument. In LaTeX, plain braces are invisible; write set braces as \\{ and \\}.`
+        );
+      }
+      if (/\n/.test(body)) {
+        warnings.push(
+          `The math ${shown} contains a line break. Did a command like \\neq or \\nabla lose its backslash to JSON escaping ("\\n")?`
+        );
+      }
+      if (/(^|[^\\a-zA-Z])(RR|ZZ|NN|QQ|CC)(?![a-zA-Z])/.test(body)) {
+        warnings.push(`The math ${shown} looks like Typst; write \\mathbb{R}, \\mathbb{Z}, etc.`);
+      }
+      if (/(<=|>=|!=|=>|->)/.test(body)) {
+        warnings.push(
+          `The math ${shown} uses ASCII operators (<=, >=, !=, =>, ->); use \\le, \\ge, \\neq, \\Rightarrow, \\to.`
+        );
+      }
+    }
+    if (/\\n(?![a-zA-Z])/.test(d)) {
+      warnings.push(
+        'Contains a literal "\\n" (backslash, n). If you meant a line break, the JSON has one backslash too many.'
+      );
+    }
+    return warnings;
+  }
+  function braceBalance(tex) {
+    let depth = 0;
+    const s = tex.replace(/\\\\/g, "").replace(/\\[{}]/g, "");
+    for (const ch2 of s) {
+      if (ch2 === "{") {
+        depth++;
+      } else if (ch2 === "}") {
+        if (--depth < 0) {
+          return 'a "}" closes nothing.';
+        }
+      }
+    }
+    return depth > 0 ? `${depth} "{" never closed.` : null;
+  }
+  function unescapedSetBrace(tex) {
+    const s = tex.replace(/\\\\/g, "  ").replace(/\\[{}]/g, "  ");
+    for (let k = 0; k < s.length; k++) {
+      if (s[k] !== "{") {
+        continue;
+      }
+      const before = s.slice(0, k);
+      if (!/(\\[a-zA-Z]+\*?|[\^_}\]])\s*$/.test(before)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  const MARK_TITLES = {
+    same: "",
+    added: "New: will be added by the upload",
+    removed: "Will be removed by the upload",
+    changed: "Changed by the upload (the old version is struck through)"
+  };
+  function formatPoints(points) {
+    const magnitude = Math.abs(points);
+    const text = Number.isInteger(magnitude) ? magnitude.toFixed(1) : String(magnitude);
+    return points > 0 ? `+${text}` : points < 0 ? `−${text}` : text;
+  }
+  function PointsBadge({ points }) {
+    const kind = points > 0 ? "positive" : points < 0 ? "negative" : "zero";
+    const n2 = Math.abs(points);
+    const title = points > 0 ? `Adds ${n2} point${n2 === 1 ? "" : "s"} when applied` : points < 0 ? `Subtracts ${n2} point${n2 === 1 ? "" : "s"} when applied` : "Feedback only: 0 points";
+    return /* @__PURE__ */ React.createElement("span", { className: `rb-points ${kind}`, title }, formatPoints(points));
+  }
+  function ItemRow({ item }) {
+    return /* @__PURE__ */ React.createElement("div", { className: `rb-item ${item.mark}`, title: MARK_TITLES[item.mark] || void 0 }, item.oldPoints !== void 0 ? /* @__PURE__ */ React.createElement("span", { className: "rb-points-change" }, /* @__PURE__ */ React.createElement("s", { title: "Old points" }, /* @__PURE__ */ React.createElement(PointsBadge, { points: item.oldPoints })), /* @__PURE__ */ React.createElement(PointsBadge, { points: item.points })) : /* @__PURE__ */ React.createElement(PointsBadge, { points: item.points }), /* @__PURE__ */ React.createElement("div", { className: "rb-desc" }, /* @__PURE__ */ React.createElement(GsMarkdown, { text: item.description })));
+  }
+  function EntryList({ entries }) {
+    if (entries.length === 0) {
+      return /* @__PURE__ */ React.createElement("div", { className: "rb-empty", title: "This question has no rubric items" }, "No rubric items");
+    }
+    return /* @__PURE__ */ React.createElement("div", { className: "rb-entries" }, entries.map(
+      (e, k) => e.kind === "item" ? /* @__PURE__ */ React.createElement(ItemRow, { key: k, item: e }) : /* @__PURE__ */ React.createElement("div", { key: k, className: `rb-group ${e.mark}`, title: MARK_TITLES[e.mark] || void 0 }, /* @__PURE__ */ React.createElement("div", { className: "rb-group-head" }, /* @__PURE__ */ React.createElement("div", { className: "rb-desc" }, e.oldDescription !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "rb-old", title: "Old group description" }, /* @__PURE__ */ React.createElement(GsMarkdown, { text: e.oldDescription })), /* @__PURE__ */ React.createElement(GsMarkdown, { text: e.description })), e.oldMutuallyExclusive !== void 0 && /* @__PURE__ */ React.createElement("s", { className: "rb-group-kind", title: "Old setting" }, e.oldMutuallyExclusive ? "one of" : "any of"), /* @__PURE__ */ React.createElement(
+        "span",
+        {
+          className: "rb-group-kind",
+          title: e.mutually_exclusive ? "Mutually exclusive: graders can apply at most one item of this group" : "Graders can apply any number of items of this group"
+        },
+        e.mutually_exclusive ? "one of" : "any of"
+      )), /* @__PURE__ */ React.createElement("div", { className: "rb-group-items" }, e.items.map((i, j) => /* @__PURE__ */ React.createElement(ItemRow, { key: j, item: i }))))
+    ));
+  }
+  function pointsMismatch(rubric, weight, scoring) {
+    if (!rubric) {
+      return null;
+    }
+    const total = maxPositivePoints(rubric);
+    if (scoring === "negative") {
+      return total > 0 ? total : null;
+    }
+    if (Math.abs(total - weight) < 1e-9 || total === 0 && rubric.length <= 1) {
+      return null;
+    }
+    return total;
+  }
+  function QuestionHeader(props) {
+    const mismatch = pointsMismatch(props.rubric, props.weight, props.scoring);
+    return /* @__PURE__ */ React.createElement("div", { className: "rb-qhead" }, props.before, /* @__PURE__ */ React.createElement("span", { className: "rb-qnum", title: `Question ${props.number}${props.title ? `: ${props.title}` : ""}` }, "Q", props.number), props.title && /* @__PURE__ */ React.createElement("span", { className: "rb-qtitle" }, props.title), /* @__PURE__ */ React.createElement("span", { className: "rb-qmeta", title: `Worth ${props.weight} point${props.weight === 1 ? "" : "s"}, ${props.scoring} scoring` }, props.weight, " pt", props.weight === 1 ? "" : "s", props.scoring === "negative" ? " · negative scoring" : ""), mismatch !== null && /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        className: "rb-qtotal",
+        title: props.scoring === "negative" ? `Under negative scoring students start with full marks (${props.weight}); positive items (up to ${mismatch} point${mismatch === 1 ? "" : "s"}) would give more` : `The positive items add up to at most ${mismatch} point${mismatch === 1 ? "" : "s"}, but the question is worth ${props.weight}`
+      },
+      "sum of positive points: ",
+      mismatch
+    ), props.children);
+  }
+  function selectablePlans(plans) {
+    return plans.filter((p2) => p2.status !== "unchanged");
+  }
+  function selectedPlans(plans, unticked) {
+    return selectablePlans(plans).filter((p2) => !unticked.has(p2.number));
+  }
+  function selectionSummary(plans, unticked) {
+    const selectable = selectablePlans(plans);
+    const selected = selectedPlans(plans, unticked);
+    return {
+      selectable: selectable.length,
+      selected: selected.length,
+      /** Selected questions whose existing rubric is deleted and replaced. */
+      replacing: selected.filter((p2) => p2.status === "conflict").length
+    };
+  }
+  const UNIFORM_PRESETS = [
+    {
+      name: "Correct / Incorrect",
+      title: "All or nothing",
+      items: (full) => [
+        { description: "**Correct**", points: full },
+        { description: "Incorrect", points: 0 }
+      ]
+    },
+    {
+      name: "Correct / Partial / Incorrect",
+      title: "Full, half, or no credit",
+      items: (full) => [
+        { description: "**Correct**", points: full },
+        { description: "**Partially correct**", points: Math.round(full * 50) / 100 },
+        { description: "Incorrect", points: 0 }
+      ]
+    }
+  ];
+  function uniformPoints(points, weight, scoring) {
+    const p2 = scoring === "negative" && points >= 0 ? Math.round((points - weight) * 100) / 100 : points;
+    return p2 === 0 ? 0 : p2;
+  }
+  function uniformEntries(template, weight, scoring) {
+    const items = template.items.map((i) => ({ type: "item", points: uniformPoints(i.points, weight, scoring), description: i.description }));
+    return template.group ? [{ type: "group", description: template.group.description, mutually_exclusive: template.group.mutually_exclusive, items }] : items;
+  }
+  function uniformRubric(assignment, template, numbers) {
+    const chosen = new Set(numbers);
+    const file = assignment.toRubricFile();
+    return {
+      ...file,
+      questions: file.questions.filter((q2) => chosen.has(q2.number)).map((q2) => ({ ...q2, rubric: uniformEntries(template, q2.weight, q2.scoring) }))
+    };
+  }
+  function maxPoints(template) {
+    return maxPositivePoints(uniformEntries(template, 0, "positive"));
+  }
+  function templateFit(template, q2) {
+    const max = maxPoints(template);
+    return Math.abs(max - q2.weight) < 1e-9 ? null : `The sum of positive points is ${max}, but the question is worth ${q2.weight}.`;
+  }
+  function presetFullMarks(questions) {
+    const weights = new Set(questions.map((q2) => q2.weight));
+    return weights.size === 1 ? [...weights][0] : 1;
+  }
+  function templateProblems(template, chosen) {
+    const problems = [];
+    if (chosen === 0) {
+      problems.push("Choose at least one question.");
+    }
+    if (template.items.length === 0) {
+      problems.push("Add at least one item.");
+    }
+    template.items.forEach((i, k) => {
+      if (!i.description.trim()) {
+        problems.push(`Item ${k + 1} needs a description.`);
+      }
+      if (!Number.isFinite(i.points)) {
+        problems.push(`Item ${k + 1} needs points.`);
+      } else if (Math.abs(i.points * 100 - Math.round(i.points * 100)) > 1e-6) {
+        problems.push(`Item ${k + 1}: points can have at most two decimal places.`);
+      }
+    });
+    if (template.group && !template.group.description.trim()) {
+      problems.push("The group needs a description.");
+    }
+    return problems;
+  }
+  const toRows = (items) => items.map((i) => ({ description: i.description, points: String(i.points) }));
+  const parsePoints = (s) => s.trim() === "" ? NaN : Number(s);
+  function UniformRubricDialog(props) {
+    const { assignment } = props;
+    const dialog = React.useRef(null);
+    useModal(dialog, props.open);
+    const [rows, setRowsState] = React.useState(() => toRows(UNIFORM_PRESETS[0].items(1)));
+    const edited = React.useRef(false);
+    const setRows = (rows2) => {
+      edited.current = true;
+      setRowsState(rows2);
+    };
+    const [grouped, setGrouped] = React.useState(false);
+    const [groupDescription, setGroupDescription] = React.useState("**Score**");
+    const [exclusive, setExclusive] = React.useState(true);
+    const questions = React.useMemo(() => (assignment == null ? void 0 : assignment.toRubricFile().questions) ?? [], [assignment]);
+    const [chosen, setChosen] = React.useState(/* @__PURE__ */ new Set());
+    const initialized = React.useRef(false);
+    React.useEffect(() => {
+      if (!initialized.current && questions.length) {
+        initialized.current = true;
+        setChosen(new Set(questions.map((q2) => q2.number)));
+      } else {
+        const numbers = new Set(questions.map((q2) => q2.number));
+        setChosen((s) => new Set([...s].filter((n2) => numbers.has(n2))));
+      }
+      if (!edited.current) {
+        setRowsState(toRows(UNIFORM_PRESETS[0].items(presetFullMarks(questions))));
+      }
+    }, [questions]);
+    const template = {
+      items: rows.map((r2) => ({ description: r2.description, points: parsePoints(r2.points) })),
+      group: grouped ? { description: groupDescription, mutually_exclusive: exclusive } : null
+    };
+    const problems = templateProblems(template, chosen.size);
+    const max = problems.length ? null : maxPoints(template);
+    const chosenQuestions = questions.filter((q2) => chosen.has(q2.number));
+    const fullMarks = presetFullMarks(chosenQuestions.length ? chosenQuestions : questions);
+    const replacing = questions.filter((q2) => chosen.has(q2.number) && assignment && !assignment.hasOnlyDefaultRubric(assignment.question(q2.number).id));
+    const setRow = (k, patch) => setRows((rs) => rs.map((r2, j) => j === k ? { ...r2, ...patch } : r2));
+    const move = (k, by) => setRows((rs) => {
+      const next = rs.slice();
+      const [r2] = next.splice(k, 1);
+      next.splice(k + by, 0, r2);
+      return next;
+    });
+    const toggle = (n2) => setChosen((s) => {
+      const next = new Set(s);
+      next.has(n2) ? next.delete(n2) : next.add(n2);
+      return next;
+    });
+    function create() {
+      if (assignment && problems.length === 0) {
+        props.onCreate(uniformRubric(assignment, template, chosen));
+      }
+    }
+    return /* @__PURE__ */ React.createElement("dialog", { ref: dialog, className: "uniform", onClose: props.onClose }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h2", { title: "The same rubric items with the same points on every chosen question (as deductions on negatively scored questions)" }, "Uniform rubric"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button close", title: "Close without changing anything", "aria-label": "Close", onClick: props.onClose }, "×")), /* @__PURE__ */ React.createElement("main", null, /* @__PURE__ */ React.createElement("div", { className: "row" }, /* @__PURE__ */ React.createElement("h3", null, "Items"), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Start from:"), UNIFORM_PRESETS.map((p2) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: p2.name,
+        type: "button",
+        className: "small",
+        title: `Replace the items with: ${p2.title} (full marks: ${fullMarks}, the chosen questions' weight if they share one)`,
+        onClick: () => setRows(toRows(p2.items(fullMarks)))
+      },
+      p2.name
+    ))), /* @__PURE__ */ React.createElement("table", { className: "uniform-items" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", { title: "Gradescope markdown: **bold**, $$math$$" }, "Description"), /* @__PURE__ */ React.createElement("th", { title: "The change to the score when the item is applied; negative for a penalty or deduction" }, "Points"), /* @__PURE__ */ React.createElement("th", null))), /* @__PURE__ */ React.createElement("tbody", null, rows.map((r2, k) => /* @__PURE__ */ React.createElement("tr", { key: k }, /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        value: r2.description,
+        onChange: (e) => setRow(k, { description: e.target.value }),
+        title: "The item's description (Gradescope markdown: **bold**, $$math$$)",
+        "aria-label": `Item ${k + 1} description`
+      }
+    )), /* @__PURE__ */ React.createElement("td", { className: "points" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "number",
+        step: "any",
+        value: r2.points,
+        onChange: (e) => setRow(k, { points: e.target.value }),
+        title: "The change to the score when the item is applied (negative for a penalty or deduction)",
+        "aria-label": `Item ${k + 1} points`
+      }
+    )), /* @__PURE__ */ React.createElement("td", { className: "row-tools" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Move up", disabled: k === 0, onClick: () => move(k, -1) }, /* @__PURE__ */ React.createElement(ArrowUpIcon, null)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Move down", disabled: k === rows.length - 1, onClick: () => move(k, 1) }, /* @__PURE__ */ React.createElement(ArrowDownIcon, null)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Remove this item", onClick: () => setRows((rs) => rs.filter((_, j) => j !== k)) }, /* @__PURE__ */ React.createElement(TrashIcon, null))))))), /* @__PURE__ */ React.createElement("div", { className: "row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "small", title: "Add an item", onClick: () => setRows((rs) => [...rs, { description: "", points: "0" }]) }, /* @__PURE__ */ React.createElement(PlusIcon, null), " Add item"), max !== null && /* @__PURE__ */ React.createElement("span", { className: "hint", title: "Under positive scoring, what a student can get at most" }, "The positive items add up to at most ", max, " point", max === 1 ? "" : "s", ".")), /* @__PURE__ */ React.createElement("p", { className: "hint" }, "Every chosen question gets exactly these points. On a negatively scored question (students start with full marks), an item worth p points becomes a deduction of the weight minus p, so it still leaves the student with p; negative points stay deductions."), /* @__PURE__ */ React.createElement("label", { className: "check-line", title: "Put the items under a group heading" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: grouped, onChange: (e) => setGrouped(e.target.checked) }), " Put the items in a group"), grouped && /* @__PURE__ */ React.createElement("div", { className: "row uniform-group" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        value: groupDescription,
+        onChange: (e) => setGroupDescription(e.target.value),
+        title: "The group's heading (Gradescope markdown)",
+        "aria-label": "Group description"
+      }
+    ), /* @__PURE__ */ React.createElement("label", { className: "check-line", title: "Graders can apply at most one item of a mutually exclusive group" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: exclusive, onChange: (e) => setExclusive(e.target.checked) }), " Mutually exclusive")), /* @__PURE__ */ React.createElement("div", { className: "row" }, /* @__PURE__ */ React.createElement("h3", null, "Questions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "small", title: "Choose every question", onClick: () => setChosen(new Set(questions.map((q2) => q2.number))) }, "Select all"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "small", title: "Choose no questions", onClick: () => setChosen(/* @__PURE__ */ new Set()) }, "Select none"), replacing.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "hint", title: "These questions already have a rubric of their own" }, replacing.length === 1 ? "Q" + replacing[0].number + " already has a rubric" : `${replacing.length} chosen questions already have a rubric`, "; the preview will show what changes.")), /* @__PURE__ */ React.createElement("table", { className: "uniform-preview" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null), /* @__PURE__ */ React.createElement("th", null, "Question"), /* @__PURE__ */ React.createElement("th", null, "Worth"), /* @__PURE__ */ React.createElement("th", { title: "The items' points on this question (deductions on a negatively scored question)" }, "Points"), /* @__PURE__ */ React.createElement("th", { title: "Whether these items suit the question" }, "Fit"))), /* @__PURE__ */ React.createElement("tbody", null, questions.map((q2) => {
+      const fit = problems.length ? null : templateFit(template, q2);
+      return /* @__PURE__ */ React.createElement("tr", { key: q2.number, className: chosen.has(q2.number) ? "" : "skipped" }, /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          type: "checkbox",
+          checked: chosen.has(q2.number),
+          onChange: () => toggle(q2.number),
+          title: chosen.has(q2.number) ? `Give Q${q2.number} this rubric` : `Leave Q${q2.number} out`
+        }
+      )), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("b", null, "Q", q2.number), " ", q2.title), /* @__PURE__ */ React.createElement("td", { className: "worth", title: `${q2.weight} points, ${q2.scoring} scoring` }, q2.weight, " pt", q2.weight === 1 ? "" : "s", q2.scoring === "negative" ? " · negative scoring" : ""), /* @__PURE__ */ React.createElement("td", { className: "item-points", title: q2.scoring === "negative" ? "Deductions: students start with full marks" : "Points added" }, problems.length ? "–" : template.items.map((i) => formatPoints(uniformPoints(i.points, q2.weight, q2.scoring))).join(" / ")), /* @__PURE__ */ React.createElement("td", { className: fit ? "misfit" : "fit", title: fit ?? "The items suit this question" }, problems.length ? "–" : fit ?? "✓"));
+    })))), /* @__PURE__ */ React.createElement("footer", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, problems[0] ?? `Writes rubric JSON for ${chosen.size} question${chosen.size === 1 ? "" : "s"} into the New rubric box. Nothing is uploaded yet.`), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "primary",
+        disabled: problems.length > 0,
+        onClick: create,
+        title: problems.length ? problems.join("\n") : "Replace the New rubric box with this rubric, to review and upload"
+      },
+      "Use this rubric"
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close without changing anything", onClick: props.onClose }, "Cancel")));
+  }
+  const message = (e) => e instanceof Error ? e.message : String(e);
+  const entryKey = (e) => e.kind === "group" ? `group:${e.group.id}` : `item:${e.item.id}`;
+  async function deleteEntries(client, questionId, entries, pause) {
+    for (const e of entries) {
+      if (e.kind === "group") {
+        await client.deleteGroup(questionId, e.group.id);
+        for (const item of e.items) {
+          await client.deleteItem(questionId, item.id);
+        }
+      } else {
+        await client.deleteItem(questionId, e.item.id);
+      }
+      await pause();
+    }
+  }
+  function staleReason(plan, actual) {
+    if (!actual) {
+      return "Skipped: the question is no longer on Gradescope.";
+    }
+    if (actual.weight !== plan.current.weight || actual.scoring !== plan.current.scoring) {
+      return "Skipped: the question's points or scoring type on Gradescope changed since it was checked. Check the file again.";
+    }
+    if (!sameRubric(actual.rubric, plan.current.rubric)) {
+      return "Skipped: the rubric on Gradescope changed since it was checked. Check the file again.";
+    }
+    return null;
+  }
+  async function uploadPlans(client, plans, { log: log2 = () => {
+  }, delayMs = 100 } = {}) {
+    const pause = () => new Promise((r2) => setTimeout(r2, delayMs));
+    const results = [];
+    const uploaded = [];
+    let assignment = await client.load();
+    if (assignment.payload.rubrics_locked) {
+      throw new Error("Rubrics are locked for this assignment; nothing was uploaded.");
+    }
+    for (const plan of plans) {
+      const q2 = assignment.question(plan.number);
+      const stale = staleReason(plan, q2 ? assignment.toRubricQuestion(q2) : null);
+      if (!q2 || stale) {
+        results.push({ number: plan.number, ok: false, message: stale });
+        continue;
+      }
+      const { scoring } = plan.next;
+      const old = assignment.entries(q2.id);
+      let step = "creating the new rubric";
+      try {
+        log2(`Q${plan.number}: ${step}`);
+        const created = [];
+        for (const e of plan.next.rubric) {
+          if (e.type === "item") {
+            const id2 = await client.createItem(q2.id, e.description, pointsToWeight(e.points, scoring));
+            created.push({ kind: "item", id: id2 });
+          } else {
+            const id2 = await client.createGroup(
+              q2.id,
+              e.description,
+              e.mutually_exclusive,
+              e.items.map((i) => ({
+                description: i.description,
+                weight: pointsToWeight(i.points, scoring)
+              }))
+            );
+            created.push({ kind: "group", id: id2 });
+          }
+          await pause();
+        }
+        step = "deleting the old rubric";
+        log2(`Q${plan.number}: ${step}`);
+        await deleteEntries(client, q2.id, old, pause);
+        step = "ordering the new rubric";
+        log2(`Q${plan.number}: ${step}`);
+        await client.setPositions(q2.id, created);
+        await pause();
+        uploaded.push(plan);
+      } catch (e) {
+        const failure = `Failed while ${step}: ${message(e)}.`;
+        if (step !== "creating the new rubric") {
+          results.push({
+            number: plan.number,
+            ok: false,
+            message: `${failure} The question may be partly updated; reload the page and check it.`
+          });
+          continue;
+        }
+        log2(`Q${plan.number}: removing the partly created rubric`);
+        try {
+          const oldKeys = new Set(old.map(entryKey));
+          const now = await client.load();
+          await deleteEntries(client, q2.id, now.entries(q2.id).filter((e2) => !oldKeys.has(entryKey(e2))), pause);
+          results.push({ number: plan.number, ok: false, message: `${failure} The question keeps its old rubric.` });
+        } catch (e2) {
+          results.push({
+            number: plan.number,
+            ok: false,
+            message: `${failure} Removing the partly created rubric also failed (${message(e2)}), so the question may have both old and new items; reload the page and check it.`
+          });
+        }
+      }
+    }
+    if (uploaded.length) {
+      log2("Verifying");
+      try {
+        assignment = await client.load();
+      } catch (e) {
+        for (const plan of uploaded) {
+          results.push({
+            number: plan.number,
+            ok: false,
+            message: `Uploaded, but it could not be verified (${message(e)}). Reload the page and check it.`
+          });
+        }
+        uploaded.length = 0;
+      }
+    }
+    for (const plan of uploaded) {
+      const q2 = assignment.question(plan.number);
+      const actual = q2 ? assignment.toRubricQuestion(q2).rubric : [];
+      results.push(
+        sameRubric(actual, plan.next.rubric) ? { number: plan.number, ok: true, message: "Uploaded and verified." } : {
+          number: plan.number,
+          ok: false,
+          message: "Uploaded, but the rubric on Gradescope does not match the file. Reload the page and check it."
+        }
+      );
+    }
+    const order = new Map(plans.map((p2, k) => [p2.number, k]));
+    return results.sort((a, b) => order.get(a.number) - order.get(b.number));
+  }
+  const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "assignment";
+  const plural = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
+  function download(text, filename, type) {
+    FileSaver.saveAs(new Blob([text], { type: `${type};charset=utf-8` }), filename);
+  }
+  const reloadPage = () => window.location.reload();
+  async function copyText(text, host) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      host.appendChild(area);
+      area.select();
+      const ok2 = document.execCommand("copy");
+      area.remove();
+      if (!ok2) {
+        throw new Error("Copying is blocked here; switch to the Text or JSON view and copy by hand.");
+      }
+    }
+  }
+  const VIEWS = [
+    { id: "graphical", label: "Graphical", title: "Show the rubric as Gradescope does, compactly" },
+    { id: "text", label: "Text", title: "Show the rubric as plain text" },
+    { id: "json", label: "JSON", title: "Show the rubric as JSON, in the format the upload accepts" }
+  ];
+  const MIN_REFERENCE_HEIGHT = { one: 170, both: 336 };
+  const MIN_UPLOAD_HEIGHT = 220;
+  function RubricTool({ client }) {
+    const dialog = React.useRef(null);
+    const mainRef = React.useRef(null);
+    const referencesRef = React.useRef(null);
+    const [open2, setOpen] = React.useState(false);
+    const [busy, setBusy] = React.useState(null);
+    const [error, setError] = React.useState(null);
+    const [notice, setNotice] = React.useState(null);
+    const [assignment, setAssignment] = React.useState(null);
+    const [view, setView] = React.useState("graphical");
+    const [instructionsOpen, setInstructionsOpen] = React.useState(false);
+    const [currentOpen, setCurrentOpen] = React.useState(false);
+    const [referencesHeight, setReferencesHeight] = React.useState(null);
+    const [uniformOpen, setUniformOpen] = React.useState(false);
+    const [text, setText] = React.useState("");
+    const [checked, setChecked] = React.useState(null);
+    const [unticked, setUnticked] = React.useState(/* @__PURE__ */ new Set());
+    const [panel, setPanel] = React.useState("preview");
+    const [log2, setLog] = React.useState([]);
+    const [uploadResults, setUploadResults] = React.useState(null);
+    const [uploaded, setUploaded] = React.useState(false);
+    const [reloading, setReloading] = React.useState(false);
+    useModal(dialog, open2);
+    async function run(label, f) {
+      setBusy(label);
+      setError(null);
+      try {
+        return await f();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setBusy(null);
+      }
+    }
+    const reload = () => run("Loading the rubric from Gradescope…", async () => {
+      const a = await client.load();
+      setAssignment(a);
+      return a;
+    });
+    function openDialog() {
+      setInstructionsOpen(false);
+      setCurrentOpen(false);
+      setReferencesHeight(null);
+      setOpen(true);
+      reload();
+    }
+    function flash(message2) {
+      setNotice(message2);
+      window.setTimeout(() => setNotice((n2) => n2 === message2 ? null : n2), 2500);
+    }
+    React.useEffect(() => {
+      if (!assignment || !text.trim()) {
+        setChecked(null);
+        return;
+      }
+      const timer = window.setTimeout(
+        () => setChecked({ text, result: validateRubricText(text, assignment) }),
+        250
+      );
+      return () => window.clearTimeout(timer);
+    }, [text, assignment]);
+    const file = React.useMemo(() => (assignment == null ? void 0 : assignment.toRubricFile()) ?? null, [assignment]);
+    const exports = React.useMemo(() => {
+      if (!assignment || !file) {
+        return null;
+      }
+      const base = slug(assignment.title);
+      return {
+        base,
+        json: { text: JSON.stringify(file, null, 2) + "\n", filename: `${base}-rubric.json`, type: "application/json" },
+        text: { text: rubricText(file.questions), filename: `${base}-rubric.txt`, type: "text/plain" },
+        instructions: { text: aiInstructions(assignment), filename: `${base}-rubric-ai-instructions.md`, type: "text/markdown" }
+      };
+    }, [assignment, file]);
+    const current = exports ? view === "text" ? exports.text : exports.json : null;
+    const instructions = exports == null ? void 0 : exports.instructions;
+    async function copy(what, label) {
+      const copied = await run("Copying…", async () => {
+        await copyText(what.text, dialog.current ?? document.body);
+        return true;
+      });
+      if (copied) {
+        flash(`Copied ${label} to the clipboard.`);
+      }
+    }
+    function replaceText(value) {
+      setText(value);
+      setUnticked(/* @__PURE__ */ new Set());
+      setPanel("preview");
+    }
+    function onFile(e) {
+      var _a;
+      const f = (_a = e.target.files) == null ? void 0 : _a[0];
+      e.target.value = "";
+      f == null ? void 0 : f.text().then(replaceText);
+    }
+    const minReferencesHeight = () => instructionsOpen && currentOpen ? MIN_REFERENCE_HEIGHT.both : MIN_REFERENCE_HEIGHT.one;
+    const maxReferencesHeight = () => {
+      var _a;
+      return Math.max(minReferencesHeight(), (((_a = mainRef.current) == null ? void 0 : _a.clientHeight) ?? 0) - MIN_UPLOAD_HEIGHT);
+    };
+    const clampReferences = (h) => Math.round(Math.max(minReferencesHeight(), Math.min(maxReferencesHeight(), h)));
+    function startResize(e) {
+      const refs = referencesRef.current;
+      if (!refs) {
+        return;
+      }
+      e.preventDefault();
+      const handle = e.currentTarget;
+      handle.setPointerCapture(e.pointerId);
+      const startY = e.clientY;
+      const startHeight = refs.getBoundingClientRect().height;
+      const move = (ev) => setReferencesHeight(clampReferences(startHeight + ev.clientY - startY));
+      const up = () => {
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", up);
+        handle.removeEventListener("pointercancel", up);
+      };
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", up);
+      handle.addEventListener("pointercancel", up);
+    }
+    function resizeByKey(e) {
+      const step = e.key === "ArrowUp" ? -24 : e.key === "ArrowDown" ? 24 : 0;
+      const refs = referencesRef.current;
+      if (step && refs) {
+        e.preventDefault();
+        setReferencesHeight(clampReferences(refs.getBoundingClientRect().height + step));
+      }
+    }
+    const result = (checked == null ? void 0 : checked.text) === text ? checked.result : null;
+    const pending = !!text.trim() && !result;
+    const plans = (result == null ? void 0 : result.plans) ?? [];
+    const toUpload = selectedPlans(plans, unticked);
+    const summary = selectionSummary(plans, unticked);
+    const locked = !!(assignment == null ? void 0 : assignment.payload.rubrics_locked);
+    const blockedReason = !text.trim() ? "Paste or autogenerate rubric JSON to upload it." : pending ? "Checking…" : result.errors.length ? `Fix the ${plural(result.errors.length, "error")} first.` : locked ? "Rubrics are locked for this assignment." : summary.selectable === 0 ? "Nothing to upload: every question already matches." : summary.selected === 0 ? "No question is selected." : null;
+    const replacing = summary.replacing === 0 ? "" : summary.replacing === summary.selected ? summary.selected === 1 ? "; it replaces an existing rubric" : "; all of them replace existing rubrics" : summary.replacing === 1 ? "; 1 of them replaces an existing rubric" : `; ${summary.replacing} of them replace existing rubrics`;
+    const uploadSummary = `${plural(summary.selected, "question")} will be uploaded${replacing}.`;
+    async function upload() {
+      setUploaded(true);
+      setUploadResults(null);
+      setLog([]);
+      setPanel("results");
+      const results = await run(
+        "Uploading…",
+        () => uploadPlans(client, toUpload, { log: (m2) => setLog((l2) => [...l2, m2]) })
+      );
+      if (results) {
+        setUploadResults(results);
+      } else {
+        setPanel("preview");
+      }
+      await reload();
+    }
+    const hasResults = log2.length > 0 || !!uploadResults;
+    const anyReferenceOpen = instructionsOpen || currentOpen;
+    const bothReferencesOpen = instructionsOpen && currentOpen;
+    const iconButton = (title, icon, onClick, disabled = false) => /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title, onClick, disabled }, icon);
+    const instructionsTools = /* @__PURE__ */ React.createElement(React.Fragment, null, iconButton("Copy the AI instructions to the clipboard", /* @__PURE__ */ React.createElement(CopyIcon, null), () => instructions && copy(instructions, "the AI instructions"), !instructions), iconButton(
+      `Download the AI instructions (${(instructions == null ? void 0 : instructions.filename) ?? ".md"})`,
+      /* @__PURE__ */ React.createElement(DownloadIcon, null),
+      () => instructions && download(instructions.text, instructions.filename, instructions.type),
+      !instructions
+    ));
+    const downloadCurrent = iconButton(
+      view === "text" ? `Download the current rubric as text (${(current == null ? void 0 : current.filename) ?? ".txt"})` : `Download the current rubric as JSON (${(current == null ? void 0 : current.filename) ?? ".json"})`,
+      /* @__PURE__ */ React.createElement(DownloadIcon, null),
+      () => current && download(current.text, current.filename, current.type),
+      !current
+    );
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { className: "launcher", type: "button", onClick: openDialog, title: "Download, preview, or upload this rubric as JSON" }, "Rubric JSON"), /* @__PURE__ */ React.createElement(
+      "dialog",
+      {
+        ref: dialog,
+        className: "tool",
+        onClose: () => {
+          setOpen(false);
+          setUniformOpen(false);
+        }
+      },
+      /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h2", { title: assignment ? `Assignment ${assignment.assignmentId}` : void 0 }, "Rubric JSON", assignment ? ` — ${assignment.title}` : ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button close", title: "Close", "aria-label": "Close", onClick: () => setOpen(false) }, "×")),
+      /* @__PURE__ */ React.createElement("main", { ref: mainRef }, busy && /* @__PURE__ */ React.createElement("p", { className: "status", title: "Working" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error", title: "Error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          ref: referencesRef,
+          className: `references ${bothReferencesOpen ? "both" : ""} ${anyReferenceOpen && referencesHeight !== null ? "sized" : ""} ${anyReferenceOpen ? "" : "closed"}`,
+          style: anyReferenceOpen && referencesHeight !== null ? { height: referencesHeight } : void 0
+        },
+        /* @__PURE__ */ React.createElement(
+          ReferenceSection,
+          {
+            name: "instructions",
+            label: "AI instructions",
+            title: "Instructions for an AI agent to write rubric JSON for this assignment: the format, every check, and the questions.",
+            open: instructionsOpen,
+            setOpen: setInstructionsOpen,
+            tools: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Give these to an AI agent to write the new rubric."), instructionsTools),
+            collapsedTools: instructionsTools
+          },
+          /* @__PURE__ */ React.createElement("pre", { className: "viewer-text", title: "The AI instructions (Markdown)" }, (instructions == null ? void 0 : instructions.text) ?? "")
+        ),
+        /* @__PURE__ */ React.createElement(
+          ReferenceSection,
+          {
+            name: "current",
+            label: "Current rubric",
+            title: "The rubric as it is on Gradescope now.",
+            open: currentOpen,
+            setOpen: setCurrentOpen,
+            tools: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "segmented", role: "group", "aria-label": "View" }, VIEWS.map((v2) => /* @__PURE__ */ React.createElement(
+              "button",
+              {
+                key: v2.id,
+                type: "button",
+                className: view === v2.id ? "on" : "",
+                "aria-pressed": view === v2.id,
+                title: v2.title,
+                onClick: () => setView(v2.id)
+              },
+              v2.label
+            ))), iconButton("Reload the rubric from Gradescope", /* @__PURE__ */ React.createElement(RefreshIcon, null), reload, !!busy), iconButton(
+              view === "text" ? "Copy the rubric as text" : "Copy the rubric JSON",
+              /* @__PURE__ */ React.createElement(CopyIcon, null),
+              () => current && copy(current, view === "text" ? "the rubric text" : "the rubric JSON"),
+              !current
+            ), downloadCurrent),
+            collapsedTools: downloadCurrent
+          },
+          !file ? /* @__PURE__ */ React.createElement("p", { className: "hint" }, "Loading…") : view === "graphical" ? /* @__PURE__ */ React.createElement("div", { className: "rb" }, file.questions.map((q2) => /* @__PURE__ */ React.createElement("div", { key: q2.number, className: "rb-question" }, /* @__PURE__ */ React.createElement(QuestionHeader, { number: q2.number, title: q2.title, weight: q2.weight, scoring: q2.scoring, rubric: q2.rubric }), /* @__PURE__ */ React.createElement(EntryList, { entries: plainEntries(q2.rubric) })))) : /* @__PURE__ */ React.createElement("pre", { className: "viewer-text", title: view === "text" ? "The rubric as text" : "The rubric as JSON" }, (current == null ? void 0 : current.text) ?? "")
+        )
+      ), anyReferenceOpen && /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: "splitter",
+          role: "separator",
+          "aria-orientation": "horizontal",
+          tabIndex: 0,
+          title: "Drag (or use the arrow keys) to share the height with the new rubric; double-click to size automatically",
+          onPointerDown: startResize,
+          onKeyDown: resizeByKey,
+          onDoubleClick: () => setReferencesHeight(null)
+        }
+      ), /* @__PURE__ */ React.createElement("section", { className: "upload" }, /* @__PURE__ */ React.createElement("div", { className: "ref-bar new-bar" }, /* @__PURE__ */ React.createElement("span", { className: "ref-bar-label", title: "The rubric to upload: paste it, open a file, or autogenerate it" }, /* @__PURE__ */ React.createElement(PlusIcon, null), /* @__PURE__ */ React.createElement("span", { className: "ref-label" }, "New rubric")), /* @__PURE__ */ React.createElement(
+        Menu,
+        {
+          label: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(SparkleIcon, null), " Autogenerate ", /* @__PURE__ */ React.createElement(ChevronDownIcon, null)),
+          title: "Fill the box below with a generated rubric (replacing what is in it)",
+          disabled: !exports,
+          items: [
+            {
+              label: "Start from the current rubric",
+              title: "Put the current rubric in the box, to edit it and upload it again",
+              onClick: () => exports && replaceText(exports.json.text)
+            },
+            {
+              label: "Uniform rubric for all questions…",
+              title: "Give every chosen question the same items with the same points (as deductions on negatively scored questions)",
+              onClick: () => setUniformOpen(true)
+            }
+          ]
+        }
+      ), /* @__PURE__ */ React.createElement("label", { className: "icon-button file-button", title: "Load a JSON file into the box below" }, /* @__PURE__ */ React.createElement(FileIcon, null), /* @__PURE__ */ React.createElement("input", { type: "file", accept: ".json,application/json", onChange: onFile })), iconButton(
+        "Download the JSON in the box",
+        /* @__PURE__ */ React.createElement(DownloadIcon, null),
+        () => download(text, `${(exports == null ? void 0 : exports.base) ?? "assignment"}-new-rubric.json`, "application/json"),
+        !text.trim()
+      ), text && /* @__PURE__ */ React.createElement("button", { type: "button", className: "link", title: "Empty the box", onClick: () => replaceText("") }, "Clear")), /* @__PURE__ */ React.createElement("div", { className: "upload-grid" }, /* @__PURE__ */ React.createElement("div", { className: "upload-input" }, /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", { title: "Paste rubric JSON, open a file, or autogenerate one from the menu above" }, /* @__PURE__ */ React.createElement("span", { className: "step" }, "1"), " Paste rubric JSON")), /* @__PURE__ */ React.createElement(
+        "textarea",
+        {
+          value: text,
+          placeholder: 'Paste rubric JSON here (e.g. one written by an AI agent from the AI instructions), or use Autogenerate above.\n\n{ "format": "gradescope-rubric", … }',
+          onChange: (e) => setText(e.target.value),
+          spellCheck: false,
+          title: "Rubric JSON to upload. It is checked as you type; nothing is sent until you press Upload."
+        }
+      ), /* @__PURE__ */ React.createElement("div", { className: "check-area" }, /* @__PURE__ */ React.createElement(CheckStatus, { text, pending, result, toUpload: summary.selected }))), /* @__PURE__ */ React.createElement("div", { className: "upload-output" }, /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", { title: "What the upload will change on Gradescope" }, /* @__PURE__ */ React.createElement("span", { className: "step" }, "2"), " Review the changes")), /* @__PURE__ */ React.createElement("div", { className: "upload-preview" }, panel === "results" && hasResults ? /* @__PURE__ */ React.createElement(Results, { log: log2, results: uploadResults, back: () => setPanel("preview") }) : /* @__PURE__ */ React.createElement(
+        Preview,
+        {
+          result,
+          unticked,
+          toggle: (n2) => setUnticked((s) => {
+            const next = new Set(s);
+            next.has(n2) ? next.delete(n2) : next.add(n2);
+            return next;
+          }),
+          setAll: (on) => setUnticked(on ? /* @__PURE__ */ new Set() : new Set(selectablePlans(plans).map((p2) => p2.number))),
+          hasSubmissions: !!(assignment == null ? void 0 : assignment.payload.has_submissions_and_students),
+          showResults: hasResults ? () => setPanel("results") : void 0
+        }
+      )))))),
+      /* @__PURE__ */ React.createElement("footer", null, /* @__PURE__ */ React.createElement("span", { className: "step", title: "Step 3: upload the selected questions" }, "3"), /* @__PURE__ */ React.createElement("span", { className: "hint", title: blockedReason ?? uploadSummary }, blockedReason ?? uploadSummary), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: uploaded ? "" : "primary",
+          onClick: upload,
+          disabled: !!busy || !!blockedReason,
+          title: blockedReason ?? `Upload to Gradescope: ${uploadSummary}`
+        },
+        blockedReason ? "Upload" : `Upload ${plural(summary.selected, "question")}`
+      ), uploaded ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close this dialog; Gradescope's editor keeps showing the old rubric", onClick: () => setOpen(false) }, "Close without reloading"), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "primary",
+          disabled: !!busy || reloading,
+          title: reloading ? "Reloading Gradescope's editor…" : busy ? "Wait until the dialog has finished talking to Gradescope" : "Close this dialog and reload Gradescope's editor to show the new rubric",
+          onClick: () => {
+            setReloading(true);
+            reloadPage();
+          }
+        },
+        (busy || reloading) && /* @__PURE__ */ React.createElement("span", { className: "spinner", "aria-hidden": "true" }),
+        reloading ? "Reloading…" : "Close and reload"
+      )) : /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close this dialog", onClick: () => setOpen(false) }, "Close"))
+    ), /* @__PURE__ */ React.createElement(
+      UniformRubricDialog,
+      {
+        assignment,
+        open: open2 && uniformOpen,
+        onClose: () => setUniformOpen(false),
+        onCreate: (f) => {
+          replaceText(JSON.stringify(f, null, 2) + "\n");
+          setUniformOpen(false);
+        }
+      }
+    ));
+  }
+  function ReferenceSection(props) {
+    if (!props.open) {
+      return /* @__PURE__ */ React.createElement("section", { className: `ref ${props.name} collapsed` }, /* @__PURE__ */ React.createElement("div", { className: "ref-bar" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ref-bar-toggle", "aria-expanded": false, title: `${props.title} Click to expand.`, onClick: () => props.setOpen(true) }, /* @__PURE__ */ React.createElement(ChevronDownIcon, null), /* @__PURE__ */ React.createElement("span", { className: "ref-label" }, props.label)), props.collapsedTools));
+    }
+    return /* @__PURE__ */ React.createElement("section", { className: `ref ${props.name} open` }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ref-sidebar", "aria-expanded": true, title: `${props.title} Click to collapse.`, onClick: () => props.setOpen(false) }, /* @__PURE__ */ React.createElement(ChevronDownIcon, null), /* @__PURE__ */ React.createElement("span", { className: "ref-label" }, props.label)), /* @__PURE__ */ React.createElement("div", { className: "ref-body" }, /* @__PURE__ */ React.createElement("div", { className: "row tight ref-tools" }, props.tools), /* @__PURE__ */ React.createElement("div", { className: "viewer" }, props.children)));
+  }
+  function Results(props) {
+    return /* @__PURE__ */ React.createElement("div", { className: "preview-body" }, /* @__PURE__ */ React.createElement("div", { className: "row tight" }, /* @__PURE__ */ React.createElement("h3", null, "Upload results"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "link", title: "Show the preview of the box's JSON again", onClick: props.back }, "Back to the preview")), props.results ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("ul", { className: "results" }, props.results.map((r2) => /* @__PURE__ */ React.createElement("li", { key: r2.number, className: r2.ok ? "ok" : "bad", title: r2.ok ? "Verified against Gradescope" : "Needs attention" }, /* @__PURE__ */ React.createElement("b", null, "Q", r2.number), ": ", r2.message))), /* @__PURE__ */ React.createElement("p", { className: "hint" }, "Gradescope's editor does not update by itself; ", /* @__PURE__ */ React.createElement("i", null, "Close and reload"), " to see the new rubric in it.")) : /* @__PURE__ */ React.createElement("pre", { className: "log", title: "Progress of the upload" }, props.log.join("\n")));
+  }
+  function Menu(props) {
+    const [open2, setOpen] = React.useState(false);
+    return /* @__PURE__ */ React.createElement("div", { className: "menu" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "menu-button",
+        "aria-haspopup": "menu",
+        "aria-expanded": open2,
+        disabled: props.disabled,
+        title: props.title,
+        onClick: () => setOpen((o) => !o)
+      },
+      props.label
+    ), open2 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "menu-backdrop", onClick: () => setOpen(false) }), /* @__PURE__ */ React.createElement("div", { className: "menu-list", role: "menu", onKeyDown: (e) => e.key === "Escape" && setOpen(false) }, props.items.map((item, k) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: k,
+        type: "button",
+        role: "menuitem",
+        title: item.title,
+        onClick: () => {
+          setOpen(false);
+          item.onClick();
+        }
+      },
+      item.label
+    )))));
+  }
+  function IssueList({ issues, kind }) {
+    return /* @__PURE__ */ React.createElement("ul", { className: `issues ${kind}` }, issues.map((i, k) => /* @__PURE__ */ React.createElement("li", { key: k, title: i.path }, i.question && /* @__PURE__ */ React.createElement("b", null, "Q", i.question, " "), /* @__PURE__ */ React.createElement("code", null, i.path), ": ", i.message)));
+  }
+  function CheckStatus(props) {
+    const { result } = props;
+    if (!props.text.trim()) {
+      return /* @__PURE__ */ React.createElement("p", { className: "check-status idle", title: "Nothing to check yet" }, "Paste rubric JSON above, open a file, or use Autogenerate.");
+    }
+    if (props.pending || !result) {
+      return /* @__PURE__ */ React.createElement("p", { className: "check-status idle" }, "Checking…");
+    }
+    const unchanged = result.plans.filter((p2) => p2.status === "unchanged").length;
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, result.errors.length > 0 ? /* @__PURE__ */ React.createElement("p", { className: "check-status bad", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✗ ", plural(result.errors.length, "error"), ". Nothing can be uploaded until ", result.errors.length === 1 ? "it is" : "they are", " fixed.") : /* @__PURE__ */ React.createElement("p", { className: "check-status good", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✓ Valid. ", plural(result.plans.length, "question"), " in the file", unchanged ? `, ${unchanged} unchanged` : "", "; ", plural(props.toUpload, "question"), " will be uploaded."), result.errors.length > 0 && /* @__PURE__ */ React.createElement(IssueList, { issues: result.errors, kind: "error" }), result.warnings.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "banner warning" }, "⚠ ", plural(result.warnings.length, "warning"), " (likely mistakes; they don't block the upload):", /* @__PURE__ */ React.createElement(IssueList, { issues: result.warnings, kind: "warning" })));
+  }
+  function SelectAll(props) {
+    const box = React.useRef(null);
+    const all2 = props.selectable > 0 && props.selected === props.selectable;
+    React.useEffect(() => {
+      if (box.current) {
+        box.current.indeterminate = props.selected > 0 && !all2;
+      }
+    });
+    return /* @__PURE__ */ React.createElement("label", { className: "select-all", title: all2 ? "Untick every question" : "Tick every question that would change" }, /* @__PURE__ */ React.createElement("input", { ref: box, type: "checkbox", checked: all2, onChange: (e) => props.setAll(e.target.checked) }), "Select all", /* @__PURE__ */ React.createElement("span", { className: "hint" }, "(", props.selected, " of ", plural(props.selectable, "question"), " selected)"));
+  }
+  function Preview(props) {
+    const { result } = props;
+    const resultsLink = props.showResults && /* @__PURE__ */ React.createElement("button", { type: "button", className: "link", title: "Show the results of the last upload", onClick: props.showResults }, "Show the upload results");
+    if (!result) {
+      return /* @__PURE__ */ React.createElement("div", { className: "preview-body" }, /* @__PURE__ */ React.createElement("p", { className: "hint preview-empty", title: "The preview appears once the JSON can be read" }, "Preview of the upload"), resultsLink);
+    }
+    if (result.plans.length === 0) {
+      return /* @__PURE__ */ React.createElement("div", { className: "preview-body" }, /* @__PURE__ */ React.createElement("p", { className: "hint preview-empty" }, "Nothing to preview: no question in the file could be read."), resultsLink);
+    }
+    const summary = selectionSummary(result.plans, props.unticked);
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "preview-bar" }, summary.selectable > 0 ? /* @__PURE__ */ React.createElement(SelectAll, { selected: summary.selected, selectable: summary.selectable, setAll: props.setAll }) : /* @__PURE__ */ React.createElement("span", { className: "hint", title: "Nothing would change" }, "Every question already matches."), resultsLink), /* @__PURE__ */ React.createElement("div", { className: "preview-body rb" }, props.hasSubmissions && summary.replacing > 0 && /* @__PURE__ */ React.createElement("p", { className: "banner warning", title: "Replacing a rubric deletes its old items" }, "This assignment has submissions. Replacing a rubric deletes its old items, including any already applied to submissions, which changes those scores."), result.plans.map((p2) => /* @__PURE__ */ React.createElement(
+      PreviewQuestion,
+      {
+        key: p2.number,
+        plan: p2,
+        errors: result.errors.filter((e) => e.question === p2.number),
+        checked: !props.unticked.has(p2.number),
+        toggle: () => props.toggle(p2.number)
+      }
+    ))));
+  }
+  function PreviewQuestion(props) {
+    const { plan } = props;
+    const { next } = plan;
+    const changes = plan.status !== "unchanged";
+    const status = plan.status === "unchanged" ? /* @__PURE__ */ React.createElement("span", { className: "tag same", title: "The rubric on Gradescope already matches; nothing will be sent" }, "No change") : plan.status === "create" ? /* @__PURE__ */ React.createElement("span", { className: "tag new", title: "This question only has Gradescope's default item (or none), so the rubric is filled in" }, "New") : /* @__PURE__ */ React.createElement("span", { className: "tag conflict", title: "This question already has a different rubric. Uploading it deletes the old items and adds these." }, "Replaces existing rubric");
+    return /* @__PURE__ */ React.createElement("div", { className: `rb-question ${changes && !props.checked ? "skipped" : ""}` }, /* @__PURE__ */ React.createElement(
+      QuestionHeader,
+      {
+        number: next.number,
+        title: plan.current.title,
+        weight: next.weight,
+        scoring: next.scoring,
+        rubric: next.rubric,
+        before: changes && /* @__PURE__ */ React.createElement(
+          "input",
+          {
+            type: "checkbox",
+            className: "pick",
+            checked: props.checked,
+            onChange: props.toggle,
+            title: props.checked ? `Q${next.number} will be uploaded; untick to leave it as it is` : `Q${next.number} will be left as it is; tick to upload it`
+          }
+        )
+      },
+      status,
+      props.errors.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "tag error", title: props.errors.map((e) => e.message).join("\n") }, plural(props.errors.length, "error"))
+    ), changes && /* @__PURE__ */ React.createElement(EntryList, { entries: diffEntries(plan.current.rubric, next.rubric) }));
+  }
+  const HOST_ID = "canvas-quiz-stats-rubric-tool";
+  function rubricEditorRoute(pathname) {
+    const m2 = pathname.match(/^\/courses\/(\d+)\/assignments\/(\d+)\/rubric\/edit\/?$/);
+    return m2 ? { courseId: Number(m2[1]), assignmentId: Number(m2[2]) } : null;
+  }
+  let mounted = null;
+  function updateRubricTool(options2 = {}) {
+    var _a;
+    const route2 = rubricEditorRoute(window.location.pathname);
+    if (mounted && mounted.path !== window.location.pathname) {
+      mounted.root.unmount();
+      mounted.host.remove();
+      mounted = null;
+    }
+    if (!route2 || mounted || !document.body) {
+      return;
+    }
+    const csrfToken = (_a = document.querySelector('meta[name="csrf-token"]')) == null ? void 0 : _a.content;
+    if (!csrfToken) {
+      return;
+    }
+    const host = document.createElement("div");
+    host.id = HOST_ID;
+    document.body.appendChild(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css);
+      shadow.adoptedStyleSheets = [sheet];
+    } catch {
+      const style2 = document.createElement("style");
+      style2.textContent = css;
+      shadow.appendChild(style2);
+    }
+    const container = document.createElement("div");
+    shadow.appendChild(container);
+    const client = new GradescopeClient({
+      origin: window.location.origin,
+      courseId: route2.courseId,
+      assignmentId: route2.assignmentId,
+      csrfToken,
+      fetch: options2.fetch
+    });
+    const root = createRoot(container);
+    root.render(/* @__PURE__ */ React.createElement(RubricTool, { client }));
+    mounted = { root, host, path: window.location.pathname };
+  }
   async function main() {
     const body = await awaitElement(".header-bar");
     const container = document.createElement("div");
@@ -21281,7 +24638,15 @@
     }
   }
   if (isGradescope()) {
+    log("Gradescope script started", window.location.href);
     runInGradescope();
+    addLocationChangeCallback(() => {
+      try {
+        updateRubricTool();
+      } catch (e) {
+        log(e);
+      }
+    });
   } else {
     log("React script has successfully started");
     injectStyles(indexCss + appCss + bootstrapCss);

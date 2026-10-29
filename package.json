@@ -1,0 +1,15 @@
+{
+    "name": "canvas-quiz-stats",
+    "private": true,
+    "description": "Runs the scripts of the userscript in userscript/, so they can be used from here.",
+    "scripts": {
+        "postinstall": "npm --prefix userscript install",
+        "dev": "npm --prefix userscript run start --",
+        "start": "npm --prefix userscript run start --",
+        "build": "npm --prefix userscript run build --",
+        "build:watch": "npm --prefix userscript run build:watch --",
+        "preview": "npm --prefix userscript run preview --",
+        "test": "npm --prefix userscript run test --",
+        "harness": "npm --prefix userscript run harness --"
+    }
+}

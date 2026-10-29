@@ -30,6 +30,8 @@ export default defineConfig(({ mode }) => {
         preview: {
             port: 8124,
             strictPort: true,
+            // All interfaces, so it is reachable from outside a dev container
+            host: "0.0.0.0",
             // The dev userscript fetches the build from a Canvas page
             cors: true,
         },

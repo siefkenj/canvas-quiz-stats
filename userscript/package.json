@@ -1,6 +1,6 @@
 {
     "name": "react-userscripts",
-    "version": "1.5.0",
+    "version": "1.7.0",
     "private": true,
     "type": "module",
     "dependencies": {
@@ -14,9 +14,12 @@
     },
     "scripts": {
         "start": "npm-run-all --parallel build:watch preview",
+        "dev": "npm-run-all --parallel build:watch preview",
         "preview": "vite preview",
         "build:watch": "vite build --watch",
-        "build": "vite build"
+        "build": "vite build",
+        "test": "vitest run",
+        "harness": "vite --config vite.harness.config.ts"
     },
     "browserslist": {
         "production": [
@@ -32,6 +35,7 @@
     },
     "devDependencies": {
         "less": "^4.2.0",
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "vitest": "^2.1.9"
     }
 }

@@ -17,6 +17,7 @@ import {
     runInCanvas,
     runInGradescope,
 } from "./gradescope-bridge";
+import { updateRubricTool } from "./rubric/mount";
 
 // Do required initial work. Gets called every time the URL changes,
 // so that elements can be re-inserted as a user navigates a page with
@@ -39,8 +40,17 @@ async function main() {
 }
 
 if (isGradescope()) {
-    // Only the link rewriting runs on Gradescope; it shouldn't get Canvas's styles.
+    // On Gradescope: link rewriting, and the Rubric JSON tool on rubric editor pages. Neither
+    // uses Canvas's styles (the rubric tool styles itself inside a shadow root).
+    log("Gradescope script started", window.location.href);
     runInGradescope();
+    addLocationChangeCallback(() => {
+        try {
+            updateRubricTool();
+        } catch (e) {
+            log(e);
+        }
+    });
 } else {
     log("React script has successfully started");
     injectStyles(indexCss + appCss + bootstrapCss);

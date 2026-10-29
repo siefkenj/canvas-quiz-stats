@@ -1,0 +1,986 @@
+/* Styles for the Rubric JSON tool. They live in the tool's shadow root, so they neither affect
+   Gradescope's page nor are affected by it. */
+
+:host {
+    all: initial;
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1f2937;
+    --blue: #1d4ed8;
+    --border: #d1d5db;
+    --muted: #6b7280;
+}
+
+/* ------------------------------------------------------------------------------ controls */
+
+button {
+    font: inherit;
+    padding: 0.3em 0.8em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+    background: #fff;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+button:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+button.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+button.primary:hover:not(:disabled) {
+    background: #1e40af;
+}
+/* A small spinner inside a button, in the button's text colour. */
+.spinner {
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin-right: 0.45em;
+    vertical-align: -0.1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 2.4s;
+    }
+}
+button.small {
+    font-size: 12px;
+    padding: 0.1em 0.6em;
+}
+.link {
+    border: none;
+    padding: 0;
+    background: none;
+    color: var(--blue);
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+}
+button.link:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline;
+}
+.icon-button {
+    padding: 0.3em;
+    border-color: var(--border);
+}
+.icon {
+    flex: none;
+}
+.segmented {
+    display: inline-flex;
+}
+.segmented button {
+    border-radius: 0;
+    font-size: 13px;
+    padding: 0.2em 0.7em;
+    border-color: var(--border);
+}
+.segmented button + button {
+    border-left: none;
+}
+.segmented button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.segmented button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+.segmented button.on {
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+    color: #1e3a8a;
+}
+
+.launcher {
+    position: fixed;
+    top: 10px;
+    right: 16px;
+    z-index: 2147483000;
+    background: #fff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* -------------------------------------------------------------------------------- dialog */
+
+/* The dialog has a fixed height and never scrolls as a whole: its sections share the height and
+   each scrolls by itself (see "layout" below). */
+dialog {
+    width: min(1200px, 96vw);
+    height: 92vh;
+    max-height: 92vh;
+    overflow: hidden;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    color: inherit;
+}
+dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+header,
+footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.6em 1.25em;
+}
+header {
+    border-bottom: 1px solid #e5e7eb;
+    justify-content: space-between;
+}
+footer {
+    border-top: 1px solid #e5e7eb;
+    justify-content: flex-end;
+}
+footer .hint {
+    margin-right: auto;
+}
+footer .step {
+    margin-right: -0.25em;
+}
+h2 {
+    margin: 0;
+    font-size: 1.15em;
+}
+h3 {
+    margin: 0;
+    font-size: 1.02em;
+}
+.close {
+    border: none;
+    font-size: 1.5em;
+    line-height: 1;
+    padding: 0 0.25em;
+}
+main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0.6em 1.25em 0.75em;
+}
+main > * {
+    flex: none;
+}
+header,
+footer {
+    flex: none;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0.3em 0 0.5em;
+}
+.row.tight {
+    gap: 0.4em;
+    margin: 0;
+}
+.hint {
+    color: var(--muted);
+    font-size: 0.92em;
+}
+.status {
+    color: var(--blue);
+    margin: 0 0 0.5em;
+}
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    padding: 0.5em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+    resize: vertical;
+}
+.banner {
+    padding: 0.5em 0.75em;
+    border-radius: 4px;
+    margin: 0.5em 0;
+}
+main > .banner {
+    max-height: 6em;
+    overflow: auto;
+}
+.banner.error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+}
+.banner.warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+}
+.banner.ok {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+}
+code {
+    font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0 0.25em;
+    border-radius: 3px;
+}
+pre {
+    margin: 0.5em 0 0;
+    font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre-wrap;
+}
+
+/* dropdown menu */
+.menu {
+    position: relative;
+}
+.menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+}
+.menu-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 11;
+    min-width: 12em;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    padding: 0.25em 0;
+    display: flex;
+    flex-direction: column;
+}
+.menu-list button {
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    font-size: 13px;
+    padding: 0.4em 0.9em;
+    justify-content: flex-start;
+}
+
+/* ---------------------------------------------------------------------------------- layout */
+
+/* The reference sections (AI instructions, current rubric) take the height of their content, up
+   to 30% of the dialog (45% when both are open, shared equally), or the height set with the
+   splitter; the new rubric gets the rest. */
+.references {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    min-height: 0;
+    flex: 0 1 auto;
+    max-height: max(30%, 170px);
+}
+.references.both {
+    flex: none;
+    height: max(45%, 336px);
+    max-height: none;
+}
+.references.sized {
+    flex: none;
+    max-height: none;
+}
+.references.closed {
+    flex: none;
+    margin-bottom: 0.6em;
+}
+section.ref {
+    display: flex;
+    min-height: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+section.ref.open {
+    flex: 0 1 auto;
+    min-height: 164px; /* room for the sideways label */
+}
+.references.both > section.ref.open,
+.references.sized > section.ref.open {
+    flex: 1 1 0;
+}
+section.ref.collapsed {
+    flex: none;
+}
+/* Reference sections are for looking things up: a grey sidebar labels them, and they are smaller
+   and muted, so the new rubric leads. Collapsed, each is a grey bar. */
+.ref-sidebar,
+.ref-bar {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+.ref-sidebar {
+    flex: none;
+    width: 28px;
+    padding: 6px 0;
+    border: none;
+    border-radius: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+button.ref-sidebar:hover:not(:disabled),
+button.ref-bar-toggle:hover:not(:disabled) {
+    background: #d1d5db;
+}
+.ref-sidebar .ref-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+.ref-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.ref-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+}
+.ref-tools {
+    flex: none;
+    padding: 4px 6px;
+    border-bottom: 1px solid #eceef1;
+}
+.ref-tools .hint {
+    font-size: 12px;
+}
+.ref-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    padding-right: 6px;
+    width: 100%;
+    min-height: 27px;
+}
+.ref-bar-toggle,
+.ref-bar-label {
+    border: none;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+.ref-bar-toggle .icon {
+    transform: rotate(-90deg);
+}
+.ref-bar .icon-button,
+.ref-tools .icon-button {
+    padding: 0.15em;
+    color: var(--muted);
+    background: #fff;
+}
+section.ref .icon-button .icon,
+.ref-bar .icon-button .icon {
+    width: 14px;
+    height: 14px;
+}
+section.ref .segmented button {
+    font-size: 11.5px;
+    padding: 0.05em 0.55em;
+}
+section.ref .rb {
+    font-size: 11px;
+}
+section.ref .rb-question {
+    background: #fcfcfd;
+}
+section.ref .viewer-text {
+    font-size: 11px;
+}
+
+/* The new rubric: a bar like a collapsed reference section, then the two steps side by side. */
+section.upload {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.new-bar {
+    flex: none;
+    border-bottom: 1px solid #e5e7eb;
+}
+.new-bar .menu-button {
+    font-size: 12px;
+    padding: 0.1em 0.5em;
+    border-color: var(--blue);
+    color: var(--blue);
+    background: #fff;
+}
+.new-bar .menu-button .icon {
+    width: 14px;
+    height: 14px;
+}
+.new-bar .menu-list {
+    left: 0;
+    right: auto;
+}
+label.file-button {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+}
+label.file-button:hover {
+    background: #f3f4f6;
+}
+label.file-button input {
+    display: none;
+}
+.new-bar .link {
+    font-size: 12px;
+}
+section.upload .upload-grid {
+    padding: 0.5em 0.6em 0.6em;
+}
+.upload-input > .step-row,
+.upload-output > .step-row {
+    flex: none;
+    margin: 0 0 0.4em;
+    min-height: 1.6em;
+}
+.step-row h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+}
+.step {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+.splitter {
+    height: 9px;
+    margin: 1px 0 3px;
+    cursor: row-resize;
+    position: relative;
+    touch-action: none;
+}
+.splitter::after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 20px);
+    top: 3px;
+    width: 40px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+}
+.splitter:hover::after,
+.splitter:focus-visible::after {
+    background: var(--blue);
+}
+.splitter:focus-visible {
+    outline: none;
+}
+
+.viewer {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
+.references.sized .viewer,
+.references.both .viewer {
+    flex: 1 1 0;
+}
+.viewer > .rb {
+    padding: 0.5em;
+}
+.viewer-text {
+    margin: 0;
+    padding: 0.5em;
+    background: #fff;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+/* upload */
+.upload-grid {
+    flex: 1 1 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1em;
+}
+@media (max-width: 900px) {
+    .upload-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.6em;
+    }
+    .references {
+        max-height: max(25%, 170px);
+    }
+    .references.both {
+        height: max(40%, 336px);
+    }
+}
+.upload-input {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.upload-input textarea {
+    flex: 1 1 auto;
+    min-height: 4em;
+    resize: none;
+}
+.check-area {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 45%;
+    overflow: auto;
+}
+.upload-output {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.upload-preview {
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fafafa;
+    overflow: auto;
+}
+.preview-body {
+    padding: 0.5em;
+}
+.preview-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    padding: 0.35em 0.6em;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+.select-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+    font-weight: 600;
+}
+.select-all .hint {
+    font-weight: normal;
+}
+.select-all input,
+.rb-qhead .pick {
+    margin: 0;
+    cursor: pointer;
+}
+.preview-empty {
+    text-align: center;
+    padding: 2em 0;
+    margin: 0;
+}
+.check-status {
+    margin: 0.4em 0;
+    font-size: 13px;
+}
+.check-status.idle {
+    color: var(--muted);
+}
+.check-status.good {
+    color: #166534;
+}
+.check-status.bad {
+    color: #991b1b;
+    font-weight: 600;
+}
+.issues {
+    margin: 0.3em 0 0.3em 1.2em;
+    padding: 0;
+    font-size: 12.5px;
+}
+.issues li {
+    margin: 0.2em 0;
+}
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: 11px;
+    padding: 0 0.5em;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.tag input {
+    margin: 0;
+}
+.tag.same {
+    background: #e5e7eb;
+}
+.tag.new {
+    background: #dbeafe;
+}
+.tag.conflict {
+    background: #fde68a;
+}
+.tag.error {
+    background: #fecaca;
+    color: #7f1d1d;
+}
+.results {
+    margin: 0;
+    padding-left: 1.2em;
+}
+.results .ok {
+    color: #166534;
+}
+.results .bad {
+    color: #991b1b;
+}
+.log {
+    background: #f9fafb;
+    padding: 0.5em;
+    border-radius: 4px;
+}
+
+/* ------------------------------------------------------- compact Gradescope-like rubric */
+
+.rb {
+    font-size: 12px;
+    line-height: 1.35;
+}
+.rb-question {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.35em 0.5em 0.45em;
+    margin-bottom: 0.45em;
+}
+.rb-question.skipped {
+    opacity: 0.55;
+}
+.rb-qhead {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-bottom: 0.3em;
+}
+.rb-qnum {
+    font-weight: 700;
+    color: #1f3a5f;
+}
+.rb-qtitle {
+    font-weight: 600;
+}
+.rb-qmeta {
+    color: var(--muted);
+    font-size: 11px;
+}
+.rb-qtotal {
+    font-size: 11px;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 999px;
+    padding: 0 0.45em;
+}
+.rb-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.rb-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 2px 6px;
+    background: #fff;
+}
+.rb-points {
+    flex: none;
+    min-width: 3.2em;
+    font-weight: 700;
+    font-size: 11px;
+    padding-top: 1px;
+}
+.rb-points.positive {
+    color: #1e7d32;
+}
+.rb-points.negative {
+    color: #c62828;
+}
+.rb-points.zero {
+    color: #757575;
+}
+.rb-desc {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.rb-desc p {
+    margin: 0;
+}
+.rb-desc p + p,
+.rb-desc ul + p,
+.rb-desc p + ul {
+    margin-top: 0.3em;
+}
+.rb-desc ul {
+    margin: 0;
+    padding-left: 1.2em;
+}
+.rb-group {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background: #f4f6f8;
+    padding: 3px 6px 4px;
+}
+.rb-group-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5em;
+    margin-bottom: 3px;
+}
+.rb-group-kind {
+    flex: none;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0 0.45em;
+    background: #fff;
+}
+.rb-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: 0.9em;
+}
+.rb-empty {
+    color: var(--muted);
+    font-style: italic;
+}
+.rb-item.added,
+.rb-group.added {
+    background: #dcfce7;
+    border-color: #86efac;
+}
+.rb-item.removed,
+.rb-group.removed {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    text-decoration: line-through;
+    text-decoration-color: rgba(127, 29, 29, 0.5);
+    opacity: 0.8;
+}
+.rb-item.changed,
+.rb-group.changed {
+    background: #fef9c3;
+    border-color: #fcd34d;
+}
+.rb-points-change {
+    flex: none;
+    display: inline-flex;
+    gap: 0.3em;
+}
+.rb-points-change s {
+    opacity: 0.6;
+    text-decoration-color: rgba(127, 29, 29, 0.7);
+}
+.rb-points-change .rb-points {
+    min-width: 0;
+}
+.rb-old {
+    text-decoration: line-through;
+    text-decoration-color: rgba(127, 29, 29, 0.6);
+    opacity: 0.65;
+}
+.math {
+    font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+    font-size: 1.08em;
+    white-space: pre-wrap;
+}
+.math.display {
+    display: block;
+    text-align: center;
+    margin: 0.2em 0;
+}
+
+/* ------------------------------------------------------------------- uniform rubric dialog */
+
+dialog.uniform {
+    width: min(860px, 94vw);
+    height: auto;
+    max-height: 90vh;
+}
+dialog.uniform main {
+    display: block;
+    overflow: auto;
+}
+dialog.uniform h3 {
+    margin-right: 0.3em;
+}
+dialog.uniform table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+}
+dialog.uniform th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 0.2em 0.4em;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+dialog.uniform td {
+    padding: 0.2em 0.4em;
+    border-bottom: 1px solid #f1f2f4;
+}
+dialog.uniform input[type="text"],
+dialog.uniform input[type="number"] {
+    font: inherit;
+    box-sizing: border-box;
+    padding: 0.2em 0.4em;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+}
+.uniform-items input[type="text"] {
+    width: 100%;
+}
+.uniform-items td.points {
+    white-space: nowrap;
+    width: 1%;
+}
+.uniform-items input[type="number"] {
+    width: 5.5em;
+    margin-right: 0.2em;
+}
+.uniform-items td.row-tools {
+    white-space: nowrap;
+    width: 1%;
+}
+.uniform-items .icon-button {
+    padding: 0.15em;
+    margin-left: 0.15em;
+}
+.uniform-group input[type="text"] {
+    flex: 1 1 16em;
+}
+label.check-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+}
+.uniform-preview tr.skipped td {
+    opacity: 0.5;
+}
+.uniform-preview td.worth {
+    white-space: nowrap;
+    color: var(--muted);
+}
+.uniform-preview td.item-points {
+    white-space: nowrap;
+    font-size: 12px;
+}
+.uniform-preview td.fit {
+    color: #166534;
+}
+.uniform-preview td.misfit {
+    color: #92400e;
+    font-size: 12px;
+}
+
+/* -------------------------------------------------- very short windows: scroll as a whole */
+
+@media (max-height: 560px) {
+    dialog {
+        height: auto;
+    }
+    dialog > main {
+        overflow: auto;
+    }
+    .references,
+    section.ref,
+    section.upload,
+    .upload-grid {
+        flex: none;
+        max-height: none;
+    }
+    .references.both {
+        height: auto;
+    }
+    section.ref.open {
+        min-height: 0;
+    }
+    .upload-grid {
+        grid-template-rows: auto;
+    }
+    .viewer,
+    .upload-preview {
+        max-height: 60vh;
+    }
+    .upload-input textarea {
+        height: 50vh;
+    }
+    .splitter {
+        display: none;
+    }
+}
