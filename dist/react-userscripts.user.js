@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.7
+// @version  1.8
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -19774,21 +19774,16 @@
         progress.progress = null;
         progressCallback({ ...progress });
       }
-      const quizUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}`;
       const quizVersionUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
       let resp = null;
       progressA.message = "Fetching Quiz Details";
       notifyProgress();
-      resp = await logFetch(quizUrl);
-      const quizData = await resp.json();
-      const assignmentId = quizData["assignment_id"] || quizData["id"];
-      log("Quiz", this.quizId, "has assignment id", assignmentId);
       const quizQuestions = await this.fetchQuestions();
       quizQuestionsToHash(quizQuestions);
       const getQuizSubmittedAnswers = async () => {
-        const answersUrl = `/api/v1/courses/${this.courseId}/quizzes/${assignmentId}/submissions?include[]=user&include[]=submission_history&per_page=${PAGE_SIZE}`;
+        const answersUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
         const numSubmissions = await this.findNumPages(
-          `/api/v1/courses/${this.courseId}/quizzes/${assignmentId}/submissions?per_page=1`
+          `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?per_page=1`
         );
         const numPages = Math.ceil(numSubmissions / PAGE_SIZE);
         for (let page = 1; page <= numPages; page++) {
@@ -21267,7 +21262,7 @@
       );
     }
   }
-  const css = `/* Styles for the Rubric JSON tool. They live in the tool's shadow root, so they neither affect
+  const rubricCss = `/* Styles for the Rubric JSON tool. They live in the tool's shadow root, so they neither affect
    Gradescope's page nor are affected by it. */
 
 :host {
@@ -22273,10 +22268,10 @@ label.check-line {
   class Assignment {
     constructor(payload) {
       this.payload = payload;
-      this.questions = function flatten(list, out = []) {
+      this.questions = function flatten2(list, out = []) {
         for (const q2 of asArray(list)) {
           out.push(q2);
-          flatten(asArray(q2.children), out);
+          flatten2(asArray(q2.children), out);
         }
         return out;
       }(payload.questions);
@@ -24107,12 +24102,682 @@ page and sees a preview of every question before anything is changed:
     const order = new Map(plans.map((p2, k) => [p2.number, k]));
     return results.sort((a, b) => order.get(a.number) - order.get(b.number));
   }
+  const REGIONS_FORMAT = "examy-gradescope-regions";
+  const REGIONS_FORMAT_VERSION = 1;
+  const BOX_PAD = 2;
+  const LINE = 14;
+  function parseRegions(text) {
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      return { file: null, errors: [{ message: `Not JSON: ${e instanceof Error ? e.message : String(e)}` }] };
+    }
+    const f = data;
+    if (!f || typeof f !== "object" || f.format !== REGIONS_FORMAT) {
+      return {
+        file: null,
+        errors: [{ message: `Not a regions file: "format" should be "${REGIONS_FORMAT}". Make it with gradescope.typ (see "Regions from examy").` }]
+      };
+    }
+    if (f.version !== REGIONS_FORMAT_VERSION) {
+      return { file: null, errors: [{ message: `Regions file version ${f.version} is not supported (expected ${REGIONS_FORMAT_VERSION}). Download gradescope.typ again.` }] };
+    }
+    if (!Array.isArray(f.exams) || f.exams.length === 0 || !Array.isArray(f.exams[0]) || f.exams[0].length === 0) {
+      return { file: null, errors: [{ message: "The regions file has no questions." }] };
+    }
+    return { file: { ...f, pages: f.pages ?? [], ends: f.ends ?? [] }, errors: [] };
+  }
+  const round1 = (v2) => Math.round(v2 * 10) / 10;
+  const clamp = (v2) => Math.min(100, Math.max(0, v2));
+  const sum = (xs) => xs.reduce((a, b) => a + b, 0);
+  const near = (a, b) => Math.abs(a - b) < 1e-9;
+  function pageSizes(file, template, warnings) {
+    var _a;
+    const pages2 = new Map(file.pages.map((p2) => [p2.page, p2]));
+    if (pages2.size === 0 && ((_a = template == null ? void 0 : template.pages) == null ? void 0 : _a.length)) {
+      warnings.push({
+        message: "The regions file has no page sizes (does the exam set its own page `foreground`?), so Gradescope's are used, with 0.75in margins."
+      });
+      for (const p2 of template.pages) {
+        const width = p2.width * 72 / 300;
+        const height = p2.height * 72 / 300;
+        pages2.set(p2.number, { page: p2.number, width, height, margin: { top: 54, bottom: 54, left: 54, right: 54 } });
+      }
+    }
+    return pages2;
+  }
+  function spansBetween(from, to, pages2, left, right) {
+    const spans = [];
+    for (let page = from.page; page <= to.page; page++) {
+      const p2 = pages2.get(page);
+      if (!p2) {
+        continue;
+      }
+      const top = page === from.page ? from.y : p2.margin.top;
+      const bottom = page === to.page ? to.y : p2.height - p2.margin.bottom;
+      if (bottom > top) {
+        spans.push({ page, top, bottom, left: left ?? p2.margin.left, right: right ?? p2.width - p2.margin.right });
+      }
+    }
+    return spans;
+  }
+  function boxSpans(b, pages2) {
+    const inset = b.inset ?? { top: 0, bottom: 0, left: 0, right: 0 };
+    const p2 = pages2.get(b.bottom.page);
+    const right = b.bottom.x > b.top.x ? b.bottom.x + inset.right : p2 ? p2.width - p2.margin.right : void 0;
+    return spansBetween(
+      { ...b.top, y: b.top.y - inset.top },
+      { ...b.bottom, y: b.bottom.y + inset.bottom },
+      pages2,
+      b.top.x - inset.left,
+      right
+    );
+  }
+  function toRects(spans, pages2, pad) {
+    const byPage = /* @__PURE__ */ new Map();
+    for (const s of spans) {
+      const r2 = byPage.get(s.page);
+      byPage.set(
+        s.page,
+        r2 ? { top: Math.min(r2.top, s.top), bottom: Math.max(r2.bottom, s.bottom), left: Math.min(r2.left, s.left), right: Math.max(r2.right, s.right) } : { top: s.top, bottom: s.bottom, left: s.left, right: s.right }
+      );
+    }
+    return [...byPage.entries()].sort(([a], [b]) => a - b).flatMap(([page, r2]) => {
+      const p2 = pages2.get(page);
+      if (!p2) {
+        return [];
+      }
+      return [
+        {
+          x1: round1(clamp((r2.left - pad) / p2.width * 100)),
+          x2: round1(clamp((r2.right + pad) / p2.width * 100)),
+          y1: round1(clamp((r2.top - pad) / p2.height * 100)),
+          y2: round1(clamp((r2.bottom + pad) / p2.height * 100)),
+          page_number: page
+        }
+      ];
+    });
+  }
+  function idRegionKey(label) {
+    const l2 = (label ?? "").toLowerCase().trim();
+    if (/student\s*(id|no\.?|number|#)|utorid|\bsid\b|^id\b/.test(l2)) {
+      return "sid";
+    }
+    if (new RegExp("(?<!user)names?\\b").test(l2)) {
+      return "name";
+    }
+    return null;
+  }
+  const NAME_ABOVE = 6;
+  const NAME_PAD = 3;
+  function planIdRegions(names, pages2) {
+    const spans = {};
+    for (const line of names) {
+      const key = idRegionKey(line.label);
+      const p2 = pages2.get(line.start.page);
+      const had = key ? spans[key] : void 0;
+      if (!key || !p2 || had && (key === "sid" || had[0].page !== line.start.page)) {
+        continue;
+      }
+      const right = line.end.x > line.start.x ? line.end.x : p2.width - p2.margin.right;
+      spans[key] = [...had ?? [], { page: line.start.page, top: line.start.y - NAME_ABOVE, bottom: line.end.y, left: line.start.x, right }];
+    }
+    const out = {};
+    for (const key of ["name", "sid"]) {
+      const [rect] = spans[key] ? toRects(spans[key], pages2, NAME_PAD) : [];
+      if (rect) {
+        out[key] = rect;
+      }
+    }
+    return out;
+  }
+  function planOutline(file, template, examIndex = 0) {
+    const errors = [];
+    const warnings = [];
+    const exam = file.exams[examIndex];
+    if (!(exam == null ? void 0 : exam.length)) {
+      errors.push({ message: exam ? `Exam ${examIndex + 1} of the regions file has no questions.` : `The regions file has no exam ${examIndex + 1}.` });
+      return { questions: [], idRegions: {}, errors, warnings };
+    }
+    const rows = exam.map((r2) => ({ ...r2, label: r2.label.replace(/\s+/g, " ").trim() }));
+    const end = file.ends[examIndex] ?? null;
+    const pages2 = pageSizes(file, template, warnings);
+    if (file.exams.length > 1) {
+      warnings.push({ message: `The file holds ${file.exams.length} exams; this is exam ${examIndex + 1}.` });
+    }
+    const childrenOf = (d) => rows.filter((r2) => r2.level === d.level + 1 && r2.number.startsWith(d.number + "."));
+    const subtree = (d) => rows.filter((r2) => r2 === d || r2.number.startsWith(d.number + "."));
+    const own = (d) => d.points - sum(childrenOf(d).map((c) => c.points));
+    const splits = (d) => {
+      const kids = childrenOf(d);
+      return kids.length > 0 && own(d) <= 1e-9 && kids.some((c) => c.points > 0);
+    };
+    const units = (d) => splits(d) ? childrenOf(d).flatMap(units) : [d];
+    const after = (d) => {
+      const last = subtree(d).at(-1);
+      const next = rows.slice(rows.indexOf(last) + 1).find((r2) => r2.start);
+      return (next == null ? void 0 : next.start) ? { ...next.start, y: next.start.y - LINE } : end;
+    };
+    const regionOf = (d, ds) => {
+      const boxes = ds.flatMap((x2) => x2.boxes);
+      if (boxes.length) {
+        const spans2 = boxes.flatMap((b) => boxSpans(b, pages2));
+        return { rects: toRects(spans2, pages2, BOX_PAD), fallback: false };
+      }
+      const to = after(d);
+      if (!d.start || !to) {
+        return { rects: [], fallback: true };
+      }
+      const spans = spansBetween({ ...d.start, y: d.start.y - LINE }, to, pages2);
+      return { rects: toRects(spans, pages2, 0), fallback: true };
+    };
+    const questions = [];
+    rows.filter((r2) => r2.level === 1).forEach((q2, k) => {
+      const number = String(k + 1);
+      if (q2.number !== number) {
+        warnings.push({ message: `Examy question ${q2.number} is question ${number} on Gradescope (questions are numbered by position).`, number });
+      }
+      if (!splits(q2)) {
+        const ds = subtree(q2);
+        const { rects, fallback } = regionOf(q2, ds);
+        questions.push({ number, covers: ds.map((d) => d.number), label: q2.label, title: "", weight: q2.points, rects, fallback });
+        if (childrenOf(q2).length && own(q2) > 1e-9 && childrenOf(q2).some((c) => c.points > 0)) {
+          warnings.push({ message: `Question ${q2.number} has points of its own and in its parts, so it is one question on Gradescope.`, number });
+        }
+        return;
+      }
+      const children = units(q2).map((u2, j) => {
+        const ds = subtree(u2);
+        const { rects, fallback } = regionOf(u2, ds);
+        const title = u2.label.startsWith(q2.label) ? u2.label.slice(q2.label.length).trim() : u2.label;
+        return { number: `${number}.${j + 1}`, covers: ds.map((d) => d.number), label: u2.label, title, weight: u2.points, rects, fallback };
+      });
+      const ownBoxes = q2.boxes.flatMap((b) => boxSpans(b, pages2));
+      const groupRects = mergeRects([...children.flatMap((c) => c.rects), ...toRects(ownBoxes, pages2, BOX_PAD)]);
+      questions.push({
+        number,
+        covers: subtree(q2).map((d) => d.number),
+        label: q2.label,
+        title: "",
+        weight: sum(children.map((c) => c.weight)),
+        rects: groupRects,
+        fallback: children.every((c) => c.fallback),
+        children
+      });
+    });
+    for (const p2 of flatten(questions)) {
+      if (p2.children) {
+        continue;
+      }
+      if (p2.rects.length === 0) {
+        errors.push({ message: `Question ${p2.number} (examy ${p2.label}) has no region: it has no answer boxes, and its position is unknown.`, number: p2.number });
+      } else if (p2.fallback) {
+        warnings.push({ message: `Question ${p2.number} (examy ${p2.label}) has no answer boxes examy marks; its region is its text, to the next question or part.`, number: p2.number });
+      }
+      if (p2.weight <= 0) {
+        const bonus = p2.covers.some((n2) => {
+          var _a;
+          return (((_a = rows.find((r2) => r2.number === n2)) == null ? void 0 : _a.bonus) ?? 0) > 0;
+        });
+        warnings.push({
+          message: bonus ? `Question ${p2.number} (examy ${p2.label}) has only bonus points, so it is worth 0 on Gradescope.` : `Question ${p2.number} (examy ${p2.label}) has no points, so it is worth 0 on Gradescope.`,
+          number: p2.number
+        });
+      }
+    }
+    if (template) {
+      const used = Math.max(0, ...flatten(questions).flatMap((p2) => p2.rects.map((r2) => r2.page_number)));
+      if (used > template.page_count) {
+        errors.push({ message: `The regions reach page ${used}, but Gradescope's template has ${template.page_count} page${template.page_count === 1 ? "" : "s"}. Is it the same PDF?` });
+      } else if (file.pages.length && file.pages.length !== template.page_count) {
+        warnings.push({ message: `The exam has ${file.pages.length} pages, Gradescope's template ${template.page_count}. Is it the same PDF?` });
+      }
+      for (const t2 of template.pages ?? []) {
+        const p2 = file.pages.find((x2) => x2.page === t2.number);
+        if (p2 && Math.abs(p2.width / p2.height - t2.width / t2.height) > 0.01) {
+          warnings.push({ message: `Page ${t2.number} is ${p2.width}×${p2.height}pt in the exam but shaped ${t2.width}×${t2.height} on Gradescope. Is it the same PDF?` });
+          break;
+        }
+      }
+    }
+    const idRegions = planIdRegions(file.names ?? [], pages2);
+    if (file.names && !idRegions.name && !idRegions.sid) {
+      warnings.push({ message: "The name block has no line labelled with a name or student ID, so Gradescope's name and ID regions stay as they are." });
+    }
+    return { questions, idRegions, errors, warnings };
+  }
+  function mergeRects(rects) {
+    const byPage = /* @__PURE__ */ new Map();
+    for (const r2 of rects) {
+      const m2 = byPage.get(r2.page_number);
+      byPage.set(
+        r2.page_number,
+        m2 ? { x1: Math.min(m2.x1, r2.x1), x2: Math.max(m2.x2, r2.x2), y1: Math.min(m2.y1, r2.y1), y2: Math.max(m2.y2, r2.y2), page_number: r2.page_number } : { ...r2 }
+      );
+    }
+    return [...byPage.values()].sort((a, b) => a.page_number - b.page_number);
+  }
+  function flatten(qs) {
+    return qs.flatMap((q2) => [q2, ...q2.children ? flatten(q2.children) : []]);
+  }
+  function existingTree(outline) {
+    const byIndex = (a, b) => a.index - b.index;
+    const tops = outline.filter((q2) => q2.parent_id == null).sort(byIndex);
+    return tops.map((q2, k) => ({
+      number: String(k + 1),
+      question: q2,
+      children: outline.filter((c) => c.parent_id === q2.id).sort(byIndex).map((c, j) => ({ number: `${k + 1}.${j + 1}`, question: c, children: [] }))
+    }));
+  }
+  const sameRects = (a, b) => {
+    const key = (rs) => JSON.stringify(
+      [...rs].map((r2) => [r2.page_number, round1(r2.x1), round1(r2.x2), round1(r2.y1), round1(r2.y2)]).sort((x2, y2) => x2[0] - y2[0] || x2[3] - y2[3])
+    );
+    return key(a ?? []) === key(b);
+  };
+  function matchOutline(planned, outline) {
+    const tree = existingTree(outline);
+    const deleted = [];
+    const match = (p2, e, titleFrom) => {
+      const q2 = (e == null ? void 0 : e.question) ?? null;
+      const title = titleFrom === "existing" && q2 ? q2.title : p2.title;
+      const changes = [];
+      if (q2) {
+        if (!near(parseFloat(q2.weight), p2.weight)) {
+          changes.push(`weight ${parseFloat(q2.weight)} → ${p2.weight}`);
+        }
+        if ((q2.title ?? "") !== title) {
+          changes.push(`title "${q2.title ?? ""}" → "${title}"`);
+        }
+        if (!sameRects(q2.crop_rect_list, p2.rects)) {
+          changes.push("region");
+        }
+      }
+      return { ...p2, title, existing: q2, status: q2 ? changes.length ? "changed" : "same" : "new", changes, children: void 0 };
+    };
+    const questions = planned.map((p2, k) => {
+      const e = tree[k] ?? null;
+      const sameKind = e && !!p2.children === e.children.length > 0;
+      if (e && !sameKind) {
+        deleted.push(e, ...e.children);
+      }
+      const top = match(p2, sameKind ? e : null, "existing");
+      if (!p2.children) {
+        return top;
+      }
+      const kids = p2.children.map((c, j) => match(c, sameKind ? e.children[j] ?? null : null, "plan"));
+      if (sameKind) {
+        deleted.push(...e.children.slice(p2.children.length));
+        if (e.children.length !== p2.children.length && top.status === "same") {
+          top.status = "changed";
+        }
+      }
+      if (top.status === "same" && kids.some((c) => c.status !== "same")) {
+        top.status = "changed";
+      }
+      return { ...top, children: kids };
+    });
+    for (const e of tree.slice(planned.length)) {
+      deleted.push(e, ...e.children);
+    }
+    return { questions, deleted };
+  }
+  const ID_REGION_LABELS = { name: "Name", sid: "Student ID" };
+  function matchIdRegions(planned, props) {
+    const regions = props.assignment.id_regions ?? {};
+    return ["name", "sid"].map((key) => {
+      const existing = regions[key] ?? null;
+      const rect = planned[key] ?? null;
+      if (!rect) {
+        return { key, rect: existing, existing, status: "kept" };
+      }
+      return { key, rect, existing, status: !existing ? "new" : sameRects([existing], [rect]) ? "same" : "changed" };
+    });
+  }
+  function outlinePayload(match, props, ids = []) {
+    const regions = { ...props.assignment.id_regions ?? {} };
+    for (const id2 of ids) {
+      regions[id2.key] = id2.rect;
+    }
+    const data = (q2) => ({
+      title: q2.title,
+      weight: q2.weight,
+      crop_rect_list: q2.rects,
+      ...q2.children ? { children: q2.children.map(data) } : {},
+      ...q2.existing ? { id: q2.existing.id } : {}
+    });
+    return {
+      assignment: { identification_regions: { name: regions.name ?? null, sid: regions.sid ?? null, ...regions } },
+      question_data: match.questions.map(data)
+    };
+  }
+  function gradescopeMath(text) {
+    return text.replace(
+      /\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g,
+      (_, display, inline2) => display !== void 0 ? `$$$${display}$$$` : `$$${inline2}$$`
+    );
+  }
+  function rubricFromExamy(rubrics, regions, assignment) {
+    const warnings = /* @__PURE__ */ new Set();
+    const exam = rubrics[0];
+    if (!exam) {
+      throw new Error("The PDF's examy-rubric.json holds no exam.");
+    }
+    if (rubrics.length > 1) {
+      warnings.add(`The PDF holds the rubrics of ${rubrics.length} exams; these are the first's.`);
+    }
+    const gradescopeNumber = /* @__PURE__ */ new Map();
+    const groups = /* @__PURE__ */ new Set();
+    if (regions) {
+      for (const q2 of flatten(planOutline(regions, null).questions)) {
+        if (q2.children) {
+          groups.add(q2.covers[0]);
+          continue;
+        }
+        for (const n2 of q2.covers) {
+          gradescopeNumber.set(n2, q2.number);
+        }
+      }
+    }
+    const item = (e) => {
+      if (e.annotation) {
+        warnings.add("Rubric annotations (notes for graders) are not on Gradescope; they are left out.");
+      }
+      return { type: "item", points: e.points ?? 0, description: gradescopeMath(e.description) };
+    };
+    const items = (es) => es.flatMap((e) => {
+      if (e.type === "item") {
+        return [item(e)];
+      }
+      if (e.type === "group") {
+        warnings.add("A group inside a group is not possible on Gradescope; its items join the outer group.");
+        return items(e.items);
+      }
+      warnings.add("Rubric notes are not on Gradescope; they are left out.");
+      return [];
+    });
+    const entry = (e) => {
+      if (e.type === "item") {
+        return [item(e)];
+      }
+      if (e.type === "group") {
+        if (e.annotation) {
+          warnings.add("Rubric annotations (notes for graders) are not on Gradescope; they are left out.");
+        }
+        const description = [e.title, e.note].filter((s) => s && s.trim()).map((s) => gradescopeMath(s)).join("\n\n") || "Group";
+        return [{ type: "group", description, mutually_exclusive: false, items: items(e.items) }];
+      }
+      warnings.add("Rubric notes are not on Gradescope; they are left out.");
+      return [];
+    };
+    const byNumber = /* @__PURE__ */ new Map();
+    for (const q2 of exam.questions) {
+      if (!q2.number) {
+        warnings.add("A rubric of an unnumbered question is left out.");
+        continue;
+      }
+      if (groups.has(q2.number)) {
+        warnings.add(`Question ${q2.number}'s own rubric is left out: its points are in its parts, which are Gradescope's questions.`);
+        continue;
+      }
+      const number = gradescopeNumber.get(q2.number) ?? q2.number;
+      const at = byNumber.get(number) ?? { examy: [], rubric: [] };
+      at.examy.push(q2.number);
+      at.rubric.push(...q2.rubric.flatMap(entry));
+      byNumber.set(number, at);
+    }
+    const header = assignment.toRubricFile();
+    const questions = [...byNumber.entries()].map(([number, { examy, rubric }]) => {
+      var _a;
+      const gs = assignment.question(number);
+      if (!gs) {
+        warnings.add(`Examy question ${examy.join(", ")} is question ${number}, which is not on Gradescope; set the outline first (Outline JSON).`);
+      }
+      const points = exam.questions.filter((q2) => q2.number && examy.includes(q2.number)).reduce((a, q2) => a + (q2.points ?? 0), 0);
+      return {
+        number,
+        title: (gs == null ? void 0 : gs.title) || ((_a = exam.questions.find((q2) => q2.number === examy[0])) == null ? void 0 : _a.title) || void 0,
+        weight: gs ? parseFloat(gs.weight) : points,
+        scoring: (gs == null ? void 0 : gs.scoring_type) ?? "positive",
+        rubric
+      };
+    });
+    return {
+      file: { format: RUBRIC_FORMAT, version: RUBRIC_FORMAT_VERSION, assignment: header.assignment, questions },
+      warnings: [...warnings]
+    };
+  }
+  async function inflate(data) {
+    const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate"));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  const latin1 = (bytes) => new TextDecoder("latin1").decode(bytes);
+  function pdfString(s, i) {
+    let bytes = "";
+    if (s[i] === "(") {
+      let depth = 0;
+      for (let k = i; k < s.length; k++) {
+        const c = s[k];
+        if (c === "\\") {
+          const n2 = s[++k];
+          const escaped = { n: "\n", r: "\r", t: "	", b: "\b", f: "\f" };
+          if (n2 in escaped) {
+            bytes += escaped[n2];
+          } else if (/[0-7]/.test(n2)) {
+            const oct = /^[0-7]{1,3}/.exec(s.slice(k, k + 3))[0];
+            bytes += String.fromCharCode(parseInt(oct, 8) & 255);
+            k += oct.length - 1;
+          } else if (n2 === "\r") {
+            k += s[k + 1] === "\n" ? 1 : 0;
+          } else if (n2 !== "\n") {
+            bytes += n2;
+          }
+          continue;
+        }
+        if (c === "(") {
+          if (depth++ === 0) {
+            continue;
+          }
+        } else if (c === ")" && --depth === 0) {
+          return decodeText(bytes);
+        }
+        bytes += c;
+      }
+      return null;
+    }
+    if (s[i] === "<" && s[i + 1] !== "<") {
+      const end = s.indexOf(">", i);
+      if (end < 0) {
+        return null;
+      }
+      const hex = s.slice(i + 1, end).replace(/\s+/g, "");
+      for (let k = 0; k < hex.length; k += 2) {
+        bytes += String.fromCharCode(parseInt(hex.slice(k, k + 2).padEnd(2, "0"), 16));
+      }
+      return decodeText(bytes);
+    }
+    return null;
+  }
+  function decodeText(bytes) {
+    const raw = Uint8Array.from(bytes, (c) => c.charCodeAt(0));
+    if (bytes.startsWith("þÿ")) {
+      return new TextDecoder("utf-16be").decode(raw.slice(2));
+    }
+    if (bytes.startsWith("ï»¿")) {
+      return new TextDecoder().decode(raw.slice(3));
+    }
+    return bytes;
+  }
+  function skipString(s, i) {
+    let depth = 0;
+    for (let k = i; k < s.length; k++) {
+      if (s[k] === "\\") {
+        k++;
+      } else if (s[k] === "(") {
+        depth++;
+      } else if (s[k] === ")" && --depth === 0) {
+        return k;
+      }
+    }
+    return s.length;
+  }
+  function enclosingDict(s, i) {
+    let depth = 0;
+    let start = -1;
+    for (let k = i; k >= 1; k--) {
+      if (s[k - 1] === ">" && s[k] === ">") {
+        depth++;
+        k--;
+      } else if (s[k - 1] === "<" && s[k] === "<") {
+        if (depth-- === 0) {
+          start = k - 1;
+          break;
+        }
+        k--;
+      }
+    }
+    if (start < 0) {
+      return null;
+    }
+    depth = 0;
+    for (let k = start; k < s.length - 1; k++) {
+      if (s[k] === "(") {
+        k = skipString(s, k);
+      } else if (s[k] === "<" && s[k + 1] !== "<") {
+        k = s.indexOf(">", k);
+        if (k < 0) {
+          return null;
+        }
+      } else if (s[k] === "<" && s[k + 1] === "<") {
+        depth++;
+        k++;
+      } else if (s[k] === ">" && s[k + 1] === ">") {
+        if (--depth === 0) {
+          return s.slice(start, k + 2);
+        }
+        k++;
+      }
+    }
+    return null;
+  }
+  const FLATE = /\/Filter\s*(?:\/FlateDecode|\[\s*\/FlateDecode\s*\])/;
+  const ANY_FILTER = /\/Filter\b/;
+  async function pdfAttachments(data) {
+    var _a, _b, _c;
+    const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
+    const text = latin1(bytes);
+    const objects = /* @__PURE__ */ new Map();
+    for (const m2 of text.matchAll(/(?:^|[\s>\]])(\d+)\s+\d+\s+obj\b/g)) {
+      objects.set(Number(m2[1]), m2.index + m2[0].length);
+    }
+    const packed = /* @__PURE__ */ new Map();
+    const head = (start) => {
+      const endAt = text.indexOf("endobj", start);
+      const own = text.slice(start, endAt < 0 ? void 0 : endAt);
+      const m2 = /(>>\s*)stream(\r\n|\n|\r)/.exec(own);
+      return m2 ? { dict: own.slice(0, m2.index + m2[1].length), dataAt: start + m2.index + m2[0].length } : { dict: own, dataAt: -1 };
+    };
+    const body = (n2) => {
+      const at = objects.get(n2);
+      return at !== void 0 ? head(at).dict : packed.get(n2) ?? null;
+    };
+    const stream = async (start) => {
+      var _a2, _b2;
+      const { dict, dataAt: from } = head(start);
+      if (from < 0) {
+        return null;
+      }
+      const ref = /\/Length\s+(\d+)\s+\d+\s+R/.exec(dict);
+      const length = Number(ref ? (_a2 = /^\s*(\d+)/.exec(body(Number(ref[1])) ?? "")) == null ? void 0 : _a2[1] : (_b2 = /\/Length\s+(\d+)/.exec(dict)) == null ? void 0 : _b2[1]);
+      let to = from + length;
+      if (!Number.isFinite(length) || !/^\s*endstream/.test(text.slice(to, to + 20))) {
+        to = text.indexOf("endstream", from);
+        if (to < 0) {
+          return null;
+        }
+        to -= text[to - 2] === "\r" && text[to - 1] === "\n" ? 2 : /[\r\n]/.test(text[to - 1]) ? 1 : 0;
+      }
+      const raw = bytes.slice(from, to);
+      if (FLATE.test(dict)) {
+        return inflate(raw);
+      }
+      return ANY_FILTER.test(dict) ? null : raw;
+    };
+    for (const [, start] of objects) {
+      const { dict } = head(start);
+      if (!/\/Type\s*\/ObjStm\b/.test(dict) || /\/DecodeParms\b/.test(dict)) {
+        continue;
+      }
+      const n2 = Number((_a = /\/N\s+(\d+)/.exec(dict)) == null ? void 0 : _a[1]);
+      const first = Number((_b = /\/First\s+(\d+)/.exec(dict)) == null ? void 0 : _b[1]);
+      let content2 = null;
+      try {
+        content2 = await stream(start);
+      } catch {
+      }
+      if (!content2 || !Number.isFinite(n2) || !Number.isFinite(first)) {
+        continue;
+      }
+      const s = latin1(content2);
+      const numbers = s.slice(0, first).trim().split(/\s+/).map(Number);
+      for (let k = 0; k < n2; k++) {
+        const [num, offset] = [numbers[2 * k], numbers[2 * k + 1]];
+        const next = k + 1 < n2 ? numbers[2 * k + 3] : s.length - first;
+        if (!objects.has(num)) {
+          packed.set(num, s.slice(first + offset, first + next));
+        }
+      }
+    }
+    const files = /* @__PURE__ */ new Map();
+    const sources = [...[...objects.keys()].map((n2) => body(n2) ?? ""), ...packed.values()];
+    for (const source of sources) {
+      for (const ef2 of source.matchAll(/\/EF\s*<</g)) {
+        const spec = enclosingDict(source, ef2.index);
+        const refs = ((_c = /\/EF\s*<<([\s\S]*?)>>/.exec(spec ?? "")) == null ? void 0 : _c[1]) ?? "";
+        const ref = /\/(?:UF|F)\s+(\d+)\s+\d+\s+R/.exec(refs);
+        const outside = (spec ?? "").replace(/\/EF\s*<<[\s\S]*?>>/, "");
+        const nameAt = /\/UF\s*[(<]/.exec(outside) ?? /\/F\s*[(<]/.exec(outside);
+        const name = nameAt ? pdfString(outside, nameAt.index + nameAt[0].length - 1) : null;
+        const start = ref ? objects.get(Number(ref[1])) : void 0;
+        if (!name || start === void 0 || files.has(name)) {
+          continue;
+        }
+        try {
+          const content2 = await stream(start);
+          if (content2) {
+            files.set(name, new TextDecoder().decode(content2));
+          }
+        } catch {
+        }
+      }
+    }
+    return files;
+  }
+  function isPdf(data) {
+    const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
+    return latin1(bytes.slice(0, 1024)).includes("%PDF-");
+  }
+  async function readFileOrAttachment(file, name) {
+    const data = new Uint8Array(await file.arrayBuffer());
+    if (!isPdf(data)) {
+      return { text: new TextDecoder().decode(data), attachments: null };
+    }
+    const attachments = await pdfAttachments(data);
+    const text = attachments.get(name);
+    if (text === void 0) {
+      throw new Error(
+        `${file.name ?? "The PDF"} has no ${name} attached. Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
+      );
+    }
+    return { text, attachments };
+  }
   const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "assignment";
-  const plural = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
+  const plural$1 = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
   function download(text, filename, type) {
     FileSaver.saveAs(new Blob([text], { type: `${type};charset=utf-8` }), filename);
   }
-  const reloadPage = () => window.location.reload();
+  const reloadPage$1 = () => window.location.reload();
   async function copyText(text, host) {
     try {
       await navigator.clipboard.writeText(text);
@@ -24157,12 +24822,16 @@ page and sees a preview of every question before anything is changed:
     const [panel, setPanel] = React.useState("preview");
     const [log2, setLog] = React.useState([]);
     const [uploadResults, setUploadResults] = React.useState(null);
+    const [imported, setImported] = React.useState(null);
+    const fileInput = React.useRef(null);
     const [uploaded, setUploaded] = React.useState(false);
     const [reloading, setReloading] = React.useState(false);
     useModal(dialog, open2);
-    async function run(label, f) {
+    async function run(label, f, { keepError = false } = {}) {
       setBusy(label);
-      setError(null);
+      if (!keepError) {
+        setError(null);
+      }
       try {
         return await f();
       } catch (e) {
@@ -24171,11 +24840,15 @@ page and sees a preview of every question before anything is changed:
         setBusy(null);
       }
     }
-    const reload = () => run("Loading the rubric from Gradescope…", async () => {
-      const a = await client.load();
-      setAssignment(a);
-      return a;
-    });
+    const reload = ({ keepError = false } = {}) => run(
+      "Loading the rubric from Gradescope…",
+      async () => {
+        const a = await client.load();
+        setAssignment(a);
+        return a;
+      },
+      { keepError }
+    );
     function openDialog() {
       setInstructionsOpen(false);
       setCurrentOpen(false);
@@ -24223,15 +24896,38 @@ page and sees a preview of every question before anything is changed:
       }
     }
     function replaceText(value) {
+      setImported(null);
       setText(value);
       setUnticked(/* @__PURE__ */ new Set());
       setPanel("preview");
     }
-    function onFile(e) {
+    async function onFile(e) {
       var _a;
       const f = (_a = e.target.files) == null ? void 0 : _a[0];
       e.target.value = "";
-      f == null ? void 0 : f.text().then(replaceText);
+      if (!f) {
+        return;
+      }
+      const converted = await run(`Reading ${f.name}…`, async () => {
+        const read = await readFileOrAttachment(f, "examy-rubric.json");
+        if (!read.attachments) {
+          return { text: read.text, warnings: null };
+        }
+        const a = assignment ?? await client.load();
+        const regions = read.attachments.get("gradescope-regions.json");
+        const { file: file2, warnings } = rubricFromExamy(
+          JSON.parse(read.text),
+          regions ? JSON.parse(regions) : null,
+          a
+        );
+        return { text: JSON.stringify(file2, null, 2) + "\n", warnings };
+      });
+      if (converted) {
+        replaceText(converted.text);
+        if (converted.warnings) {
+          setImported({ from: f.name, warnings: converted.warnings });
+        }
+      }
     }
     const minReferencesHeight = () => instructionsOpen && currentOpen ? MIN_REFERENCE_HEIGHT.both : MIN_REFERENCE_HEIGHT.one;
     const maxReferencesHeight = () => {
@@ -24273,9 +24969,9 @@ page and sees a preview of every question before anything is changed:
     const toUpload = selectedPlans(plans, unticked);
     const summary = selectionSummary(plans, unticked);
     const locked = !!(assignment == null ? void 0 : assignment.payload.rubrics_locked);
-    const blockedReason = !text.trim() ? "Paste or autogenerate rubric JSON to upload it." : pending ? "Checking…" : result.errors.length ? `Fix the ${plural(result.errors.length, "error")} first.` : locked ? "Rubrics are locked for this assignment." : summary.selectable === 0 ? "Nothing to upload: every question already matches." : summary.selected === 0 ? "No question is selected." : null;
+    const blockedReason = !text.trim() ? "Paste or autogenerate rubric JSON to upload it." : pending ? "Checking…" : result.errors.length ? `Fix the ${plural$1(result.errors.length, "error")} first.` : locked ? "Rubrics are locked for this assignment." : summary.selectable === 0 ? "Nothing to upload: every question already matches." : summary.selected === 0 ? "No question is selected." : null;
     const replacing = summary.replacing === 0 ? "" : summary.replacing === summary.selected ? summary.selected === 1 ? "; it replaces an existing rubric" : "; all of them replace existing rubrics" : summary.replacing === 1 ? "; 1 of them replaces an existing rubric" : `; ${summary.replacing} of them replace existing rubrics`;
-    const uploadSummary = `${plural(summary.selected, "question")} will be uploaded${replacing}.`;
+    const uploadSummary = `${plural$1(summary.selected, "question")} will be uploaded${replacing}.`;
     async function upload() {
       setUploaded(true);
       setUploadResults(null);
@@ -24290,7 +24986,7 @@ page and sees a preview of every question before anything is changed:
       } else {
         setPanel("preview");
       }
-      await reload();
+      await reload({ keepError: !results });
     }
     const hasResults = log2.length > 0 || !!uploadResults;
     const anyReferenceOpen = instructionsOpen || currentOpen;
@@ -24319,7 +25015,7 @@ page and sees a preview of every question before anything is changed:
         }
       },
       /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h2", { title: assignment ? `Assignment ${assignment.assignmentId}` : void 0 }, "Rubric JSON", assignment ? ` — ${assignment.title}` : ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button close", title: "Close", "aria-label": "Close", onClick: () => setOpen(false) }, "×")),
-      /* @__PURE__ */ React.createElement("main", { ref: mainRef }, busy && /* @__PURE__ */ React.createElement("p", { className: "status", title: "Working" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error", title: "Error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), /* @__PURE__ */ React.createElement(
+      /* @__PURE__ */ React.createElement("main", { ref: mainRef }, busy && /* @__PURE__ */ React.createElement("p", { className: "status", title: "Working" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error", title: "Error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), imported && /* @__PURE__ */ React.createElement("div", { className: `banner ${imported.warnings.length ? "warning" : "ok"}`, title: "Converting the exam's rubrics" }, "Read the rubrics of ", imported.from, ".", imported.warnings.length > 0 && /* @__PURE__ */ React.createElement("ul", { className: "issues" }, imported.warnings.map((w2, k) => /* @__PURE__ */ React.createElement("li", { key: k }, w2)))), /* @__PURE__ */ React.createElement(
         "div",
         {
           ref: referencesRef,
@@ -24358,7 +25054,7 @@ page and sees a preview of every question before anything is changed:
                 onClick: () => setView(v2.id)
               },
               v2.label
-            ))), iconButton("Reload the rubric from Gradescope", /* @__PURE__ */ React.createElement(RefreshIcon, null), reload, !!busy), iconButton(
+            ))), iconButton("Reload the rubric from Gradescope", /* @__PURE__ */ React.createElement(RefreshIcon, null), () => reload(), !!busy), iconButton(
               view === "text" ? "Copy the rubric as text" : "Copy the rubric JSON",
               /* @__PURE__ */ React.createElement(CopyIcon, null),
               () => current && copy(current, view === "text" ? "the rubric text" : "the rubric JSON"),
@@ -24396,10 +25092,18 @@ page and sees a preview of every question before anything is changed:
               label: "Uniform rubric for all questions…",
               title: "Give every chosen question the same items with the same points (as deductions on negatively scored questions)",
               onClick: () => setUniformOpen(true)
+            },
+            {
+              label: "From an examy exam's PDF…",
+              title: "The rubrics (#rubric[..]) of an exam whose PDF was made with gradescope.typ in it (#show: gradescope(e, answer-box)), as Gradescope's: see Outline JSON for gradescope.typ",
+              onClick: () => {
+                var _a;
+                return (_a = fileInput.current) == null ? void 0 : _a.click();
+              }
             }
           ]
         }
-      ), /* @__PURE__ */ React.createElement("label", { className: "icon-button file-button", title: "Load a JSON file into the box below" }, /* @__PURE__ */ React.createElement(FileIcon, null), /* @__PURE__ */ React.createElement("input", { type: "file", accept: ".json,application/json", onChange: onFile })), iconButton(
+      ), /* @__PURE__ */ React.createElement("label", { className: "icon-button file-button", title: "Load a rubric JSON file into the box below, or the rubrics of an examy exam's PDF made with gradescope.typ" }, /* @__PURE__ */ React.createElement(FileIcon, null), /* @__PURE__ */ React.createElement("input", { ref: fileInput, type: "file", accept: ".json,application/json,.pdf,application/pdf", onChange: onFile })), iconButton(
         "Download the JSON in the box",
         /* @__PURE__ */ React.createElement(DownloadIcon, null),
         () => download(text, `${(exports == null ? void 0 : exports.base) ?? "assignment"}-new-rubric.json`, "application/json"),
@@ -24437,7 +25141,7 @@ page and sees a preview of every question before anything is changed:
           disabled: !!busy || !!blockedReason,
           title: blockedReason ?? `Upload to Gradescope: ${uploadSummary}`
         },
-        blockedReason ? "Upload" : `Upload ${plural(summary.selected, "question")}`
+        blockedReason ? "Upload" : `Upload ${plural$1(summary.selected, "question")}`
       ), uploaded ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close this dialog; Gradescope's editor keeps showing the old rubric", onClick: () => setOpen(false) }, "Close without reloading"), /* @__PURE__ */ React.createElement(
         "button",
         {
@@ -24447,7 +25151,7 @@ page and sees a preview of every question before anything is changed:
           title: reloading ? "Reloading Gradescope's editor…" : busy ? "Wait until the dialog has finished talking to Gradescope" : "Close this dialog and reload Gradescope's editor to show the new rubric",
           onClick: () => {
             setReloading(true);
-            reloadPage();
+            reloadPage$1();
           }
         },
         (busy || reloading) && /* @__PURE__ */ React.createElement("span", { className: "spinner", "aria-hidden": "true" }),
@@ -24516,7 +25220,7 @@ page and sees a preview of every question before anything is changed:
       return /* @__PURE__ */ React.createElement("p", { className: "check-status idle" }, "Checking…");
     }
     const unchanged = result.plans.filter((p2) => p2.status === "unchanged").length;
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, result.errors.length > 0 ? /* @__PURE__ */ React.createElement("p", { className: "check-status bad", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✗ ", plural(result.errors.length, "error"), ". Nothing can be uploaded until ", result.errors.length === 1 ? "it is" : "they are", " fixed.") : /* @__PURE__ */ React.createElement("p", { className: "check-status good", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✓ Valid. ", plural(result.plans.length, "question"), " in the file", unchanged ? `, ${unchanged} unchanged` : "", "; ", plural(props.toUpload, "question"), " will be uploaded."), result.errors.length > 0 && /* @__PURE__ */ React.createElement(IssueList, { issues: result.errors, kind: "error" }), result.warnings.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "banner warning" }, "⚠ ", plural(result.warnings.length, "warning"), " (likely mistakes; they don't block the upload):", /* @__PURE__ */ React.createElement(IssueList, { issues: result.warnings, kind: "warning" })));
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, result.errors.length > 0 ? /* @__PURE__ */ React.createElement("p", { className: "check-status bad", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✗ ", plural$1(result.errors.length, "error"), ". Nothing can be uploaded until ", result.errors.length === 1 ? "it is" : "they are", " fixed.") : /* @__PURE__ */ React.createElement("p", { className: "check-status good", title: "The JSON was checked locally; nothing was sent to Gradescope" }, "✓ Valid. ", plural$1(result.plans.length, "question"), " in the file", unchanged ? `, ${unchanged} unchanged` : "", "; ", plural$1(props.toUpload, "question"), " will be uploaded."), result.errors.length > 0 && /* @__PURE__ */ React.createElement(IssueList, { issues: result.errors, kind: "error" }), result.warnings.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "banner warning" }, "⚠ ", plural$1(result.warnings.length, "warning"), " (likely mistakes; they don't block the upload):", /* @__PURE__ */ React.createElement(IssueList, { issues: result.warnings, kind: "warning" })));
   }
   function SelectAll(props) {
     const box = React.useRef(null);
@@ -24526,7 +25230,7 @@ page and sees a preview of every question before anything is changed:
         box.current.indeterminate = props.selected > 0 && !all2;
       }
     });
-    return /* @__PURE__ */ React.createElement("label", { className: "select-all", title: all2 ? "Untick every question" : "Tick every question that would change" }, /* @__PURE__ */ React.createElement("input", { ref: box, type: "checkbox", checked: all2, onChange: (e) => props.setAll(e.target.checked) }), "Select all", /* @__PURE__ */ React.createElement("span", { className: "hint" }, "(", props.selected, " of ", plural(props.selectable, "question"), " selected)"));
+    return /* @__PURE__ */ React.createElement("label", { className: "select-all", title: all2 ? "Untick every question" : "Tick every question that would change" }, /* @__PURE__ */ React.createElement("input", { ref: box, type: "checkbox", checked: all2, onChange: (e) => props.setAll(e.target.checked) }), "Select all", /* @__PURE__ */ React.createElement("span", { className: "hint" }, "(", props.selected, " of ", plural$1(props.selectable, "question"), " selected)"));
   }
   function Preview(props) {
     const { result } = props;
@@ -24574,18 +25278,528 @@ page and sees a preview of every question before anything is changed:
         )
       },
       status,
-      props.errors.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "tag error", title: props.errors.map((e) => e.message).join("\n") }, plural(props.errors.length, "error"))
+      props.errors.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "tag error", title: props.errors.map((e) => e.message).join("\n") }, plural$1(props.errors.length, "error"))
     ), changes && /* @__PURE__ */ React.createElement(EntryList, { entries: diffEntries(plan.current.rubric, next.rubric) }));
   }
-  const HOST_ID = "canvas-quiz-stats-rubric-tool";
+  const HOST_ID$1 = "canvas-quiz-stats-rubric-tool";
   function rubricEditorRoute(pathname) {
     const m2 = pathname.match(/^\/courses\/(\d+)\/assignments\/(\d+)\/rubric\/edit\/?$/);
     return m2 ? { courseId: Number(m2[1]), assignmentId: Number(m2[2]) } : null;
   }
-  let mounted = null;
+  let mounted$1 = null;
   function updateRubricTool(options2 = {}) {
     var _a;
     const route2 = rubricEditorRoute(window.location.pathname);
+    if (mounted$1 && mounted$1.path !== window.location.pathname) {
+      mounted$1.root.unmount();
+      mounted$1.host.remove();
+      mounted$1 = null;
+    }
+    if (!route2 || mounted$1 || !document.body) {
+      return;
+    }
+    const csrfToken = (_a = document.querySelector('meta[name="csrf-token"]')) == null ? void 0 : _a.content;
+    if (!csrfToken) {
+      return;
+    }
+    const host = document.createElement("div");
+    host.id = HOST_ID$1;
+    document.body.appendChild(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(rubricCss);
+      shadow.adoptedStyleSheets = [sheet];
+    } catch {
+      const style2 = document.createElement("style");
+      style2.textContent = rubricCss;
+      shadow.appendChild(style2);
+    }
+    const container = document.createElement("div");
+    shadow.appendChild(container);
+    const client = new GradescopeClient({
+      origin: window.location.origin,
+      courseId: route2.courseId,
+      assignmentId: route2.assignmentId,
+      csrfToken,
+      fetch: options2.fetch
+    });
+    const root = createRoot(container);
+    root.render(/* @__PURE__ */ React.createElement(RubricTool, { client }));
+    mounted$1 = { root, host, path: window.location.pathname };
+  }
+  const css = "/* Styles for the Outline JSON tool, on top of the Rubric JSON tool's (see ../rubric/rubric-tool.css). */\n\n.outline-tool label.file-button {\n    gap: 0.35em;\n    padding: 0.3em 0.8em;\n}\n.outline-tool .step-row h3 {\n    display: inline-flex;\n    align-items: center;\n    gap: 0.45em;\n}\n.regions-input textarea {\n    resize: vertical;\n    margin-top: 0.4em;\n}\nol.ways {\n    margin: 0 0 0.4em;\n    padding-left: 1.4em;\n    font-size: 12.5px;\n}\nol.ways li {\n    margin-bottom: 0.3em;\n}\n.snippet-row {\n    display: flex;\n    align-items: flex-start;\n    gap: 0.4em;\n}\npre.snippet {\n    margin: 0.15em 0 0;\n    padding: 0.2em 0.5em;\n    font-size: 11.5px;\n    background: #f3f4f6;\n    border-radius: 4px;\n    user-select: all;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n.legend {\n    font-size: 12px;\n    padding: 0 0.5em;\n}\n.legend.new-rect {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.legend.old-rect {\n    border: 2px dashed #9ca3af;\n}\n\n/* The questions beside the template's pages; each side scrolls by itself. */\n.outline-grid {\n    flex: 1 1 0;\n    min-height: 0;\n    display: grid;\n    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);\n    grid-template-rows: minmax(0, 1fr);\n    gap: 1em;\n}\n@media (max-width: 900px) {\n    .outline-grid {\n        grid-template-columns: minmax(0, 1fr);\n        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);\n    }\n}\n.outline-list,\n.outline-pages {\n    min-height: 0;\n    overflow: auto;\n    border: 1px solid #e5e7eb;\n    border-radius: 6px;\n    background: #fafafa;\n    padding: 0.5em;\n}\n.outline-pages {\n    display: flex;\n    flex-direction: column;\n    gap: 0.75em;\n}\n\n.outline-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 12.5px;\n    background: #fff;\n}\n.outline-table th {\n    text-align: left;\n    font-weight: 600;\n    border-bottom: 1px solid var(--border);\n    padding: 0.25em 0.4em;\n}\n.outline-table td {\n    border-bottom: 1px solid #f3f4f6;\n    padding: 0.25em 0.4em;\n    vertical-align: top;\n}\n.outline-table td.num {\n    font-weight: 600;\n    white-space: nowrap;\n}\n.outline-table tr.child td.num {\n    padding-left: 1.4em;\n    font-weight: 400;\n}\n.outline-table td.pts,\n.outline-table td.pgs {\n    white-space: nowrap;\n}\n.outline-table td.pgs .tag {\n    margin-left: 0.35em;\n}\n.outline-table tr.hovered td {\n    background: #eff6ff;\n}\n.outline-table tr.deleted td {\n    color: #991b1b;\n    text-decoration: line-through;\n}\n.outline-table tr.deleted td:last-child {\n    text-decoration: none;\n}\n.outline-table .changes {\n    font-size: 11.5px;\n}\n.issues.errors {\n    color: #991b1b;\n}\n.issues.warnings {\n    color: #92400e;\n}\nlabel.check-line.confirm {\n    margin-top: 0.6em;\n    font-weight: 600;\n    color: #991b1b;\n}\n\nfigure.page {\n    position: relative;\n    margin: 0;\n    background: #fff;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\nfigure.page img {\n    display: block;\n    width: 100%;\n    height: auto;\n}\nfigure.page figcaption {\n    position: absolute;\n    right: 0.4em;\n    bottom: 0.2em;\n    font-size: 11px;\n    color: var(--muted);\n}\n.rect {\n    position: absolute;\n    box-sizing: border-box;\n    pointer-events: none;\n}\n.rect.old {\n    border: 2px dashed #9ca3af;\n}\n.rect.new {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.rect.new.fallback {\n    border-color: #d97706;\n    background: rgba(217, 119, 6, 0.08);\n}\n.rect.new.hovered {\n    background: rgba(29, 78, 216, 0.25);\n}\n.rect-label {\n    position: absolute;\n    top: 0;\n    left: 0;\n    font-size: 11px;\n    font-weight: 700;\n    color: #fff;\n    background: var(--blue);\n    padding: 0 0.3em;\n}\n.rect.fallback .rect-label {\n    background: #d97706;\n}\n\n.rect.new.id {\n    border-color: #059669;\n    background: rgba(5, 150, 105, 0.08);\n}\n.rect.new.id .rect-label {\n    background: #059669;\n}\n.outline-table tr.id-row td.num {\n    color: #047857;\n}\n";
+  function outlineProps(doc) {
+    const el2 = doc.querySelector('[data-react-class="AssignmentOutline"]');
+    const props = el2 == null ? void 0 : el2.dataset.reactProps;
+    return props ? JSON.parse(props) : null;
+  }
+  class OutlineClient {
+    constructor(options2) {
+      this.options = options2;
+    }
+    get base() {
+      return `${this.options.origin}/courses/${this.options.courseId}/assignments/${this.options.assignmentId}`;
+    }
+    async request(method, url, { body, accept = "application/json, text/javascript, */*; q=0.01" } = {}) {
+      const doFetch = this.options.fetch ?? pageFetch();
+      const res = await doFetch(url, {
+        method,
+        credentials: "include",
+        headers: {
+          Accept: accept,
+          "Content-Type": "application/json",
+          "X-CSRF-Token": this.options.csrfToken,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: body === void 0 ? void 0 : JSON.stringify(body)
+      });
+      if (!res.ok) {
+        throw new HttpError(method, url, res.status, res.statusText);
+      }
+      return res.text();
+    }
+    /** The outline as Gradescope has it now, read from a fresh copy of the editor's page. */
+    async load() {
+      const html = await this.request("GET", `${this.base}/outline/edit`, { accept: "text/html" });
+      const props = outlineProps(new DOMParser().parseFromString(html, "text/html"));
+      if (!props) {
+        throw new Error("Gradescope's outline editor page has no outline data (AssignmentOutline).");
+      }
+      return props;
+    }
+    /**
+     * Which of questions `ids` have grading data, as Gradescope's editor asks before deleting
+     * them. Gradescope answers `{}` when none has; anything else counts as grading for all of them.
+     */
+    async gradedQuestions(ids) {
+      if (ids.length === 0) {
+        return [];
+      }
+      const query = ids.map((id2) => `question_ids%5B%5D=${id2}`).join("&");
+      const text = await this.request("GET", `${this.base}/question_grading_data?${query}`);
+      const data = text ? JSON.parse(text) : {};
+      if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
+        return [];
+      }
+      const named = ids.filter((id2) => String(id2) in data);
+      return named.length ? named : ids;
+    }
+    /** Save the whole outline, as the editor's Save button does. */
+    async save(payload) {
+      await this.request("PATCH", `${this.base}/outline/`, { body: payload });
+    }
+  }
+  const regionsScript = '// Gradescope data for an examy exam, for Canvas Quiz Stats\' "Outline JSON" tool: where the answer\n// boxes and the name block\'s lines are, each question\'s points, and the pages\' sizes (the\n// "regions"), and the exam\'s rubrics. Needs examy 1.0.0 or later. Use it either way:\n//\n// 1. In the exam, so that its PDF carries the data (as attached files `gradescope-regions.json`,\n//    and `examy-rubric.json` if the exam has rubrics). Put this file next to the exam and, after\n//    examy\'s import:\n//\n//      #import "@preview/examy:1.0.0": *\n//      #import "gradescope.typ": gradescope\n//      #show: gradescope(e, answer-box)\n//\n// 2. From the command line, for an exam left as it is: put this file next to the exam and run\n//\n//      typst eval --in gradescope.typ --input exam=quiz-04a.typ \'query(<gs-regions>).first().value\' > quiz-04a-regions.json\n//\n//    `--input examy=1.1.0` picks the examy version the exam imports (1.0.0 by default), and\n//    `--input examy=path/to/examy/src/lib.typ` an examy that is not installed as a package.\n//\n// Either way the exam is laid out exactly as it is: this adds only invisible markers. (It sets the\n// page\'s `foreground` to one of them; an exam that sets its own page foreground loses the page\n// sizes, and the tool then uses Gradescope\'s.) Positions are in pt from the page\'s top left.\n\n#let _pt(l) = calc.round(l / 1pt, digits: 2)\n#let _plain(c) = if type(c) == str { c } else if c.has("text") { c.text } else if c.has("children") { c.children.map(_plain).join() } else if c.has("body") { _plain(c.body) } else { "" }\n\n// A box\'s or block\'s inset, in pt on each side. Needs context (for `em`).\n#let _insets(i) = {\n  let abs(v) = if v == none or v == auto { 0 } else if type(v) == relative { _pt(v.length.to-absolute()) } else if type(v) == length { _pt(v.to-absolute()) } else { 0 }\n  if type(i) != dictionary {\n    return (top: abs(i), bottom: abs(i), left: abs(i), right: abs(i))\n  }\n  let rest = i.at("rest", default: none)\n  let x = i.at("x", default: rest)\n  let y = i.at("y", default: rest)\n  (\n    top: abs(i.at("top", default: y)),\n    bottom: abs(i.at("bottom", default: y)),\n    left: abs(i.at("left", default: x)),\n    right: abs(i.at("right", default: x)),\n  )\n}\n\n// A page\'s margins, in pt, however they were set. Needs context.\n#let _margins() = {\n  let (w, h) = (page.width, page.height)\n  let m = page.margin\n  let all(v) = (top: v, bottom: v, left: v, right: v)\n  let sides = if m == auto {\n    all(2.5 / 21 * calc.min(w, h))\n  } else if type(m) != dictionary {\n    all(m)\n  } else {\n    let rest = m.at("rest", default: auto)\n    let x = m.at("x", default: rest)\n    let y = m.at("y", default: rest)\n    (\n      top: m.at("top", default: y),\n      bottom: m.at("bottom", default: y),\n      left: m.at("left", default: m.at("inside", default: x)),\n      right: m.at("right", default: m.at("outside", default: x)),\n    )\n  }\n  let resolve(v, size) = if v == auto { 2.5 / 21 * calc.min(w, h) } else if type(v) == ratio { v * size } else if type(v) == relative { v.ratio * size + v.length } else { v }\n  (\n    top: _pt(resolve(sides.top, h)),\n    bottom: _pt(resolve(sides.bottom, h)),\n    left: _pt(resolve(sides.left, w)),\n    right: _pt(resolve(sides.right, w)),\n  )\n}\n\n// The regions, from the markers, and examy\'s own record of its divisions (under the names of\n// examy version `P`, e.g. "@preview/examy,v1.0.0"); `none` if there is no exam. Needs context.\n#let _regions(P, exam) = {\n  let at(loc) = {\n    let p = loc.position()\n    (page: p.page, x: _pt(p.x), y: _pt(p.y))\n  }\n  // Where each division starts, and each answer box, under the division it is in: its top left\n  // and bottom right inside its inset, and the inset.\n  let starts = (:)\n  let boxes = (:)\n  let division = none\n  let top = none\n  for m in query(selector(label(P + "/division")).or(<gs-box>)) {\n    if m.label != <gs-box> {\n      division = str(m.value)\n      starts.insert(division, at(m.location()))\n    } else if m.value.edge == "top" {\n      top = (at: at(m.location()), inset: m.value.inset)\n    } else if division != none and top != none {\n      let b = (top: top.at, bottom: at(m.location()), inset: top.inset)\n      boxes.insert(division, boxes.at(division, default: ()) + (b,))\n      top = none\n    }\n  }\n\n  // The name block\'s lines, each with its label: where the line starts (its top left) and ends.\n  let names = ()\n  let name = none\n  let start = none\n  for m in query(<gs-name>) {\n    if m.value.kind == "label" {\n      name = m.value.text\n    } else if m.value.kind == "start" {\n      start = at(m.location())\n    } else if start != none {\n      names.push((label: name, start: start, end: at(m.location())))\n      (name, start) = (none, none)\n    }\n  }\n\n  let exams = state(P + "/points-data").final()\n  if exams == none or exams.len() == 0 {\n    return none\n  }\n  let number(address) = address.map(n => if type(n) == int { str(n + 1) } else { str(n) }).join(".")\n  (\n    format: "examy-gradescope-regions",\n    version: 1,\n    exam: exam,\n    pages: query(<gs-page>).map(m => (page: m.location().page(), ..m.value)),\n    names: names,\n    // Where each exam\'s questions end (in the same order as `exams`).\n    ends: query(label(P + "/pages")).map(m => at(m.location())),\n    exams: exams.map(rows => rows.map(r => (\n      number: number(r.address),\n      label: _plain(r.label),\n      level: r.level,\n      points: r.total_points,\n      bonus: r.total_bonus_points,\n      start: starts.at(str(r.id), default: none),\n      boxes: boxes.at(str(r.id), default: ()),\n    ))),\n  )\n}\n\n/// A show rule that records the regions of an examy exam, and attaches them and the exam\'s rubrics\n/// to its PDF: `#show: gradescope(e, answer-box)`, with `e` and `answer-box` from the exam\'s examy\n/// import. `attach: false` only records them (for `query(<gs-regions>)`). `exam`: the exam\'s name,\n/// written into the regions.\n#let gradescope(e, answer-box, attach: true, exam: none) = doc => {\n  // examy\'s names for its records, e.g. "@preview/examy,v1.0.0", from the answer box\'s id\n  // ("e_@preview/examy,v1.0.0_---_answer-box").\n  let P = e.data(answer-box).eid.split("_---_").first().trim("e_", at: start, repeat: false)\n\n  set page(foreground: context [#metadata((width: _pt(page.width), height: _pt(page.height), margin: _margins()))<gs-page>])\n\n  // Each answer box is drawn again with invisible markers placed at its top left and bottom right,\n  // inside its inset (its position alone is that of a line\'s baseline when it sits in a line of\n  // text).\n  show e.selector(answer-box): it => {\n    let fields = it.fields()\n    let body = fields.remove("body", default: none)\n    let _ = fields.remove("label", default: none)\n    let inset = fields.at("inset", default: none)\n    let edges = (\n      place(top + left, context [#metadata((edge: "top", inset: _insets(inset)))<gs-box>])\n        + place(bottom + right, [#metadata((edge: "bottom"))<gs-box>])\n    )\n    (it.func())(..fields, edges + body)\n  }\n\n  // The rows of a `name-block`: a label (a box with only a bottom inset) and a line to write on (a\n  // box with only a bottom stroke, and an inset at its bottom and sides). Markers go before the\n  // label (with its text) and on either side of the line.\n  show box: it => {\n    let (stroke, inset) = (it.stroke, it.inset)\n    let shaped(d, keys) = type(d) == dictionary and d.keys().sorted() == keys\n    if shaped(inset, ("bottom",)) and stroke in (none, (:)) {\n      [#metadata((kind: "label", text: _plain(it.body).trim()))<gs-name>#it]\n    } else if shaped(stroke, ("bottom",)) and shaped(inset, ("bottom", "left", "right")) {\n      [#metadata((kind: "start"))<gs-name>#it#metadata((kind: "end"))<gs-name>]\n    } else {\n      it\n    }\n  }\n\n  doc\n\n  context {\n    let data = _regions(P, exam)\n    if data == none {\n      return\n    }\n    [#metadata(data)<gs-regions>]\n    if attach {\n      pdf.attach(\n        "gradescope-regions.json",\n        bytes(json.encode(data)),\n        mime-type: "application/json",\n        description: "Where the exam\'s answer boxes are, for Gradescope\'s outline (Canvas Quiz Stats)",\n      )\n      // examy\'s own export of the rubrics (see its documentation, "Rubrics").\n      let rubrics = query(<examy-rubric>).map(m => m.value)\n      if rubrics.len() > 0 {\n        pdf.attach(\n          "examy-rubric.json",\n          bytes(json.encode(rubrics)),\n          mime-type: "application/json",\n          description: "The exam\'s rubrics, as examy exports them",\n        )\n      }\n    }\n  }\n}\n\n// From the command line (see the top): lay out the exam named by `--input exam=..`.\n#if "exam" in sys.inputs {\n  let EXAMY = sys.inputs.at("examy", default: "1.0.0")\n  import (if EXAMY.ends-with(".typ") { EXAMY } else { "@preview/examy:" + EXAMY }): e, answer-box\n  show: gradescope(e, answer-box, exam: sys.inputs.exam)\n  include sys.inputs.exam\n}\n';
+  function examBase(props) {
+    var _a, _b;
+    return ((_b = (_a = props == null ? void 0 : props.template) == null ? void 0 : _a.filename) == null ? void 0 : _b.replace(/(-solutions)?\.pdf$/i, "")) || "exam";
+  }
+  const IMPORT_SNIPPET = `#import "gradescope.typ": gradescope
+#show: gradescope(e, answer-box)`;
+  const shellQuote = (arg) => /^[\w.\/=@%+:,-]+$/.test(arg) ? arg : `'${arg.replace(/'/g, `'\\''`)}'`;
+  function regionsCommand(props) {
+    const base = examBase(props);
+    return `typst eval --in gradescope.typ --input ${shellQuote(`exam=${base}.typ`)} 'query(<gs-regions>).first().value' > ${shellQuote(`${base}-regions.json`)}`;
+  }
+  const pages = (rects) => [...new Set((rects ?? []).map((r2) => r2.page_number))].join(", ") || "–";
+  function outlineAiInstructions(props) {
+    const base = examBase(props);
+    const template = props == null ? void 0 : props.template;
+    const tree = props ? existingTree(props.outline) : [];
+    const rows = tree.flatMap((q2) => [q2, ...q2.children]).map((q2) => {
+      const title = (q2.question.title ?? "").replace(/\|/g, "\\|");
+      return `| \`${q2.number}\` | ${title} | ${parseFloat(q2.question.weight)} | ${pages(q2.question.crop_rect_list)} |`;
+    });
+    const ids = (props == null ? void 0 : props.assignment.id_regions) ?? {};
+    const idList = ["name", "sid"].map((k) => `${k === "name" ? "name" : "student ID"} ${ids[k] ? `on page ${ids[k].page_number}` : "not set"}`).join(", ");
+    return `# Making a Gradescope regions file from an examy exam
+
+You are helping set the outline of a Gradescope assignment (its questions, their points, and the
+region of the page each one takes) from the Typst source of the exam, written with the examy
+package. You will write a **regions file**: JSON that \`gradescope.typ\` (below) writes
+from the exam. The person then opens it in the "Outline JSON" dialog on Gradescope's outline
+editor, which previews it and saves it. Do not write or edit the JSON by hand.
+
+## This assignment
+
+- Gradescope assignment: **${(props == null ? void 0 : props.assignment.title) ?? "(not loaded)"}** (course ${(props == null ? void 0 : props.assignment.course_id) ?? "?"}, assignment ${(props == null ? void 0 : props.assignment.id) ?? "?"})
+- Template PDF on Gradescope: \`${(template == null ? void 0 : template.filename) ?? "(unknown)"}\`, ${template ? `${template.page_count} page${template.page_count === 1 ? "" : "s"}` : "page count unknown"}
+- The exam is probably \`${base}.typ\`, compiled as the **student version** (\`show-solutions: false\`): the regions must match the PDF students write on, page for page.
+- Has submissions: ${(props == null ? void 0 : props.has_submissions_and_students) ? "**yes** (changing the outline is risky; tell the person)" : "no"}
+- Name and student ID regions now: ${idList}
+
+${rows.length ? `Gradescope's outline now (numbered by position, as Gradescope numbers it):
+
+| Number | Title | Points | Pages |
+| --- | --- | --- | --- |
+${rows.join("\n")}
+
+Questions keep their place: question 2 of the exam updates question 2 here (keeping its rubric),
+and so on. Questions left over are deleted.` : "Gradescope's outline is empty now."}
+
+## Rules
+
+- **Work in a scratch folder, not in the exam's folder.** Do not change, add, or compile anything
+  in the exam's folder. Copy the exam into the scratch folder (with any files it reads: images,
+  included files), and make any changes (below) to the copy.
+- The copy must lay out **exactly like the template PDF**: same pages, and every answer box and
+  name block line in the same place. Text may differ slightly within a line; boxes and lines may
+  not move.
+
+## Steps
+
+1. **Find the exam** that matches the template: \`${base}.typ\`, or ask. Copy it into the scratch
+   folder, and note which examy version it imports (\`#import "@preview/examy:X.Y.Z": *\`).
+2. **It needs examy 1.0.0 or later.** If it imports an older version, change the copy to import
+   1.0.0 (see "Upgrading to examy 1.0.0"). If Typst says \`version 1.0.0 does not exist\`, examy
+   1.0.0 is not published yet: clone <https://github.com/siefkenj/typst-examy> and import its
+   \`src/lib.typ\` by path instead (e.g. clone it into the scratch folder and
+   \`#import "typst-examy/src/lib.typ": *\`).
+3. **Check the layout against the template PDF** (the person's compiled \`${base}.pdf\`, or the one
+   they uploaded). Compile the copy (into the scratch folder) and compare it page by page, e.g. render both with
+   \`pdftoppm -r 72 -png\` and compare where the long horizontal and vertical lines (box borders,
+   name lines) are. Fix the copy until they match.
+4. **Save \`gradescope.typ\`** (below) in the scratch folder, next to the copy, and run:
+
+   \`\`\`
+   ${regionsCommand(props)}
+   \`\`\`
+
+   there. Add \`--input examy=1.1.0\` if the exam imports a
+   version other than 1.0.0; if it imports examy by path, add
+   \`--input examy=path/to/src/lib.typ\` (the path as seen from \`gradescope.typ\`). If the exam and examy are not inside the folder of
+   \`gradescope.typ\`, add \`--root\` with a folder that holds them all.
+5. **Check the regions file** (see "What to check") and give it to the person: they open it in
+   the Outline JSON dialog, which shows the regions over the template's pages before saving.
+
+(Exams can also carry this data themselves: with \`#import "gradescope.typ": gradescope\` and
+\`#show: gradescope(e, answer-box)\` after examy's import, their PDF has \`gradescope-regions.json\`
+(and \`examy-rubric.json\`) attached. Only make that change if the person asks for it: it changes
+the exam's file.)
+
+## Upgrading to examy 1.0.0
+
+From examy 0.4.0 (examy's own list of breaking changes, and what else it took):
+
+- \`#points-table\` is a function: write \`#points-table()\`.
+- \`num-points\` and \`num-questions\` are functions that need context: \`#context num-points()\`.
+- \`maketitle\` and \`name-block\` use the document's font instead of DejaVu Sans Mono. To keep the
+  layout, set the font around them:
+  \`#{ set text(font: "DejaVu Sans Mono"); maketitle(); v(1em); name-block(..) }\`.
+- An answer box with no \`height\` fits its content instead of being 2cm tall: give it
+  \`height: 2cm\` to keep the layout.
+- \`question\`, \`part\`, and \`subpart\` no longer take \`solution:\`: write \`#solution[..]\` in the body.
+- \`show-solutions\` is \`true\` or \`false\` (\`none\` is not accepted).
+- \`exam\` is a function: \`e.set_(exam, ..)\` and \`e.show_(exam, ..)\` no longer apply to it.
+  \`#exam(questions: [..])\` still works; \`#show: exam.with(show-solutions: false)\` is the new way.
+
+From older examy (0.1.x): \`#exam\` no longer takes \`name_list\`; drop it and put
+\`#name-block()\` (in DejaVu Sans Mono, as above) where the name area was. (\`#show: e.prepare()\`
+can stay.)
+
+## What to check
+
+The file is \`{"format": "${REGIONS_FORMAT}", "version": ${REGIONS_FORMAT_VERSION}, "pages": [..], "names": [..], "ends": [..], "exams": [[..]]}\`:
+
+- \`pages\`: one per page, ${template ? `**${template.page_count}**, as the template has` : "as many as the template has"}, with their size and margins in pt.
+- \`names\`: the name block's lines with their labels. A line labelled with a name ("Name:") becomes
+  Gradescope's name region, one labelled with a student ID ("Student ID:", "Student number:",
+  "UTORid:") its student ID region. Without them, Gradescope's stay as they are.
+- \`exams[0]\`: every question, part, and subpart: \`number\` ("2.1" is 2 (a)), \`label\`, \`level\`,
+  \`points\`, \`start\`, and \`boxes\` (each answer box's top left and bottom right, inside its \`inset\`).
+  Positions are in pt from the page's top left.
+
+How the dialog turns it into the outline, to judge whether it is right:
+
+- Each question is a Gradescope question, worth its points (bonus points are not counted). If its
+  points are in its parts, the parts are its subquestions; Gradescope has two levels only, so a
+  part whose points are all in its subparts gives way to them (titled "(a) i"), and a part that
+  has the points covers its subparts.
+- A question's region is a rectangle per page around its answer boxes and its parts'. One with no
+  answer boxes (multiple choice, or a box examy does not mark, such as one holding \`choices\`)
+  gets its text instead, from its start to the next question or part. Tell the person which
+  questions have no boxes.
+- A question or part with 0 points is worth 0 on Gradescope; mention any.
+
+## gradescope.typ
+
+\`\`\`typst
+${regionsScript.trimEnd()}
+\`\`\`
+`;
+  }
+  const plural = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
+  const reloadPage = () => window.location.reload();
+  function summarize(match, ids) {
+    const all2 = flatten(match.questions);
+    const added = all2.filter((q2) => q2.status === "new").length;
+    const changed = all2.filter((q2) => q2.status === "changed").length;
+    const idChanged = ids.filter((i) => i.status === "new" || i.status === "changed");
+    const parts = [
+      added && `${plural(added, "question")} added`,
+      changed && `${plural(changed, "question")} changed`,
+      match.deleted.length && `${plural(match.deleted.length, "question")} deleted`,
+      idChanged.length && `${idChanged.map((i) => ID_REGION_LABELS[i.key].toLowerCase()).join(" and ")} region${idChanged.length > 1 ? "s" : ""} set`
+    ].filter(Boolean);
+    return { text: parts.join(", "), any: parts.length > 0 };
+  }
+  function OutlineTool({ client }) {
+    var _a;
+    const dialog = React.useRef(null);
+    const [open2, setOpen] = React.useState(false);
+    const [busy, setBusy] = React.useState(null);
+    const [error, setError] = React.useState(null);
+    const [notice, setNotice] = React.useState(null);
+    const [props, setProps] = React.useState(null);
+    const [text, setText] = React.useState("");
+    const [examIndex, setExamIndex] = React.useState(0);
+    const [graded, setGraded] = React.useState(null);
+    const [gradedAttempt, setGradedAttempt] = React.useState(0);
+    const [confirmed, setConfirmed] = React.useState(false);
+    const [hovered, setHovered] = React.useState(null);
+    const [results, setResults] = React.useState(null);
+    const [saved, setSaved] = React.useState(false);
+    const [reloading, setReloading] = React.useState(false);
+    const [instructionsOpen, setInstructionsOpen] = React.useState(false);
+    useModal(dialog, open2);
+    async function run(label, f, { keepError = false } = {}) {
+      setBusy(label);
+      if (!keepError) {
+        setError(null);
+      }
+      try {
+        return await f();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setBusy(null);
+      }
+    }
+    const reload = ({ keepError = false } = {}) => run(
+      "Loading the outline from Gradescope…",
+      async () => {
+        const p2 = await client.load();
+        setProps(p2);
+        return p2;
+      },
+      { keepError }
+    );
+    function openDialog() {
+      setInstructionsOpen(false);
+      setOpen(true);
+      reload();
+    }
+    function flash(message2) {
+      setNotice(message2);
+      window.setTimeout(() => setNotice((n2) => n2 === message2 ? null : n2), 2500);
+    }
+    const parsed = React.useMemo(() => text.trim() ? parseRegions(text) : null, [text]);
+    const file = (parsed == null ? void 0 : parsed.file) ?? null;
+    const exam = file && examIndex < file.exams.length ? examIndex : 0;
+    const plan = React.useMemo(() => file && props ? planOutline(file, props.template, exam) : null, [file, props, exam]);
+    const match = React.useMemo(() => plan && props ? matchOutline(plan.questions, props.outline) : null, [plan, props]);
+    const ids = React.useMemo(() => plan && props ? matchIdRegions(plan.idRegions, props) : [], [plan, props]);
+    const deletedIds = match ? match.deleted.map((d) => d.question.id) : [];
+    const deletedKey = deletedIds.join(",");
+    React.useEffect(() => {
+      setConfirmed(false);
+      if (!deletedKey) {
+        setGraded(null);
+        return;
+      }
+      let current = true;
+      client.gradedQuestions(deletedKey.split(",").map(Number)).then((g) => current && setGraded({ ids: deletedKey, graded: g })).catch((e) => current && setGraded({ ids: deletedKey, graded: [], failed: e instanceof Error ? e.message : String(e) }));
+      return () => {
+        current = false;
+      };
+    }, [deletedKey, gradedAttempt]);
+    function retryGradedCheck() {
+      setGraded(null);
+      setGradedAttempt((n2) => n2 + 1);
+    }
+    const summary = match ? summarize(match, ids) : null;
+    const gradedFor = (graded == null ? void 0 : graded.ids) === deletedKey ? graded : null;
+    const gradedFailed = deletedKey && (gradedFor == null ? void 0 : gradedFor.failed) ? gradedFor.failed : null;
+    const gradedKnown = !deletedKey || !!gradedFor && !gradedFailed;
+    const needsConfirm = !!(props == null ? void 0 : props.has_submissions_and_students) || gradedKnown && ((gradedFor == null ? void 0 : gradedFor.graded.length) ?? 0) > 0;
+    const errors = [...(parsed == null ? void 0 : parsed.errors) ?? [], ...(plan == null ? void 0 : plan.errors) ?? []];
+    const blockedReason = !text.trim() ? "Paste or open the regions file made from the exam." : errors.length ? `Fix the ${plural(errors.length, "error")} first.` : !props || !match ? "Loading…" : !summary.any ? "Nothing to save: Gradescope's outline already matches." : gradedFailed ? `Could not check the questions to delete for grading (${gradedFailed}).` : !gradedKnown ? "Checking the questions to delete for grading…" : needsConfirm && !confirmed ? "Confirm below that the outline may change." : null;
+    async function onFile(e) {
+      var _a2;
+      const f = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+      e.target.value = "";
+      if (!f) {
+        return;
+      }
+      const read = await run("Reading " + f.name + "…", async () => {
+        const { text: text2, attachments } = await readFileOrAttachment(f, "gradescope-regions.json");
+        if (!attachments) {
+          return { text: text2, attached: false };
+        }
+        try {
+          return { text: JSON.stringify(JSON.parse(text2), null, 1), attached: true };
+        } catch (e2) {
+          throw new Error(`The gradescope-regions.json attached to ${f.name} is not JSON: ${e2 instanceof Error ? e2.message : String(e2)}`);
+        }
+      });
+      if (read) {
+        changeText(read.text);
+        if (read.attached) {
+          flash(`Read the regions attached to ${f.name}.`);
+        }
+      }
+    }
+    function changeText(value) {
+      setText(value);
+      setExamIndex(0);
+      setResults(null);
+    }
+    async function copy(text2, label) {
+      const copied = await run("Copying…", async () => {
+        await copyText(text2, dialog.current ?? document.body);
+        return true;
+      });
+      if (copied) {
+        flash(`Copied ${label} to the clipboard.`);
+      }
+    }
+    const instructions = React.useMemo(() => outlineAiInstructions(props), [props]);
+    const instructionsFile = `${examBase(props)}-regions-ai-instructions.md`;
+    const iconButton = (title, icon, onClick) => /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title, onClick }, icon);
+    const instructionsTools = /* @__PURE__ */ React.createElement(React.Fragment, null, iconButton("Copy the AI instructions to the clipboard", /* @__PURE__ */ React.createElement(CopyIcon, null), () => copy(instructions, "the AI instructions")), iconButton(`Download the AI instructions (${instructionsFile})`, /* @__PURE__ */ React.createElement(DownloadIcon, null), () => download(instructions, instructionsFile, "text/markdown")));
+    async function save() {
+      if (!match || !props || !plan) {
+        return;
+      }
+      setSaved(true);
+      setResults(null);
+      const body = outlinePayload(match, props, ids);
+      const ok2 = await run("Saving the outline…", () => client.save(body).then(() => true));
+      const now = await reload({ keepError: !ok2 });
+      if (!ok2 || !now) {
+        return;
+      }
+      const again = matchOutline(plan.questions, now.outline);
+      const left = flatten(again.questions).filter((q2) => q2.status !== "same");
+      const idsLeft = matchIdRegions(plan.idRegions, now).filter((i) => i.status === "new" || i.status === "changed");
+      setResults(
+        left.length === 0 && again.deleted.length === 0 && idsLeft.length === 0 ? [{ ok: true, message: `Saved and verified: ${plural(flatten(again.questions).length, "question")}.` }] : [
+          ...left.map((q2) => ({ ok: false, message: `Question ${q2.number}: ${q2.status === "new" ? "not on Gradescope" : q2.changes.join(", ")}` })),
+          ...again.deleted.map((d) => ({ ok: false, message: `Question ${d.number} is still on Gradescope.` })),
+          ...idsLeft.map((i) => ({ ok: false, message: `The ${ID_REGION_LABELS[i.key].toLowerCase()} region is not as saved.` }))
+        ]
+      );
+    }
+    const pages2 = ((_a = props == null ? void 0 : props.template) == null ? void 0 : _a.pages) ?? [];
+    const exams = (file == null ? void 0 : file.exams.length) ?? 0;
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { className: "launcher", type: "button", onClick: openDialog, title: "Set this outline's questions, points, and regions from an examy exam" }, "Outline JSON"), /* @__PURE__ */ React.createElement("dialog", { ref: dialog, className: "tool outline-tool", onClose: () => setOpen(false) }, /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h2", null, "Outline JSON", props ? ` — ${props.assignment.title}` : ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button close", title: "Close", "aria-label": "Close", onClick: () => setOpen(false) }, "×")), /* @__PURE__ */ React.createElement("main", null, busy && /* @__PURE__ */ React.createElement("p", { className: "status" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), /* @__PURE__ */ React.createElement("div", { className: `references ${instructionsOpen ? "" : "closed"}` }, /* @__PURE__ */ React.createElement(
+      ReferenceSection,
+      {
+        name: "instructions",
+        label: "AI instructions",
+        title: "Instructions for an AI agent to make the regions file from the exam: upgrading it to examy 1.0.0 on a copy, checking its layout, the command, and gradescope.typ.",
+        open: instructionsOpen,
+        setOpen: setInstructionsOpen,
+        tools: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Give these to an AI agent that can read the exam and run Typst."), instructionsTools),
+        collapsedTools: instructionsTools
+      },
+      /* @__PURE__ */ React.createElement("pre", { className: "viewer-text", title: "The AI instructions (Markdown)" }, instructions)
+    )), /* @__PURE__ */ React.createElement("section", { className: "regions-input" }, /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { className: "step" }, "1"), " Regions from examy"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "small",
+        title: "Download gradescope.typ; put it next to the exam",
+        onClick: () => download(regionsScript, "gradescope.typ", "text/plain")
+      },
+      /* @__PURE__ */ React.createElement(DownloadIcon, null),
+      " gradescope.typ"
+    ), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Put it next to the exam (examy 1.0.0 or later), then either:")), /* @__PURE__ */ React.createElement("ol", { className: "ways" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "add to the exam, after examy's import, so that its PDF carries the regions (and its rubrics, for Rubric JSON):"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "gradescope.typ attaches gradescope-regions.json (and examy-rubric.json) to the PDF" }, IMPORT_SNIPPET), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy these lines", onClick: () => copy(IMPORT_SNIPPET, "the lines") }, /* @__PURE__ */ React.createElement(CopyIcon, null)))), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or, leaving the exam as it is, run next to it:"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "Writes the regions file; add --input examy=.. for another examy version (see gradescope.typ)" }, regionsCommand(props)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy the command", onClick: () => copy(regionsCommand(props), "the command") }, /* @__PURE__ */ React.createElement(CopyIcon, null))))), /* @__PURE__ */ React.createElement("div", { className: "row tight" }, /* @__PURE__ */ React.createElement("label", { className: "file-button", title: "Open the exam's PDF (made with gradescope.typ in it) or the regions file" }, /* @__PURE__ */ React.createElement(FileIcon, null), " Open PDF or regions file", /* @__PURE__ */ React.createElement("input", { type: "file", accept: ".pdf,application/pdf,.json,application/json", onChange: onFile })), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or paste the regions file:"), exams > 1 && /* @__PURE__ */ React.createElement("select", { value: exam, onChange: (e) => setExamIndex(Number(e.target.value)), title: "The file holds several exams" }, Array.from({ length: exams }, (_, k) => /* @__PURE__ */ React.createElement("option", { key: k, value: k }, "Exam ", k + 1)))), /* @__PURE__ */ React.createElement(
+      "textarea",
+      {
+        value: text,
+        onChange: (e) => changeText(e.target.value),
+        placeholder: '{ "format": "examy-gradescope-regions", … }',
+        spellCheck: false,
+        rows: 3,
+        title: "The regions file. Nothing is sent to Gradescope until you press Save."
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { className: "step" }, "2"), " Review the outline"), /* @__PURE__ */ React.createElement("span", { className: "legend new-rect" }, "new region"), /* @__PURE__ */ React.createElement("span", { className: "legend old-rect" }, "Gradescope's region now")), /* @__PURE__ */ React.createElement("div", { className: "outline-grid" }, /* @__PURE__ */ React.createElement("div", { className: "outline-list" }, errors.length > 0 && /* @__PURE__ */ React.createElement("ul", { className: "issues errors" }, errors.map((e, k) => /* @__PURE__ */ React.createElement("li", { key: k }, "✗ ", e.message))), results && /* @__PURE__ */ React.createElement("ul", { className: "results" }, results.map((r2, k) => /* @__PURE__ */ React.createElement("li", { key: k, className: r2.ok ? "ok" : "bad" }, r2.message))), match ? /* @__PURE__ */ React.createElement(QuestionTable, { match, ids, hovered, setHovered, graded: (gradedFor == null ? void 0 : gradedFor.graded) ?? [] }) : !errors.length && /* @__PURE__ */ React.createElement("p", { className: "hint" }, "The questions appear here once there is a regions file."), ((plan == null ? void 0 : plan.warnings.length) ?? 0) > 0 && /* @__PURE__ */ React.createElement("ul", { className: "issues warnings" }, plan.warnings.map((w2, k) => /* @__PURE__ */ React.createElement("li", { key: k }, "⚠ ", w2.message))), needsConfirm && match && (summary == null ? void 0 : summary.any) && /* @__PURE__ */ React.createElement("label", { className: "check-line confirm" }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: confirmed, onChange: (e) => setConfirmed(e.target.checked) }), (props == null ? void 0 : props.has_submissions_and_students) ? "This assignment has submissions. Change its outline anyway." : "Delete the questions that have grading anyway.")), /* @__PURE__ */ React.createElement("div", { className: "outline-pages", title: "Gradescope's template, with the regions" }, pages2.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "hint" }, props ? "Gradescope has no template pages." : "Loading…"), pages2.map((p2) => /* @__PURE__ */ React.createElement(
+      PagePreview,
+      {
+        key: p2.number,
+        url: p2.url,
+        number: p2.number,
+        match,
+        ids,
+        existing: (props == null ? void 0 : props.outline) ?? [],
+        existingIds: (props == null ? void 0 : props.assignment.id_regions) ?? {},
+        hovered
+      }
+    ))))), /* @__PURE__ */ React.createElement("footer", null, /* @__PURE__ */ React.createElement("span", { className: "step" }, "3"), /* @__PURE__ */ React.createElement("span", { className: "hint" }, blockedReason ?? `Save: ${summary.text}.`), gradedFailed && /* @__PURE__ */ React.createElement("button", { type: "button", className: "small", title: "Ask Gradescope again whether the questions to delete have grading", onClick: retryGradedCheck }, "Retry"), /* @__PURE__ */ React.createElement("button", { type: "button", className: saved ? "" : "primary", onClick: save, disabled: !!busy || !!blockedReason, title: blockedReason ?? "Save the outline on Gradescope" }, "Save outline"), saved ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close this dialog; Gradescope's editor keeps showing the old outline", onClick: () => setOpen(false) }, "Close without reloading"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "primary",
+        disabled: !!busy || reloading,
+        title: reloading ? "Reloading Gradescope's editor…" : busy ? "Wait until the dialog has finished talking to Gradescope" : "Close this dialog and reload Gradescope's editor to show the new outline",
+        onClick: () => {
+          setReloading(true);
+          reloadPage();
+        }
+      },
+      (busy || reloading) && /* @__PURE__ */ React.createElement("span", { className: "spinner", "aria-hidden": "true" }),
+      reloading ? "Reloading…" : "Close and reload"
+    )) : /* @__PURE__ */ React.createElement("button", { type: "button", title: "Close this dialog", onClick: () => setOpen(false) }, "Close"))));
+  }
+  const STATUS = {
+    new: { label: "New", className: "new" },
+    changed: { label: "Changes", className: "conflict" },
+    same: { label: "No change", className: "same" }
+  };
+  const pagesOf = (rects) => {
+    const ps = [...new Set(rects.map((r2) => r2.page_number))];
+    return ps.length === 0 ? "–" : ps.length === 1 ? `p. ${ps[0]}` : `pp. ${ps.join(", ")}`;
+  };
+  function QuestionTable(props) {
+    const idRow = (i) => /* @__PURE__ */ React.createElement("tr", { key: i.key, className: `id-row ${props.hovered === i.key ? "hovered" : ""}`, onMouseEnter: () => props.setHovered(i.key), onMouseLeave: () => props.setHovered(null) }, /* @__PURE__ */ React.createElement("td", { className: "num" }, i.key === "name" ? "Name" : "ID"), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, ID_REGION_LABELS[i.key], " region")), /* @__PURE__ */ React.createElement("td", { className: "pts" }), /* @__PURE__ */ React.createElement("td", { className: "pgs" }, i.rect ? pagesOf([i.rect]) : "–"), /* @__PURE__ */ React.createElement("td", null, i.status === "kept" ? /* @__PURE__ */ React.createElement("span", { className: "tag same", title: "The exam's name block has no line for it, so Gradescope's stays as it is" }, i.existing ? "Kept" : "None") : /* @__PURE__ */ React.createElement("span", { className: `tag ${STATUS[i.status].className}` }, STATUS[i.status].label), i.status === "changed" && /* @__PURE__ */ React.createElement("span", { className: "hint changes" }, " region")));
+    const row = (q2, child) => /* @__PURE__ */ React.createElement(
+      "tr",
+      {
+        key: q2.number,
+        className: `${child ? "child" : ""} ${props.hovered === q2.number ? "hovered" : ""}`,
+        onMouseEnter: () => props.setHovered(q2.number),
+        onMouseLeave: () => props.setHovered(null)
+      },
+      /* @__PURE__ */ React.createElement("td", { className: "num" }, q2.number),
+      /* @__PURE__ */ React.createElement("td", { title: `Examy ${q2.label}${q2.covers.length > 1 ? ` (with ${q2.covers.slice(1).join(", ")})` : ""}` }, q2.title || /* @__PURE__ */ React.createElement("span", { className: "hint" }, q2.existing ? "(no title)" : `examy ${q2.label}`)),
+      /* @__PURE__ */ React.createElement("td", { className: "pts" }, q2.weight),
+      /* @__PURE__ */ React.createElement("td", { className: "pgs" }, pagesOf(q2.rects), q2.fallback && !q2.children && /* @__PURE__ */ React.createElement("span", { className: "tag conflict", title: "No answer boxes examy marks: the region is the text to the next question or part" }, "text")),
+      /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: `tag ${STATUS[q2.status].className}`, title: q2.changes.join("; ") || void 0 }, STATUS[q2.status].label), q2.changes.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "hint changes" }, " ", q2.changes.join(", ")))
+    );
+    return /* @__PURE__ */ React.createElement("table", { className: "outline-table" }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("th", null, "#"), /* @__PURE__ */ React.createElement("th", null, "Title"), /* @__PURE__ */ React.createElement("th", { title: "Weight on Gradescope (examy's points)" }, "Pts"), /* @__PURE__ */ React.createElement("th", null, "Region"), /* @__PURE__ */ React.createElement("th", null, "Change"))), /* @__PURE__ */ React.createElement("tbody", null, (props.ids ?? []).map(idRow), props.match.questions.flatMap((q2) => [row(q2, false), ...(q2.children ?? []).map((c) => row(c, true))]), props.match.deleted.map((d) => /* @__PURE__ */ React.createElement("tr", { key: `deleted-${d.question.id}`, className: `deleted ${d.children.length === 0 && d.number.includes(".") ? "child" : ""}` }, /* @__PURE__ */ React.createElement("td", { className: "num" }, d.number), /* @__PURE__ */ React.createElement("td", null, d.question.title || /* @__PURE__ */ React.createElement("span", { className: "hint" }, "(no title)")), /* @__PURE__ */ React.createElement("td", { className: "pts" }, parseFloat(d.question.weight)), /* @__PURE__ */ React.createElement("td", { className: "pgs" }, pagesOf(d.question.crop_rect_list ?? [])), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: "tag error", title: "Saving deletes this question from the outline" }, "Deleted"), props.graded.includes(d.question.id) && /* @__PURE__ */ React.createElement("span", { className: "hint changes" }, " has grading"))))));
+  }
+  function PagePreview(props) {
+    const leaves = props.match ? flatten(props.match.questions).filter((q2) => !q2.children) : [];
+    const box = (r2) => ({ left: `${r2.x1}%`, top: `${r2.y1}%`, width: `${r2.x2 - r2.x1}%`, height: `${r2.y2 - r2.y1}%` });
+    const isGroup = (id2) => props.existing.some((q2) => q2.parent_id === id2);
+    return /* @__PURE__ */ React.createElement("figure", { className: "page" }, /* @__PURE__ */ React.createElement("img", { src: props.url, alt: `Page ${props.number}`, loading: "lazy" }), props.existing.filter((q2) => !isGroup(q2.id)).flatMap((q2) => (q2.crop_rect_list ?? []).filter((r2) => r2.page_number === props.number).map((r2, k) => /* @__PURE__ */ React.createElement("div", { key: `old-${q2.id}-${k}`, className: "rect old", style: box(r2) }))), Object.entries(props.existingIds ?? {}).filter(([, r2]) => r2 && r2.page_number === props.number).map(([key, r2]) => /* @__PURE__ */ React.createElement("div", { key: `old-id-${key}`, className: "rect old", style: box(r2) })), (props.ids ?? []).filter((i) => {
+      var _a;
+      return i.status !== "kept" && ((_a = i.rect) == null ? void 0 : _a.page_number) === props.number;
+    }).map((i) => /* @__PURE__ */ React.createElement("div", { key: `id-${i.key}`, className: `rect new id ${props.hovered === i.key ? "hovered" : ""}`, style: box(i.rect) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, i.key === "name" ? "Name" : "ID"))), leaves.flatMap(
+      (q2) => q2.rects.filter((r2) => r2.page_number === props.number).map((r2, k) => /* @__PURE__ */ React.createElement("div", { key: `new-${q2.number}-${k}`, className: `rect new ${props.hovered === q2.number ? "hovered" : ""} ${q2.fallback ? "fallback" : ""}`, style: box(r2) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, q2.number)))
+    ), /* @__PURE__ */ React.createElement("figcaption", null, "Page ", props.number));
+  }
+  const HOST_ID = "canvas-quiz-stats-outline-tool";
+  function outlineEditorRoute(pathname) {
+    const m2 = pathname.match(/^\/courses\/(\d+)\/assignments\/(\d+)\/outline\/edit\/?$/);
+    return m2 ? { courseId: Number(m2[1]), assignmentId: Number(m2[2]) } : null;
+  }
+  let mounted = null;
+  function updateOutlineTool(options2 = {}) {
+    var _a;
+    const route2 = outlineEditorRoute(window.location.pathname);
     if (mounted && mounted.path !== window.location.pathname) {
       mounted.root.unmount();
       mounted.host.remove();
@@ -24604,16 +25818,16 @@ page and sees a preview of every question before anything is changed:
     const shadow = host.attachShadow({ mode: "open" });
     try {
       const sheet = new CSSStyleSheet();
-      sheet.replaceSync(css);
+      sheet.replaceSync(rubricCss + css);
       shadow.adoptedStyleSheets = [sheet];
     } catch {
       const style2 = document.createElement("style");
-      style2.textContent = css;
+      style2.textContent = rubricCss + css;
       shadow.appendChild(style2);
     }
     const container = document.createElement("div");
     shadow.appendChild(container);
-    const client = new GradescopeClient({
+    const client = new OutlineClient({
       origin: window.location.origin,
       courseId: route2.courseId,
       assignmentId: route2.assignmentId,
@@ -24621,7 +25835,7 @@ page and sees a preview of every question before anything is changed:
       fetch: options2.fetch
     });
     const root = createRoot(container);
-    root.render(/* @__PURE__ */ React.createElement(RubricTool, { client }));
+    root.render(/* @__PURE__ */ React.createElement(OutlineTool, { client }));
     mounted = { root, host, path: window.location.pathname };
   }
   async function main() {
@@ -24641,10 +25855,12 @@ page and sees a preview of every question before anything is changed:
     log("Gradescope script started", window.location.href);
     runInGradescope();
     addLocationChangeCallback(() => {
-      try {
-        updateRubricTool();
-      } catch (e) {
-        log(e);
+      for (const update of [updateRubricTool, updateOutlineTool]) {
+        try {
+          update();
+        } catch (e) {
+          log(e);
+        }
       }
     });
   } else {

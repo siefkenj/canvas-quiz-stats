@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { Assignment } from "./assignment";
-import { maxPoints, presetFullMarks, templateFit, templateProblems, uniformPoints, uniformRubric, UNIFORM_PRESETS, type UniformTemplate } from "./uniform";
-import { validateRubricText } from "./validate";
+import { Assignment } from "../../src/rubric/assignment";
+import { maxPoints, presetFullMarks, templateFit, templateProblems, uniformPoints, uniformRubric, UNIFORM_PRESETS, type UniformTemplate } from "../../src/rubric/uniform";
+import { validateRubricText } from "../../src/rubric/validate";
 import { SEED } from "../../dev/seed";
 
 const assignment = new Assignment(SEED);

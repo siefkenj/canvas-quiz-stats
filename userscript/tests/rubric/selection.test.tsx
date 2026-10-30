@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Assignment } from "./assignment";
-import { QuestionHeader } from "./RubricView";
-import { selectablePlans, selectedPlans, selectionSummary } from "./selection";
-import { validateRubricText } from "./validate";
+import { Assignment } from "../../src/rubric/assignment";
+import { QuestionHeader } from "../../src/rubric/RubricView";
+import { selectablePlans, selectedPlans, selectionSummary } from "../../src/rubric/selection";
+import { validateRubricText } from "../../src/rubric/validate";
 import { SEED } from "../../dev/seed";
 
 const assignment = new Assignment(SEED);

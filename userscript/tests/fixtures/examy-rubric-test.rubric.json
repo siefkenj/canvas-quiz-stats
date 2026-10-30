@@ -1,0 +1,66 @@
+[
+  {
+    "exam": 1,
+    "questions": [
+      {
+        "number": "1",
+        "title": "Question 1",
+        "points": 2,
+        "rubric": [
+          {
+            "type": "item",
+            "points": 2,
+            "description": "**Correct**: hypotheses and conclusion.",
+            "annotation": null
+          },
+          {
+            "type": "item",
+            "points": 1,
+            "description": "**Partial**: conclusion only.",
+            "annotation": null
+          }
+        ]
+      },
+      {
+        "number": "2.1",
+        "title": "Question 2 (a)",
+        "points": 1,
+        "rubric": [
+          {
+            "type": "item",
+            "points": 1,
+            "description": "Yes, with a reason.",
+            "annotation": null
+          }
+        ]
+      },
+      {
+        "number": "2.2",
+        "title": "Question 2 (b)",
+        "points": 2,
+        "rubric": [
+          {
+            "type": "group",
+            "title": "**Proof**",
+            "note": null,
+            "annotation": "pick one",
+            "items": [
+              {
+                "type": "item",
+                "points": 2,
+                "description": "Complete",
+                "annotation": null
+              },
+              {
+                "type": "item",
+                "points": 1,
+                "description": "Gaps",
+                "annotation": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

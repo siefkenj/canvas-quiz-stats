@@ -18,6 +18,7 @@ import {
     runInGradescope,
 } from "./gradescope-bridge";
 import { updateRubricTool } from "./rubric/mount";
+import { updateOutlineTool } from "./outline/mount";
 
 // Do required initial work. Gets called every time the URL changes,
 // so that elements can be re-inserted as a user navigates a page with
@@ -40,15 +41,18 @@ async function main() {
 }
 
 if (isGradescope()) {
-    // On Gradescope: link rewriting, and the Rubric JSON tool on rubric editor pages. Neither
-    // uses Canvas's styles (the rubric tool styles itself inside a shadow root).
+    // On Gradescope: link rewriting, the Rubric JSON tool on rubric editor pages, and the Outline
+    // JSON tool on outline editor pages. None uses Canvas's styles (the tools style themselves
+    // inside shadow roots).
     log("Gradescope script started", window.location.href);
     runInGradescope();
     addLocationChangeCallback(() => {
-        try {
-            updateRubricTool();
-        } catch (e) {
-            log(e);
+        for (const update of [updateRubricTool, updateOutlineTool]) {
+            try {
+                update();
+            } catch (e) {
+                log(e);
+            }
         }
     });
 } else {

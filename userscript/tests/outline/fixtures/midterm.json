@@ -1,0 +1,678 @@
+{
+ "format": "examy-gradescope-regions",
+ "version": 1,
+ "exam": "midterm.typ",
+ "pages": [
+  {
+   "page": 1,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 2,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 3,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 4,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 5,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 6,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 7,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 8,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 9,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  }
+ ],
+ "names": [
+  {
+   "label": "NAME:",
+   "start": {
+    "page": 1,
+    "x": 133.3,
+    "y": 118.62
+   },
+   "end": {
+    "page": 1,
+    "x": 133.3,
+    "y": 143.01
+   }
+  },
+  {
+   "label": "Email address:",
+   "start": {
+    "page": 1,
+    "x": 133.3,
+    "y": 154.01
+   },
+   "end": {
+    "page": 1,
+    "x": 133.3,
+    "y": 165.09
+   }
+  },
+  {
+   "label": "UTORid:",
+   "start": {
+    "page": 1,
+    "x": 133.3,
+    "y": 176.09
+   },
+   "end": {
+    "page": 1,
+    "x": 133.3,
+    "y": 187.18
+   }
+  }
+ ],
+ "ends": [
+  {
+   "page": 8,
+   "x": 54.0,
+   "y": 738.0
+  }
+ ],
+ "exams": [
+  [
+   {
+    "number": "1",
+    "label": "1",
+    "level": 1,
+    "points": 3,
+    "bonus": null,
+    "start": {
+     "page": 2,
+     "x": 70.5,
+     "y": 61.24
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 2,
+       "x": 70.5,
+       "y": 82.78
+      },
+      "bottom": {
+       "page": 2,
+       "x": 558.0,
+       "y": 510.79
+      },
+      "inset": {
+       "top": 0,
+       "bottom": 0,
+       "left": 0,
+       "right": 0
+      }
+     }
+    ]
+   },
+   {
+    "number": "2",
+    "label": "2",
+    "level": 1,
+    "points": 4,
+    "bonus": null,
+    "start": {
+     "page": 3,
+     "x": 70.5,
+     "y": 61.51
+    },
+    "boxes": []
+   },
+   {
+    "number": "2.1",
+    "label": "2\u2009(a)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 3,
+     "x": 87.0,
+     "y": 95.15
+    },
+    "boxes": []
+   },
+   {
+    "number": "2.2",
+    "label": "2\u2009(b)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 3,
+     "x": 87.0,
+     "y": 226.22
+    },
+    "boxes": []
+   },
+   {
+    "number": "2.3",
+    "label": "2\u2009(c)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 3,
+     "x": 87.0,
+     "y": 371.67
+    },
+    "boxes": []
+   },
+   {
+    "number": "2.4",
+    "label": "2\u2009(d)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 3,
+     "x": 87.0,
+     "y": 502.73
+    },
+    "boxes": []
+   },
+   {
+    "number": "3",
+    "label": "3",
+    "level": 1,
+    "points": 4,
+    "bonus": null,
+    "start": {
+     "page": 4,
+     "x": 70.5,
+     "y": 54.0
+    },
+    "boxes": []
+   },
+   {
+    "number": "3.1",
+    "label": "3\u2009(a)",
+    "level": 2,
+    "points": 2,
+    "bonus": null,
+    "start": {
+     "page": 4,
+     "x": 87.0,
+     "y": 102.94
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 4,
+       "x": 87.0,
+       "y": 110.09
+      },
+      "bottom": {
+       "page": 4,
+       "x": 558.0,
+       "y": 410.11
+      },
+      "inset": {
+       "top": 0,
+       "bottom": 0,
+       "left": 0,
+       "right": 0
+      }
+     }
+    ]
+   },
+   {
+    "number": "3.2",
+    "label": "3\u2009(b)",
+    "level": 2,
+    "points": 2,
+    "bonus": null,
+    "start": {
+     "page": 4,
+     "x": 87.0,
+     "y": 430.83
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 4,
+       "x": 87.0,
+       "y": 437.98
+      },
+      "bottom": {
+       "page": 4,
+       "x": 558.0,
+       "y": 738.0
+      },
+      "inset": {
+       "top": 0,
+       "bottom": 0,
+       "left": 0,
+       "right": 0
+      }
+     }
+    ]
+   },
+   {
+    "number": "4",
+    "label": "4",
+    "level": 1,
+    "points": 4,
+    "bonus": null,
+    "start": {
+     "page": 5,
+     "x": 70.5,
+     "y": 61.24
+    },
+    "boxes": []
+   },
+   {
+    "number": "4.1",
+    "label": "4\u2009(a)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 5,
+     "x": 87.0,
+     "y": 81.95
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 5,
+       "x": 92.0,
+       "y": 100.15
+      },
+      "bottom": {
+       "page": 5,
+       "x": 553.0,
+       "y": 162.15
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "4.2",
+    "label": "4\u2009(b)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 5,
+     "x": 87.0,
+     "y": 187.86
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 5,
+       "x": 92.0,
+       "y": 206.06
+      },
+      "bottom": {
+       "page": 5,
+       "x": 553.0,
+       "y": 268.06
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "4.3",
+    "label": "4\u2009(c)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 5,
+     "x": 87.0,
+     "y": 293.78
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 5,
+       "x": 92.0,
+       "y": 311.98
+      },
+      "bottom": {
+       "page": 5,
+       "x": 553.0,
+       "y": 373.98
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "4.4",
+    "label": "4\u2009(d)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 5,
+     "x": 87.0,
+     "y": 399.69
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 5,
+       "x": 92.0,
+       "y": 417.89
+      },
+      "bottom": {
+       "page": 5,
+       "x": 553.0,
+       "y": 479.89
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "5",
+    "label": "5",
+    "level": 1,
+    "points": 3,
+    "bonus": null,
+    "start": {
+     "page": 6,
+     "x": 70.5,
+     "y": 61.24
+    },
+    "boxes": []
+   },
+   {
+    "number": "5.1",
+    "label": "5\u2009(a)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 6,
+     "x": 87.0,
+     "y": 96.34
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 6,
+       "x": 92.0,
+       "y": 114.54
+      },
+      "bottom": {
+       "page": 6,
+       "x": 553.0,
+       "y": 248.54
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "5.2",
+    "label": "5\u2009(b)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 6,
+     "x": 87.0,
+     "y": 274.25
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 6,
+       "x": 92.0,
+       "y": 292.45
+      },
+      "bottom": {
+       "page": 6,
+       "x": 553.0,
+       "y": 426.45
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "5.3",
+    "label": "5\u2009(c)",
+    "level": 2,
+    "points": 1,
+    "bonus": null,
+    "start": {
+     "page": 6,
+     "x": 87.0,
+     "y": 452.17
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 6,
+       "x": 92.0,
+       "y": 484.75
+      },
+      "bottom": {
+       "page": 6,
+       "x": 553.0,
+       "y": 618.75
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "6",
+    "label": "6",
+    "level": 1,
+    "points": 2,
+    "bonus": null,
+    "start": {
+     "page": 7,
+     "x": 70.5,
+     "y": 61.51
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 7,
+       "x": 75.5,
+       "y": 274.14
+      },
+      "bottom": {
+       "page": 7,
+       "x": 553.0,
+       "y": 314.54
+      },
+      "inset": {
+       "top": 5.0,
+       "bottom": 5.0,
+       "left": 5.0,
+       "right": 5.0
+      }
+     }
+    ]
+   },
+   {
+    "number": "7",
+    "label": "7",
+    "level": 1,
+    "points": 3,
+    "bonus": null,
+    "start": {
+     "page": 7,
+     "x": 70.5,
+     "y": 340.25
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 7,
+       "x": 70.5,
+       "y": 489.5
+      },
+      "bottom": {
+       "page": 7,
+       "x": 558.0,
+       "y": 738.0
+      },
+      "inset": {
+       "top": 0,
+       "bottom": 0,
+       "left": 0,
+       "right": 0
+      }
+     }
+    ]
+   },
+   {
+    "number": "8",
+    "label": "8",
+    "level": 1,
+    "points": 5,
+    "bonus": null,
+    "start": {
+     "page": 8,
+     "x": 70.5,
+     "y": 61.51
+    },
+    "boxes": [
+     {
+      "top": {
+       "page": 8,
+       "x": 70.5,
+       "y": 123.92
+      },
+      "bottom": {
+       "page": 8,
+       "x": 558.0,
+       "y": 738.0
+      },
+      "inset": {
+       "top": 0,
+       "bottom": 0,
+       "left": 0,
+       "right": 0
+      }
+     }
+    ]
+   }
+  ]
+ ]
+}

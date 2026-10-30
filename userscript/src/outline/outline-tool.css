@@ -1,0 +1,198 @@
+/* Styles for the Outline JSON tool, on top of the Rubric JSON tool's (see ../rubric/rubric-tool.css). */
+
+.outline-tool label.file-button {
+    gap: 0.35em;
+    padding: 0.3em 0.8em;
+}
+.outline-tool .step-row h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+}
+.regions-input textarea {
+    resize: vertical;
+    margin-top: 0.4em;
+}
+ol.ways {
+    margin: 0 0 0.4em;
+    padding-left: 1.4em;
+    font-size: 12.5px;
+}
+ol.ways li {
+    margin-bottom: 0.3em;
+}
+.snippet-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4em;
+}
+pre.snippet {
+    margin: 0.15em 0 0;
+    padding: 0.2em 0.5em;
+    font-size: 11.5px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    user-select: all;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+.legend {
+    font-size: 12px;
+    padding: 0 0.5em;
+}
+.legend.new-rect {
+    border: 2px solid var(--blue);
+    background: rgba(29, 78, 216, 0.08);
+}
+.legend.old-rect {
+    border: 2px dashed #9ca3af;
+}
+
+/* The questions beside the template's pages; each side scrolls by itself. */
+.outline-grid {
+    flex: 1 1 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1em;
+}
+@media (max-width: 900px) {
+    .outline-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+.outline-list,
+.outline-pages {
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fafafa;
+    padding: 0.5em;
+}
+.outline-pages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+}
+
+.outline-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    background: #fff;
+}
+.outline-table th {
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    padding: 0.25em 0.4em;
+}
+.outline-table td {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 0.25em 0.4em;
+    vertical-align: top;
+}
+.outline-table td.num {
+    font-weight: 600;
+    white-space: nowrap;
+}
+.outline-table tr.child td.num {
+    padding-left: 1.4em;
+    font-weight: 400;
+}
+.outline-table td.pts,
+.outline-table td.pgs {
+    white-space: nowrap;
+}
+.outline-table td.pgs .tag {
+    margin-left: 0.35em;
+}
+.outline-table tr.hovered td {
+    background: #eff6ff;
+}
+.outline-table tr.deleted td {
+    color: #991b1b;
+    text-decoration: line-through;
+}
+.outline-table tr.deleted td:last-child {
+    text-decoration: none;
+}
+.outline-table .changes {
+    font-size: 11.5px;
+}
+.issues.errors {
+    color: #991b1b;
+}
+.issues.warnings {
+    color: #92400e;
+}
+label.check-line.confirm {
+    margin-top: 0.6em;
+    font-weight: 600;
+    color: #991b1b;
+}
+
+figure.page {
+    position: relative;
+    margin: 0;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+figure.page img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+figure.page figcaption {
+    position: absolute;
+    right: 0.4em;
+    bottom: 0.2em;
+    font-size: 11px;
+    color: var(--muted);
+}
+.rect {
+    position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+.rect.old {
+    border: 2px dashed #9ca3af;
+}
+.rect.new {
+    border: 2px solid var(--blue);
+    background: rgba(29, 78, 216, 0.08);
+}
+.rect.new.fallback {
+    border-color: #d97706;
+    background: rgba(217, 119, 6, 0.08);
+}
+.rect.new.hovered {
+    background: rgba(29, 78, 216, 0.25);
+}
+.rect-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--blue);
+    padding: 0 0.3em;
+}
+.rect.fallback .rect-label {
+    background: #d97706;
+}
+
+.rect.new.id {
+    border-color: #059669;
+    background: rgba(5, 150, 105, 0.08);
+}
+.rect.new.id .rect-label {
+    background: #059669;
+}
+.outline-table tr.id-row td.num {
+    color: #047857;
+}

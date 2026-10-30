@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Assignment } from "./assignment";
-import { validateRubricText } from "./validate";
+import { Assignment } from "../../src/rubric/assignment";
+import { validateRubricText } from "../../src/rubric/validate";
 import { SEED } from "../../dev/seed";
 
 const assignment = new Assignment(SEED);

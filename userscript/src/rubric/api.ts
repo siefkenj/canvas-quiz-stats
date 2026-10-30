@@ -23,7 +23,7 @@ declare const content: { fetch?: typeof fetch } | undefined;
  * in Canvas (Firefox keeps a third-party frame's cookies separately), so Gradescope answers 401.
  * Firefox's `content.fetch` sends the request from the page instead.
  */
-function pageFetch(): typeof fetch {
+export function pageFetch(): typeof fetch {
     if (typeof content !== "undefined" && typeof content?.fetch === "function") {
         return content.fetch.bind(content);
     }

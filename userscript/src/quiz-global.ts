@@ -321,28 +321,23 @@ class Quiz {
             progressCallback({ ...progress });
         }
         // /api/v1/courses/181873/quizzes/115457/submissions?include[]=user&include[]=submission&per_page=20&page=2
-        const quizUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}`;
         const quizVersionUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
         let resp: Response | null = null;
 
         progressA.message = "Fetching Quiz Details";
         notifyProgress();
 
-        // We need to get the assignment_id from the quiz object.
-        resp = await logFetch(quizUrl);
-        const quizData = await resp.json();
-        const assignmentId = quizData["assignment_id"] || quizData["id"];
-        log("Quiz", this.quizId, "has assignment id", assignmentId);
         const quizQuestions = await this.fetchQuestions();
         const questionHash = quizQuestionsToHash(quizQuestions);
 
         const getQuizSubmittedAnswers = async () => {
-            const answersUrl = `/api/v1/courses/${this.courseId}/quizzes/${assignmentId}/submissions?include[]=user&include[]=submission_history&per_page=${PAGE_SIZE}`;
+            // The quiz submissions API takes the quiz's id (not its assignment's).
+            const answersUrl = `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?include[]=user&per_page=${PAGE_SIZE}`;
 
             const numSubmissions =
                 FETCH_LIMIT_OVERRIDE ||
                 (await this.findNumPages(
-                    `/api/v1/courses/${this.courseId}/quizzes/${assignmentId}/submissions?per_page=1`
+                    `/api/v1/courses/${this.courseId}/quizzes/${this.quizId}/submissions?per_page=1`
                 ));
 
             // Fetch in batches until we have all the data

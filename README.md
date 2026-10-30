@@ -42,13 +42,20 @@ On a Gradescope assignment's rubric editor (*Edit Rubric*), *Canvas Quiz Stats* 
     question whose positive items don't add up to its weight is marked (e.g. "sum of positive
     points: 1.5"); under negative scoring (students start with full marks), any positive items
     are marked.
-- **New rubric**: paste rubric JSON into the box, open a file, or use *Autogenerate*:
+- **New rubric**: paste rubric JSON into the box, open a file, or use *Autogenerate*. The file can
+  also be the PDF of an [examy](https://github.com/siefkenj/typst-examy) exam made with
+  `gradescope.typ` in it (see "Gradescope outline from examy"): its rubrics (`#rubric[..]`) are put
+  in the box, numbered as the Outline JSON tool numbers the questions (from the regions attached
+  beside them), with Gradescope's weights and scoring types and Gradescope's math (`$x$` becomes
+  `$$x$$`, `$$x$$` becomes `$$$x$$$`). What Gradescope has no place for (annotations, notes, groups
+  inside groups) is left out, and listed above the box.
   - *Start from the current rubric* puts the current rubric in the box, to edit it in place;
   - *Uniform rubric for all questions…* opens a small dialog that gives every chosen question the
     same items with the same points (e.g. Correct / Partially correct / Incorrect), optionally in
     a group. It shows, for each question, the resulting points and whether they add up to its
     weight. On a negatively scored question an item worth p points becomes a deduction of the
-    weight minus p (so on a 3-point question, 3 / 1.5 / 0 become 0 / −1.5 / −3).
+    weight minus p (so on a 3-point question, 3 / 1.5 / 0 become 0 / −1.5 / −3);
+  - *From an examy exam's PDF…* opens such a PDF, as above.
 
   The JSON is checked locally as you type; nothing is sent to Gradescope until you press
   *Upload*. Unknown or misspelled keys, wrong types, unknown question numbers, weights or scoring
@@ -91,6 +98,84 @@ There is no public API; these were found by recording Gradescope's own rubric ed
 Requests need the page's `X-CSRF-Token` and `X-Requested-With: XMLHttpRequest`. Weights are
 strings. Under negative scoring, a weight is subtracted (a weight of `"1.0"` shows as −1.0);
 the rubric JSON instead always uses `points`, the change to the score.
+
+## Gradescope outline from examy
+
+On a Gradescope assignment's outline editor (*Edit Outline*), *Canvas Quiz Stats* adds an
+**Outline JSON** button. It sets the outline (questions, subquestions, points, and the region of
+the page each one takes) from an exam written with [examy](https://github.com/siefkenj/typst-examy)
+1.0.0 or later, with each region around the question's answer boxes, and the name and student ID
+regions from the exam's name block.
+
+1. Make the regions file with `gradescope.typ` (download it from the dialog and put it next to
+   the exam). It lays the exam out as it is (adding only invisible markers) and records where
+   every answer box and name block line is, each question's points, and the pages' sizes. Either:
+
+   - run the command the dialog shows, for an exam left as it is, e.g.
+
+     ```
+     typst eval --in gradescope.typ --input exam=quiz-04a.typ 'query(<gs-regions>).first().value' > quiz-04a-regions.json
+     ```
+
+     `--input examy=1.1.0` picks the examy version the exam imports (1.0.0 by default), and
+     `--input examy=path/to/src/lib.typ` an examy that is not installed as a package; or
+   - make the exam's PDF carry it: after examy's import, add
+
+     ```typst
+     #import "gradescope.typ": gradescope
+     #show: gradescope(e, answer-box)
+     ```
+
+     The PDF then has the regions attached as `gradescope-regions.json` (and the exam's rubrics,
+     as examy exports them, as `examy-rubric.json`); `pdfdetach -save 1 exam.pdf` saves them.
+     The dialogs read them from that PDF, and from one saved again by a program that keeps
+     attachments (some, such as print-to-PDF, drop them).
+
+   Or give the dialog's **AI instructions** (collapsed at the top; copy or download them) to an AI
+   agent that can read the exam and run Typst. They describe this assignment's template and
+   outline, how to bring an older exam up to examy 1.0.0 on a copy in a scratch folder (without
+   touching the exam's folder) and check that its layout still matches the template, the command,
+   and what to check in the result, and they hold the whole of `gradescope.typ`.
+2. Open the exam's PDF (made with `gradescope.typ` in it) or the regions file, or paste the regions
+   file. The dialog shows the outline next to Gradescope's template,
+   with the new regions drawn over its pages (Gradescope's regions now, dashed), and for each
+   question its points, pages, and whether it is new, changes, or stays the same.
+3. *Save outline*, then *Close and reload* to see it in Gradescope's editor.
+
+How the exam becomes an outline:
+
+- Each examy question is a Gradescope question. When its points are in its parts, the parts are
+  subquestions; Gradescope has no third level, so a part whose points are in its subparts gives
+  way to them (titled with examy's labels, e.g. "(a) i"), and a part with the points covers its
+  subparts. Weights are examy's points (bonus points are not counted).
+- A question's region is one rectangle per page around its answer boxes (and its parts'), 2pt past
+  their borders. A question without answer boxes (such as a multiple choice one; examy also does
+  not mark boxes that hold `choices`) gets its text instead, from its start to the next question
+  or part, the width of the page's text; these are marked "text".
+- Questions are matched to Gradescope's by number (by position: 1, 2, 2.1, ...), so they keep
+  their ids, and with them their rubrics and grading. A question whose place holds a group (or
+  the other way round) is new, and questions left over are deleted. Before deleting a question
+  the dialog asks Gradescope whether it has grading, as Gradescope's editor does; deleting one
+  that has, or changing the outline of an assignment with submissions, needs a confirmation.
+- The name and student ID regions are the lines of the exam's `name-block` labelled with a name
+  ("Name:", "Last name:", "Surname:") and a student ID ("Student ID:", "Student number:",
+  "UTORid:", "ID:"), from the line's start to its end and a little above it. The name region takes
+  every name line on its page ("First name:" and "Last name:" both); the student ID region the
+  first student ID line. A region the name block has no line for is kept as it is.
+- If Gradescope can't say whether the questions to delete have grading, the dialog won't save
+  until it can: **Retry** asks again.
+- Titles of questions are kept; subquestions are titled with examy's labels.
+
+### Gradescope outline endpoints
+
+| Request | Purpose |
+| --- | --- |
+| `GET /courses/:c/assignments/:a/outline/edit` (HTML) | the outline: the `data-react-props` of `[data-react-class="AssignmentOutline"]` (`assignment.id_regions`, `template.pages`, `outline`: questions with `id`, `parent_id`, `weight`, `crop_rect_list`, `index`) |
+| `GET /courses/:c/assignments/:a/question_grading_data?question_ids[]=:q` | asked before deleting questions; `{}` when they have no grading |
+| `PATCH /courses/:c/assignments/:a/outline/` `{"assignment": {"identification_regions": {name, sid}}, "question_data": [{id?, title, weight, crop_rect_list, children?}]}` | save the whole outline: questions with an `id` are updated, those without are created, and those left out are deleted |
+
+Regions (`crop_rect_list`) are `{x1, x2, y1, y2, page_number}` in percent of the page from its top
+left. A group has a `weight` (its subquestions' total) and a region of its own.
 
 ## Sideffects
 
@@ -155,4 +240,7 @@ until you click *Reset data*. Nothing in `userscript/dev/` is part of the built 
 npm test
 ```
 
-runs the unit tests for the rubric tool (validation, diffs, and uploading against the mock).
+runs the unit tests (Vitest): the rubric tool (validation, diffs, and uploading against the
+mock), the outline tool, examy rubric conversion, and reading PDF attachments. They live in
+`userscript/tests/`, laid out like `userscript/src/` (`tests/rubric/upload.test.ts` tests
+`src/rubric/upload.ts`), with the files they read in `fixtures/` folders beside them.

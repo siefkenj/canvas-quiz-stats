@@ -11,12 +11,15 @@ import { selectablePlans, selectedPlans, selectionSummary } from "./selection";
 import { UniformRubricDialog } from "./UniformRubric";
 import { uploadPlans, type UploadResult } from "./upload";
 import { validateRubricText, type Issue, type QuestionPlan, type ValidationResult } from "./validate";
+import { rubricFromExamy, type ExamyRubrics } from "./from-examy";
+import { readFileOrAttachment } from "../pdf-attachments";
+import type { RegionsFile } from "../outline/types";
 
 const slug = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "assignment";
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-function download(text: string, filename: string, type: string) {
+export function download(text: string, filename: string, type: string) {
     FileSaver.saveAs(new Blob([text], { type: `${type};charset=utf-8` }), filename);
 }
 
@@ -24,7 +27,7 @@ function download(text: string, filename: string, type: string) {
 const reloadPage = () => window.location.reload();
 
 /** Copy text, falling back to a selected textarea where the Clipboard API is unavailable. */
-async function copyText(text: string, host: Node) {
+export async function copyText(text: string, host: Node) {
     try {
         await navigator.clipboard.writeText(text);
     } catch {
@@ -74,6 +77,9 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
     const [panel, setPanel] = React.useState<"preview" | "results">("preview");
     const [log, setLog] = React.useState<string[]>([]);
     const [uploadResults, setUploadResults] = React.useState<UploadResult[] | null>(null);
+    /** What converting an exam's PDF into the box left out (see `rubricFromExamy`). */
+    const [imported, setImported] = React.useState<{ from: string; warnings: string[] } | null>(null);
+    const fileInput = React.useRef<HTMLInputElement>(null);
     /** An upload was started, so Gradescope's own editor (behind the dialog) may be out of date. */
     const [uploaded, setUploaded] = React.useState(false);
     /** "Close and reload" was pressed; the page is reloading. */
@@ -81,9 +87,12 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
 
     useModal(dialog, open);
 
-    async function run<T>(label: string, f: () => Promise<T>): Promise<T | undefined> {
+    /** Run `f`, showing `label` meanwhile and any error it throws (`keepError`: and the one before). */
+    async function run<T>(label: string, f: () => Promise<T>, { keepError = false } = {}): Promise<T | undefined> {
         setBusy(label);
-        setError(null);
+        if (!keepError) {
+            setError(null);
+        }
         try {
             return await f();
         } catch (e) {
@@ -93,12 +102,16 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
         }
     }
 
-    const reload = () =>
-        run("Loading the rubric from Gradescope…", async () => {
-            const a = await client.load();
-            setAssignment(a);
-            return a;
-        });
+    const reload = ({ keepError = false } = {}) =>
+        run(
+            "Loading the rubric from Gradescope…",
+            async () => {
+                const a = await client.load();
+                setAssignment(a);
+                return a;
+            },
+            { keepError }
+        );
 
     function openDialog() {
         // The reference sections start collapsed, so the dialog opens on the new rubric.
@@ -155,15 +168,39 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
 
     /** Replace the upload box (a new file starts with every question selected). */
     function replaceText(value: string) {
+        setImported(null);
         setText(value);
         setUnticked(new Set());
         setPanel("preview");
     }
 
-    function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    /** Load a rubric JSON file, or the rubrics attached to an exam's PDF (by gradescope.typ). */
+    async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
         e.target.value = ""; // allow choosing the same file again after editing it
-        f?.text().then(replaceText);
+        if (!f) {
+            return;
+        }
+        const converted = await run(`Reading ${f.name}…`, async () => {
+            const read = await readFileOrAttachment(f, "examy-rubric.json");
+            if (!read.attachments) {
+                return { text: read.text, warnings: null };
+            }
+            const a = assignment ?? (await client.load());
+            const regions = read.attachments.get("gradescope-regions.json");
+            const { file, warnings } = rubricFromExamy(
+                JSON.parse(read.text) as ExamyRubrics[],
+                regions ? (JSON.parse(regions) as RegionsFile) : null,
+                a
+            );
+            return { text: JSON.stringify(file, null, 2) + "\n", warnings };
+        });
+        if (converted) {
+            replaceText(converted.text);
+            if (converted.warnings) {
+                setImported({ from: f.name, warnings: converted.warnings });
+            }
+        }
     }
 
     const minReferencesHeight = () => (instructionsOpen && currentOpen ? MIN_REFERENCE_HEIGHT.both : MIN_REFERENCE_HEIGHT.one);
@@ -245,7 +282,7 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
             setPanel("preview"); // the error banner says what went wrong
         }
         // Even a failed upload may have changed some questions.
-        await reload();
+        await reload({ keepError: !results });
     }
 
     const hasResults = log.length > 0 || !!uploadResults;
@@ -301,6 +338,18 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
                     {busy && <p className="status" title="Working">{busy}</p>}
                     {error && <p className="banner error" title="Error">{error}</p>}
                     {notice && <p className="banner ok">{notice}</p>}
+                    {imported && (
+                        <div className={`banner ${imported.warnings.length ? "warning" : "ok"}`} title="Converting the exam's rubrics">
+                            Read the rubrics of {imported.from}.
+                            {imported.warnings.length > 0 && (
+                                <ul className="issues">
+                                    {imported.warnings.map((w, k) => (
+                                        <li key={k}>{w}</li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
 
                     <div
                         ref={referencesRef}
@@ -347,7 +396,7 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
                                             </button>
                                         ))}
                                     </div>
-                                    {iconButton("Reload the rubric from Gradescope", <RefreshIcon />, reload, !!busy)}
+                                    {iconButton("Reload the rubric from Gradescope", <RefreshIcon />, () => reload(), !!busy)}
                                     {iconButton(
                                         view === "text" ? "Copy the rubric as text" : "Copy the rubric JSON",
                                         <CopyIcon />,
@@ -416,11 +465,16 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
                                         title: "Give every chosen question the same items with the same points (as deductions on negatively scored questions)",
                                         onClick: () => setUniformOpen(true),
                                     },
+                                    {
+                                        label: "From an examy exam's PDF…",
+                                        title: "The rubrics (#rubric[..]) of an exam whose PDF was made with gradescope.typ in it (#show: gradescope(e, answer-box)), as Gradescope's: see Outline JSON for gradescope.typ",
+                                        onClick: () => fileInput.current?.click(),
+                                    },
                                 ]}
                             />
-                            <label className="icon-button file-button" title="Load a JSON file into the box below">
+                            <label className="icon-button file-button" title="Load a rubric JSON file into the box below, or the rubrics of an examy exam's PDF made with gradescope.typ">
                                 <FileIcon />
-                                <input type="file" accept=".json,application/json" onChange={onFile} />
+                                <input ref={fileInput} type="file" accept=".json,application/json,.pdf,application/pdf" onChange={onFile} />
                             </label>
                             {iconButton(
                                 "Download the JSON in the box",
@@ -547,7 +601,7 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
  * A reference section (AI instructions, current rubric). Expanded, a grey sidebar with its name
  * written sideways collapses it; collapsed, it is a grey bar with its name and a few tools.
  */
-function ReferenceSection(props: {
+export function ReferenceSection(props: {
     name: string;
     label: string;
     title: string;

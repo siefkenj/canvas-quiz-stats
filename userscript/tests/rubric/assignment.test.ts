@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Assignment, pointsToWeight, sameRubric, weightToPoints } from "./assignment";
-import { diffEntries, diffSequence, rubricText } from "./diff";
+import { Assignment, pointsToWeight, sameRubric, weightToPoints } from "../../src/rubric/assignment";
+import { diffEntries, diffSequence, rubricText } from "../../src/rubric/diff";
 import { SEED } from "../../dev/seed";
 
 const a = new Assignment(SEED);

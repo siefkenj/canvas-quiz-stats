@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { GsMarkdown, latexToText } from "./markdown";
+import { GsMarkdown, latexToText } from "../../src/rubric/markdown";
 
 const html = (text: string) => renderToStaticMarkup(<GsMarkdown text={text} />);
 

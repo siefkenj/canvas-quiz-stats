@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { GradescopeClient } from "./api";
-import { Assignment } from "./assignment";
-import { uploadPlans } from "./upload";
-import { validateRubricText } from "./validate";
+import { GradescopeClient } from "../../src/rubric/api";
+import { Assignment } from "../../src/rubric/assignment";
+import { uploadPlans } from "../../src/rubric/upload";
+import { validateRubricText } from "../../src/rubric/validate";
 import { MockGradescope } from "../../dev/mock-gradescope";
 import { SEED } from "../../dev/seed";
-import type { RubricFile } from "./types";
+import type { RubricFile } from "../../src/rubric/types";
 
 const ORIGIN = "https://www.gradescope.ca";
 const TOKEN = "test-token";

@@ -1,9 +1,55 @@
 # Changelog
 
+## 1.8.0 (2026-10-30)
+
+### Added
+
+-   The Rubric JSON and Outline JSON dialogs read the files attached to an exam's PDF also when
+    another program has saved the PDF again (packing its objects into object streams, or writing
+    names as hex or UTF-16). If a PDF has no attachment, the message says that some programs drop
+    them.
+-   The name region takes every line of the name block labelled with a name on its page ("First
+    name:" and "Last name:"), and more labels are recognised ("Surname:", "Given names:", "ID:");
+    "Tutorial ID:" and "Username:" are not taken for a student ID or a name.
+
+### Fixed
+
+-   "Fetch Quiz Submissions with Answers" works again. It asked for the submissions of the quiz's
+    assignment id instead of its quiz id, which Canvas refused.
+-   The Outline JSON dialog no longer plans to delete every question when the regions file is
+    replaced by one with fewer exams than the one chosen; a file without the chosen exam is an
+    error.
+-   If Gradescope can't say whether the questions an outline save would delete have grading, the
+    dialog says so and offers *Retry*, instead of waiting forever.
+-   A PDF whose attached regions are not JSON is reported, not silently ignored.
+-   The command the Outline JSON dialog shows quotes file names with spaces.
+
+### Development
+
+-   Tests and their fixtures moved from beside the code in `userscript/src/` to
+    `userscript/tests/`, which mirrors `src/`.
+
 ## 1.7.0 (2026-10-29)
 
 ### Added
 
+-   **Outline JSON** tool on Gradescope's outline editor (`/courses/…/assignments/…/outline/edit`):
+    sets the outline (questions, subquestions, points, and regions) from an examy exam, with each
+    region around the question's answer boxes (or its text, if it has none), and the name and
+    student ID regions from its name block. `gradescope.typ`, downloadable from the
+    dialog, writes the regions file from the exam with `typst eval`, or, imported by the exam
+    (`#show: gradescope(e, answer-box)`), attaches it to the exam's PDF along with examy's
+    export of the exam's rubrics; examy itself is unchanged. The dialog shows both ways, and opens
+    the exam's PDF as well as the regions file.
+    Subparts are folded into Gradescope's two levels and titled with examy's labels. Its
+    *AI instructions* tell an AI agent how to make the regions file, including upgrading an exam
+    to examy 1.0.0 on a copy, and hold the whole of `gradescope.typ`. The dialog
+    previews the regions over the template's pages next to Gradescope's, keeps questions' ids
+    (and so their rubrics), checks questions it would delete for grading, and verifies the
+    outline after saving.
+-   The Rubric JSON dialog opens the PDF of an examy exam made with `gradescope.typ` in it (also
+    from *Autogenerate*), and puts its rubrics in the box, numbered as the Outline JSON tool numbers
+    the questions, with Gradescope's weights, scoring types, and math.
 -   After an upload, the Rubric JSON dialog's *Close* button becomes *Close and reload*, which
     closes the dialog and reloads Gradescope's editor to show the new rubric (inside Canvas, only
     the Gradescope frame is reloaded). It is disabled, with a spinner, until the upload has
@@ -25,6 +71,7 @@
 -   "Copied … to the clipboard" only appears when copying worked.
 -   The uniform rubric dialog keeps the chosen questions when the rubric is reloaded.
 -   The uniform rubric's tooltips no longer say that its points are scaled to each question.
+-   An error from a failed upload is no longer cleared by the rubric's reload after it.
 
 ### Development
 

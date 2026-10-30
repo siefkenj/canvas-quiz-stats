@@ -1,0 +1,166 @@
+{
+  "format": "examy-gradescope-regions",
+  "version": 1,
+  "exam": null,
+  "pages": [
+    {
+      "page": 1,
+      "width": 595.28,
+      "height": 841.89,
+      "margin": {
+        "top": 70.87,
+        "bottom": 70.87,
+        "left": 70.87,
+        "right": 70.87
+      }
+    }
+  ],
+  "names": [
+    {
+      "label": "Name:",
+      "start": {
+        "page": 1,
+        "x": 125.06,
+        "y": 70.87
+      },
+      "end": {
+        "page": 1,
+        "x": 125.06,
+        "y": 81.95
+      }
+    },
+    {
+      "label": "Student ID:",
+      "start": {
+        "page": 1,
+        "x": 125.06,
+        "y": 92.95
+      },
+      "end": {
+        "page": 1,
+        "x": 125.06,
+        "y": 104.04
+      }
+    }
+  ],
+  "ends": [
+    {
+      "page": 1,
+      "x": 70.87,
+      "y": 771.02
+    }
+  ],
+  "exams": [
+    [
+      {
+        "number": "1",
+        "label": "1",
+        "level": 1,
+        "points": 2,
+        "bonus": null,
+        "start": {
+          "page": 1,
+          "x": 87.37,
+          "y": 124.48
+        },
+        "boxes": [
+          {
+            "top": {
+              "page": 1,
+              "x": 87.37,
+              "y": 131.63
+            },
+            "bottom": {
+              "page": 1,
+              "x": 524.41,
+              "y": 394.93
+            },
+            "inset": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0
+            }
+          }
+        ]
+      },
+      {
+        "number": "2",
+        "label": "2",
+        "level": 1,
+        "points": 3,
+        "bonus": null,
+        "start": {
+          "page": 1,
+          "x": 103.87,
+          "y": 447.76
+        },
+        "boxes": []
+      },
+      {
+        "number": "2.1",
+        "label": "2 (a)",
+        "level": 2,
+        "points": 1,
+        "bonus": null,
+        "start": {
+          "page": 1,
+          "x": 103.87,
+          "y": 447.76
+        },
+        "boxes": [
+          {
+            "top": {
+              "page": 1,
+              "x": 209.72,
+              "y": 408.13
+            },
+            "bottom": {
+              "page": 1,
+              "x": 266.42,
+              "y": 480.13
+            },
+            "inset": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0
+            }
+          }
+        ]
+      },
+      {
+        "number": "2.2",
+        "label": "2 (b)",
+        "level": 2,
+        "points": 2,
+        "bonus": null,
+        "start": {
+          "page": 1,
+          "x": 103.87,
+          "y": 500.57
+        },
+        "boxes": [
+          {
+            "top": {
+              "page": 1,
+              "x": 103.87,
+              "y": 507.72
+            },
+            "bottom": {
+              "page": 1,
+              "x": 524.41,
+              "y": 771.02
+            },
+            "inset": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0
+            }
+          }
+        ]
+      }
+    ]
+  ]
+}
