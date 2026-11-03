@@ -251,21 +251,61 @@ export function isPdf(data: ArrayBuffer | Uint8Array) {
     return latin1(bytes.slice(0, 1024)).includes("%PDF-");
 }
 
+/** A kind of file attached to an exam's PDF: what it may be called, and how to tell it by its contents. */
+export interface AttachmentKind {
+    /** What it holds, for messages: "regions". */
+    what: string;
+    /** The name gradescope.typ gives it. */
+    name: string;
+    /** The names it may have, e.g. /regions\.json$/i. */
+    pattern: RegExp;
+    /** Whether `text` is one. */
+    is: (text: string) => boolean;
+}
+
+export interface FoundAttachment {
+    name: string;
+    text: string;
+    /** The other attachments whose names fit, in order of priority. */
+    others: string[];
+}
+
 /**
- * A chosen file's text: a text file's own, or, for a PDF, its attached file `name` (and all its
- * attachments). Throws if a PDF has no attachment `name`.
+ * The attachment of kind `kind` among `attachments`, of those whose names fit, by priority: one
+ * whose contents are of the kind; then the name gradescope.typ gives it; then one named after the
+ * PDF (`pdfName` "midterm.pdf": "midterm-regions.json"); then the first in the PDF. Null if no
+ * name fits.
  */
-export async function readFileOrAttachment(file: Blob & { name?: string }, name: string) {
+export function findAttachment(attachments: Map<string, string>, kind: AttachmentKind, pdfName?: string): FoundAttachment | null {
+    const base = (pdfName ?? "").replace(/\.pdf$/i, "").toLowerCase();
+    const ranked = [...attachments.entries()]
+        .map(([name, text], order) => ({ name, text, order }))
+        .filter(({ name }) => kind.pattern.test(name))
+        .map((a) => ({
+            ...a,
+            rank: [kind.is(a.text) ? 0 : 1, a.name === kind.name ? 0 : 1, base && a.name.toLowerCase().startsWith(base) ? 0 : 1, a.order],
+        }))
+        // By the first criterion in which they differ.
+        .sort((a, b) => a.rank.reduce((d, r, k) => d || r - b.rank[k], 0));
+    const [best, ...rest] = ranked;
+    return best ? { name: best.name, text: best.text, others: rest.map((a) => a.name) } : null;
+}
+
+/**
+ * A chosen file's text: a text file's own, or, for a PDF, that of its attachment of kind `kind`
+ * (see `findAttachment`), with all its attachments. Throws if a PDF has none.
+ */
+export async function readFileOrAttachment(file: Blob & { name?: string }, kind: AttachmentKind) {
     const data = new Uint8Array(await file.arrayBuffer());
     if (!isPdf(data)) {
-        return { text: new TextDecoder().decode(data), attachments: null };
+        return { text: new TextDecoder().decode(data), attachments: null, attached: null };
     }
     const attachments = await pdfAttachments(data);
-    const text = attachments.get(name);
-    if (text === undefined) {
+    const attached = findAttachment(attachments, kind, file.name);
+    if (!attached) {
         throw new Error(
-            `${file.name ?? "The PDF"} has no ${name} attached. Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
+            `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.name}). Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
         );
     }
-    return { text, attachments };
+    return { text: attached.text, attachments, attached };
 }

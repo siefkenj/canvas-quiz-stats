@@ -20,6 +20,7 @@ import {
     outlinePayload,
     parseRegions,
     planOutline,
+    REGIONS_ATTACHMENT,
     type IdRegionMatch,
     type MatchedQuestion,
     type OutlineMatch,
@@ -174,20 +175,21 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
             return;
         }
         const read = await run("Reading " + f.name + "…", async () => {
-            const { text, attachments } = await readFileOrAttachment(f, "gradescope-regions.json");
-            if (!attachments) {
-                return { text, attached: false };
+            const { text, attached } = await readFileOrAttachment(f, REGIONS_ATTACHMENT);
+            if (!attached) {
+                return { text, attached };
             }
             try {
-                return { text: JSON.stringify(JSON.parse(text), null, 1), attached: true };
+                return { text: JSON.stringify(JSON.parse(text), null, 1), attached };
             } catch (e) {
-                throw new Error(`The gradescope-regions.json attached to ${f.name} is not JSON: ${e instanceof Error ? e.message : String(e)}`);
+                throw new Error(`The ${attached.name} attached to ${f.name} is not JSON: ${e instanceof Error ? e.message : String(e)}`);
             }
         });
         if (read) {
             changeText(read.text, { opened: true });
             if (read.attached) {
-                flash(`Read the regions attached to ${f.name}.`);
+                const others = read.attached.others.length ? ` It also has ${read.attached.others.join(", ")}.` : "";
+                flash(`Read ${read.attached.name}, attached to ${f.name}.${others}`);
             }
         }
     }

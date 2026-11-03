@@ -11,8 +11,9 @@ import { selectablePlans, selectedPlans, selectionSummary } from "./selection";
 import { UniformRubricDialog } from "./UniformRubric";
 import { uploadPlans, type UploadResult } from "./upload";
 import { validateRubricText, type Issue, type QuestionPlan, type ValidationResult } from "./validate";
-import { rubricFromExamy, type ExamyRubrics } from "./from-examy";
-import { readFileOrAttachment } from "../pdf-attachments";
+import { rubricFromExamy, rubricsKind, RUBRICS_ATTACHMENT, type ExamyRubrics } from "./from-examy";
+import { findAttachment, readFileOrAttachment } from "../pdf-attachments";
+import { REGIONS_ATTACHMENT } from "../outline/outline";
 import type { RegionsFile } from "../outline/types";
 
 const slug = (s: string) =>
@@ -182,23 +183,33 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
             return;
         }
         const converted = await run(`Reading ${f.name}…`, async () => {
-            const read = await readFileOrAttachment(f, "examy-rubric.json");
-            if (!read.attachments) {
-                return { text: read.text, warnings: null };
+            const { text, attachments, attached } = await readFileOrAttachment(f, RUBRICS_ATTACHMENT);
+            if (!attachments || !attached) {
+                return { text, from: null, warnings: null };
+            }
+            const from = `${attached.name} from ${f.name}`;
+            const notes = attached.others.length ? [`${f.name} also has ${attached.others.join(", ")}; this is ${attached.name}.`] : [];
+            const kind = rubricsKind(text);
+            if (kind === "rubric-file") {
+                // Already a rubric JSON file: as it is, for the box to check.
+                return { text: JSON.stringify(JSON.parse(text), null, 2) + "\n", from, warnings: notes };
+            }
+            if (kind !== "examy") {
+                throw new Error(`The ${attached.name} attached to ${f.name} is neither examy's rubrics nor a rubric JSON file.`);
             }
             const a = assignment ?? (await client.load());
-            const regions = read.attachments.get("gradescope-regions.json");
+            const regions = findAttachment(attachments, REGIONS_ATTACHMENT, f.name);
             const { file, warnings } = rubricFromExamy(
-                JSON.parse(read.text) as ExamyRubrics[],
-                regions ? (JSON.parse(regions) as RegionsFile) : null,
+                JSON.parse(text) as ExamyRubrics[],
+                regions && REGIONS_ATTACHMENT.is(regions.text) ? (JSON.parse(regions.text) as RegionsFile) : null,
                 a
             );
-            return { text: JSON.stringify(file, null, 2) + "\n", warnings };
+            return { text: JSON.stringify(file, null, 2) + "\n", from, warnings: [...notes, ...warnings] };
         });
         if (converted) {
             replaceText(converted.text);
-            if (converted.warnings) {
-                setImported({ from: f.name, warnings: converted.warnings });
+            if (converted.from && converted.warnings) {
+                setImported({ from: converted.from, warnings: converted.warnings });
             }
         }
     }
@@ -340,7 +351,7 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
                     {notice && <p className="banner ok">{notice}</p>}
                     {imported && (
                         <div className={`banner ${imported.warnings.length ? "warning" : "ok"}`} title="Converting the exam's rubrics">
-                            Read the rubrics of {imported.from}.
+                            Read {imported.from}.
                             {imported.warnings.length > 0 && (
                                 <ul className="issues">
                                     {imported.warnings.map((w, k) => (

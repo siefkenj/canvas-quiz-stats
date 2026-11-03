@@ -46,7 +46,7 @@ On a Gradescope assignment's rubric editor (*Edit Rubric*), *Canvas Quiz Stats* 
   also be the PDF of an [examy](https://github.com/siefkenj/typst-examy) exam made with
   `gradescope.typ` in it (see "Gradescope outline from examy"): its rubrics (`#rubric[..]`) are put
   in the box, numbered as the Outline JSON tool numbers the questions (from the regions attached
-  beside them), with Gradescope's weights and scoring types and Gradescope's math (`$x$` becomes
+  beside them; a rubric JSON file attached instead goes in the box as it is), with Gradescope's weights and scoring types and Gradescope's math (`$x$` becomes
   `$$x$$`, `$$x$$` becomes `$$$x$$$`). What Gradescope has no place for (annotations, notes, groups
   inside groups) is left out, and listed above the box.
   - *Start from the current rubric* puts the current rubric in the box, to edit it in place;
@@ -129,7 +129,12 @@ regions from the exam's name block.
      The PDF then has the regions attached as `gradescope-regions.json` (and the exam's rubrics,
      as examy exports them, as `examy-rubric.json`); `pdfdetach -save 1 exam.pdf` saves them.
      The dialogs read them from that PDF, and from one saved again by a program that keeps
-     attachments (some, such as print-to-PDF, drop them).
+     attachments (some, such as print-to-PDF, drop them). Other names work too: the Outline JSON
+     dialog takes any attachment named `*regions.json`, the Rubric JSON dialog any `*rubric.json`
+     or `*rubrics.json` (examy's export, or a rubric JSON file as this tool downloads it). If
+     several fit, the dialog takes, in order: one whose contents are of the right kind; the name
+     `gradescope.typ` gives; one named after the PDF (`midterm-regions.json` in `midterm.pdf`);
+     the first in the PDF. It says which it took, and what else fits.
 
    Or give the dialog's **AI instructions** (collapsed at the top; copy or download them) to an AI
    agent that can read the exam and run Typst. They describe this assignment's template and

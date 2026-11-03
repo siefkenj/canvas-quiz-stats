@@ -2,6 +2,14 @@
 
 ## 1.8.1 (2026-11-03)
 
+### Added
+
+-   The dialogs find an exam PDF's attachments by more names: the Outline JSON dialog any
+    `*regions.json`, the Rubric JSON dialog any `*rubric.json` or `*rubrics.json`, which may also be
+    a rubric JSON file (put in the box as it is). If several fit, one whose contents are of the
+    right kind comes first, then `gradescope.typ`'s name, then one named after the PDF, then the
+    first in the PDF; the dialog says which it took and what else fits.
+
 ### Fixed
 
 -   The Outline JSON preview draws Gradescope's regions on top of the new ones, numbered, so they

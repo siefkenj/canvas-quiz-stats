@@ -12,12 +12,38 @@ import type { Assignment } from "./assignment";
 import { RUBRIC_FORMAT, RUBRIC_FORMAT_VERSION, type RubricEntry, type RubricFile, type RubricItem } from "./types";
 import { flatten, planOutline } from "../outline/outline";
 import type { RegionsFile } from "../outline/types";
+import type { AttachmentKind } from "../pdf-attachments";
 
 /** examy's export: one per exam. */
 export interface ExamyRubrics {
     exam: number;
     questions: { number: string | null; title: string; points: number | null; rubric: ExamyEntry[] }[];
 }
+
+/** What a rubrics file attached to an exam's PDF holds: examy's export, or a rubric JSON file. */
+export function rubricsKind(text: string): "examy" | "rubric-file" | null {
+    let data: unknown;
+    try {
+        data = JSON.parse(text);
+    } catch {
+        return null;
+    }
+    if (Array.isArray(data) && data.length > 0 && data.every((x) => x && typeof x === "object" && Array.isArray((x as ExamyRubrics).questions))) {
+        return "examy";
+    }
+    return data && typeof data === "object" && (data as RubricFile).format === RUBRIC_FORMAT ? "rubric-file" : null;
+}
+
+/**
+ * The rubrics as attached to an exam's PDF: examy's export (by gradescope.typ, as
+ * `examy-rubric.json`), or a rubric JSON file, as any `*rubric.json` or `*rubrics.json`.
+ */
+export const RUBRICS_ATTACHMENT: AttachmentKind = {
+    what: "rubrics",
+    name: "examy-rubric.json",
+    pattern: /rubrics?\.json$/i,
+    is: (text) => rubricsKind(text) !== null,
+};
 
 export type ExamyEntry =
     | { type: "item"; points: number | null; description: string; annotation: string | null }

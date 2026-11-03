@@ -23,6 +23,7 @@ import {
     type RegionsNameLine,
     type RegionsPage,
 } from "./types";
+import type { AttachmentKind } from "../pdf-attachments";
 
 /** Room left around an answer box, past its border. */
 const BOX_PAD = 2;
@@ -63,6 +64,14 @@ export function parseRegions(text: string): ParsedRegions {
     }
     return { file: { ...f, pages: f.pages ?? [], ends: f.ends ?? [] } as RegionsFile, errors: [] };
 }
+
+/** The regions as attached to an exam's PDF: by gradescope.typ, or as any `*regions.json`. */
+export const REGIONS_ATTACHMENT: AttachmentKind = {
+    what: "regions",
+    name: "gradescope-regions.json",
+    pattern: /regions\.json$/i,
+    is: (text) => parseRegions(text).file !== null,
+};
 
 // --------------------------------------------------------------------------------- planning
 

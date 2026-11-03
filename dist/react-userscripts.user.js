@@ -24128,6 +24128,12 @@ page and sees a preview of every question before anything is changed:
     }
     return { file: { ...f, pages: f.pages ?? [], ends: f.ends ?? [] }, errors: [] };
   }
+  const REGIONS_ATTACHMENT = {
+    what: "regions",
+    name: "gradescope-regions.json",
+    pattern: /regions\.json$/i,
+    is: (text) => parseRegions(text).file !== null
+  };
   const round1 = (v2) => Math.round(v2 * 10) / 10;
   const clamp = (v2) => Math.min(100, Math.max(0, v2));
   const sum = (xs) => xs.reduce((a, b) => a + b, 0);
@@ -24456,6 +24462,24 @@ page and sees a preview of every question before anything is changed:
       question_data: match.questions.map(data)
     };
   }
+  function rubricsKind(text) {
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return null;
+    }
+    if (Array.isArray(data) && data.length > 0 && data.every((x2) => x2 && typeof x2 === "object" && Array.isArray(x2.questions))) {
+      return "examy";
+    }
+    return data && typeof data === "object" && data.format === RUBRIC_FORMAT ? "rubric-file" : null;
+  }
+  const RUBRICS_ATTACHMENT = {
+    what: "rubrics",
+    name: "examy-rubric.json",
+    pattern: /rubrics?\.json$/i,
+    is: (text) => rubricsKind(text) !== null
+  };
   function gradescopeMath(text) {
     return text.replace(
       /\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g,
@@ -24762,19 +24786,28 @@ page and sees a preview of every question before anything is changed:
     const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
     return latin1(bytes.slice(0, 1024)).includes("%PDF-");
   }
-  async function readFileOrAttachment(file, name) {
+  function findAttachment(attachments, kind, pdfName) {
+    const base = (pdfName ?? "").replace(/\.pdf$/i, "").toLowerCase();
+    const ranked = [...attachments.entries()].map(([name, text], order) => ({ name, text, order })).filter(({ name }) => kind.pattern.test(name)).map((a) => ({
+      ...a,
+      rank: [kind.is(a.text) ? 0 : 1, a.name === kind.name ? 0 : 1, base && a.name.toLowerCase().startsWith(base) ? 0 : 1, a.order]
+    })).sort((a, b) => a.rank.reduce((d, r2, k) => d || r2 - b.rank[k], 0));
+    const [best, ...rest] = ranked;
+    return best ? { name: best.name, text: best.text, others: rest.map((a) => a.name) } : null;
+  }
+  async function readFileOrAttachment(file, kind) {
     const data = new Uint8Array(await file.arrayBuffer());
     if (!isPdf(data)) {
-      return { text: new TextDecoder().decode(data), attachments: null };
+      return { text: new TextDecoder().decode(data), attachments: null, attached: null };
     }
     const attachments = await pdfAttachments(data);
-    const text = attachments.get(name);
-    if (text === void 0) {
+    const attached = findAttachment(attachments, kind, file.name);
+    if (!attached) {
       throw new Error(
-        `${file.name ?? "The PDF"} has no ${name} attached. Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
+        `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.name}). Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
       );
     }
-    return { text, attachments };
+    return { text: attached.text, attachments, attached };
   }
   const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "assignment";
   const plural$1 = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
@@ -24913,23 +24946,32 @@ page and sees a preview of every question before anything is changed:
         return;
       }
       const converted = await run(`Reading ${f.name}…`, async () => {
-        const read = await readFileOrAttachment(f, "examy-rubric.json");
-        if (!read.attachments) {
-          return { text: read.text, warnings: null };
+        const { text: text2, attachments, attached } = await readFileOrAttachment(f, RUBRICS_ATTACHMENT);
+        if (!attachments || !attached) {
+          return { text: text2, from: null, warnings: null };
+        }
+        const from = `${attached.name} from ${f.name}`;
+        const notes = attached.others.length ? [`${f.name} also has ${attached.others.join(", ")}; this is ${attached.name}.`] : [];
+        const kind = rubricsKind(text2);
+        if (kind === "rubric-file") {
+          return { text: JSON.stringify(JSON.parse(text2), null, 2) + "\n", from, warnings: notes };
+        }
+        if (kind !== "examy") {
+          throw new Error(`The ${attached.name} attached to ${f.name} is neither examy's rubrics nor a rubric JSON file.`);
         }
         const a = assignment ?? await client.load();
-        const regions = read.attachments.get("gradescope-regions.json");
+        const regions = findAttachment(attachments, REGIONS_ATTACHMENT, f.name);
         const { file: file2, warnings } = rubricFromExamy(
-          JSON.parse(read.text),
-          regions ? JSON.parse(regions) : null,
+          JSON.parse(text2),
+          regions && REGIONS_ATTACHMENT.is(regions.text) ? JSON.parse(regions.text) : null,
           a
         );
-        return { text: JSON.stringify(file2, null, 2) + "\n", warnings };
+        return { text: JSON.stringify(file2, null, 2) + "\n", from, warnings: [...notes, ...warnings] };
       });
       if (converted) {
         replaceText(converted.text);
-        if (converted.warnings) {
-          setImported({ from: f.name, warnings: converted.warnings });
+        if (converted.from && converted.warnings) {
+          setImported({ from: converted.from, warnings: converted.warnings });
         }
       }
     }
@@ -25019,7 +25061,7 @@ page and sees a preview of every question before anything is changed:
         }
       },
       /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("h2", { title: assignment ? `Assignment ${assignment.assignmentId}` : void 0 }, "Rubric JSON", assignment ? ` — ${assignment.title}` : ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button close", title: "Close", "aria-label": "Close", onClick: () => setOpen(false) }, "×")),
-      /* @__PURE__ */ React.createElement("main", { ref: mainRef }, busy && /* @__PURE__ */ React.createElement("p", { className: "status", title: "Working" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error", title: "Error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), imported && /* @__PURE__ */ React.createElement("div", { className: `banner ${imported.warnings.length ? "warning" : "ok"}`, title: "Converting the exam's rubrics" }, "Read the rubrics of ", imported.from, ".", imported.warnings.length > 0 && /* @__PURE__ */ React.createElement("ul", { className: "issues" }, imported.warnings.map((w2, k) => /* @__PURE__ */ React.createElement("li", { key: k }, w2)))), /* @__PURE__ */ React.createElement(
+      /* @__PURE__ */ React.createElement("main", { ref: mainRef }, busy && /* @__PURE__ */ React.createElement("p", { className: "status", title: "Working" }, busy), error && /* @__PURE__ */ React.createElement("p", { className: "banner error", title: "Error" }, error), notice && /* @__PURE__ */ React.createElement("p", { className: "banner ok" }, notice), imported && /* @__PURE__ */ React.createElement("div", { className: `banner ${imported.warnings.length ? "warning" : "ok"}`, title: "Converting the exam's rubrics" }, "Read ", imported.from, ".", imported.warnings.length > 0 && /* @__PURE__ */ React.createElement("ul", { className: "issues" }, imported.warnings.map((w2, k) => /* @__PURE__ */ React.createElement("li", { key: k }, w2)))), /* @__PURE__ */ React.createElement(
         "div",
         {
           ref: referencesRef,
@@ -25638,20 +25680,21 @@ ${regionsScript.trimEnd()}
         return;
       }
       const read = await run("Reading " + f.name + "…", async () => {
-        const { text: text2, attachments } = await readFileOrAttachment(f, "gradescope-regions.json");
-        if (!attachments) {
-          return { text: text2, attached: false };
+        const { text: text2, attached } = await readFileOrAttachment(f, REGIONS_ATTACHMENT);
+        if (!attached) {
+          return { text: text2, attached };
         }
         try {
-          return { text: JSON.stringify(JSON.parse(text2), null, 1), attached: true };
+          return { text: JSON.stringify(JSON.parse(text2), null, 1), attached };
         } catch (e2) {
-          throw new Error(`The gradescope-regions.json attached to ${f.name} is not JSON: ${e2 instanceof Error ? e2.message : String(e2)}`);
+          throw new Error(`The ${attached.name} attached to ${f.name} is not JSON: ${e2 instanceof Error ? e2.message : String(e2)}`);
         }
       });
       if (read) {
         changeText(read.text, { opened: true });
         if (read.attached) {
-          flash(`Read the regions attached to ${f.name}.`);
+          const others = read.attached.others.length ? ` It also has ${read.attached.others.join(", ")}.` : "";
+          flash(`Read ${read.attached.name}, attached to ${f.name}.${others}`);
         }
       }
     }
