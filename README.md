@@ -160,8 +160,8 @@ How the exam becomes an outline:
 - The name and student ID regions are the lines of the exam's `name-block` labelled with a name
   ("Name:", "Last name:", "Surname:") and a student ID ("Student ID:", "Student number:",
   "UTORid:", "ID:"), from the line's start to its end and a little above it. The name region takes
-  every name line on its page ("First name:" and "Last name:" both); the student ID region the
-  first student ID line. A region the name block has no line for is kept as it is.
+  the first name line and the name lines right after it ("First name:" and "Last name:" both);
+  the student ID region the first student ID line. A region the name block has no line for is kept as it is.
 - If Gradescope can't say whether the questions to delete have grading, the dialog won't save
   until it can: **Retry** asks again.
 - Titles of questions are kept; subquestions are titled with examy's labels.

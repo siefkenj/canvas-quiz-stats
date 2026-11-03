@@ -45,7 +45,7 @@ pre.snippet {
     background: rgba(29, 78, 216, 0.08);
 }
 .legend.old-rect {
-    border: 2px dashed #9ca3af;
+    border: 2px dashed #4b5563;
 }
 
 /* The questions beside the template's pages; each side scrolls by itself. */
@@ -159,7 +159,16 @@ figure.page figcaption {
     pointer-events: none;
 }
 .rect.old {
-    border: 2px dashed #9ca3af;
+    border: 2px dashed #4b5563;
+}
+/* Gradescope's number, at the bottom right (the new region's is at the top left). */
+.rect.old .rect-label {
+    top: auto;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    background: #4b5563;
+    font-weight: 400;
 }
 .rect.new {
     border: 2px solid var(--blue);

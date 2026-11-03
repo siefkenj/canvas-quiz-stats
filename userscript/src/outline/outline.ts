@@ -208,17 +208,22 @@ const NAME_ABOVE = 6;
 const NAME_PAD = 3;
 
 /**
- * The name and student ID regions, from the name block's lines: the name region around every
- * line for a name on the page of the first (a name may take two, "First name:" and "Last name:"),
+ * The name and student ID regions, from the name block's lines: the name region around the first
+ * line for a name and those right after it (a name may take two, "First name:" and "Last name:"),
  * the student ID region around the first line for one.
  */
 function planIdRegions(names: RegionsNameLine[], pages: Map<number, RegionsPage>): Partial<Record<"name" | "sid", CropRect>> {
     const spans: Partial<Record<"name" | "sid", Span[]>> = {};
+    /** The name lines have ended: a line for something else came after them. */
+    let namesEnded = false;
     for (const line of names) {
         const key = idRegionKey(line.label);
         const p = pages.get(line.start.page);
         const had = key ? spans[key] : undefined;
-        if (!key || !p || (had && (key === "sid" || had[0].page !== line.start.page))) {
+        if (spans.name && key !== "name") {
+            namesEnded = true;
+        }
+        if (!key || !p || (had && (key === "sid" || namesEnded || had[0].page !== line.start.page))) {
             continue;
         }
         const right = line.end.x > line.start.x ? line.end.x : p.width - p.margin.right;
@@ -403,7 +408,7 @@ export function existingTree(outline: GsOutlineQuestion[]): ExistingQuestion[] {
         number: String(k + 1),
         question: q,
         children: outline
-            .filter((c) => c.parent_id === q.id)
+            .filter((c) => c.parent_id != null && String(c.parent_id) === String(q.id))
             .sort(byIndex)
             .map((c, j) => ({ number: `${k + 1}.${j + 1}`, question: c, children: [] })),
     }));

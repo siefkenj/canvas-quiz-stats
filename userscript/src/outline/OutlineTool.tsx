@@ -12,6 +12,7 @@ import { examBase, IMPORT_SNIPPET, outlineAiInstructions, regionsCommand } from 
 import { readFileOrAttachment } from "../pdf-attachments";
 import type { OutlineClient } from "./api";
 import {
+    existingTree,
     flatten,
     ID_REGION_LABELS,
     matchIdRegions,
@@ -26,6 +27,9 @@ import {
 import type { CropRect, GsOutlineProps } from "./types";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+/** The name and student ID regions' short names, for labels on the pages and in the table. */
+const ID_SHORT: Record<string, string> = { name: "Name", sid: "ID" };
 
 /** Reload the page. Inside Canvas this reloads only the Gradescope frame. */
 const reloadPage = () => window.location.reload();
@@ -181,17 +185,19 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
             }
         });
         if (read) {
-            changeText(read.text);
+            changeText(read.text, { opened: true });
             if (read.attached) {
                 flash(`Read the regions attached to ${f.name}.`);
             }
         }
     }
 
-    /** Replace the regions file (a new file starts with its first exam). */
-    function changeText(value: string) {
+    /** Replace the regions file (an opened file starts with its first exam; an edit keeps the choice). */
+    function changeText(value: string, { opened = false } = {}) {
         setText(value);
-        setExamIndex(0);
+        if (opened) {
+            setExamIndex(0);
+        }
         setResults(null);
     }
 
@@ -474,7 +480,7 @@ const pagesOf = (rects: CropRect[]) => {
 export function QuestionTable(props: { match: OutlineMatch; ids?: IdRegionMatch[]; hovered: string | null; setHovered: (n: string | null) => void; graded: number[] }) {
     const idRow = (i: IdRegionMatch) => (
         <tr key={i.key} className={`id-row ${props.hovered === i.key ? "hovered" : ""}`} onMouseEnter={() => props.setHovered(i.key)} onMouseLeave={() => props.setHovered(null)}>
-            <td className="num">{i.key === "name" ? "Name" : "ID"}</td>
+            <td className="num">{ID_SHORT[i.key]}</td>
             <td>
                 <span className="hint">{ID_REGION_LABELS[i.key]} region</span>
             </td>
@@ -564,21 +570,19 @@ export function PagePreview(props: {
 }) {
     const leaves = props.match ? flatten(props.match.questions).filter((q) => !q.children) : [];
     const box = (r: CropRect) => ({ left: `${r.x1}%`, top: `${r.y1}%`, width: `${r.x2 - r.x1}%`, height: `${r.y2 - r.y1}%` });
-    const isGroup = (id: number) => props.existing.some((q) => q.parent_id === id);
+    const onPage = (rs: CropRect[] | null) => (rs ?? []).filter((r) => r.page_number === props.number);
+    // Gradescope's questions with regions: each subquestion, or a group whose subquestions have none.
+    const existing = existingTree(props.existing).flatMap((q) =>
+        q.children.some((c) => c.question.crop_rect_list?.length) ? q.children : [q]
+    );
     return (
         <figure className="page">
             <img src={props.url} alt={`Page ${props.number}`} loading="lazy" />
-            {props.existing
-                .filter((q) => !isGroup(q.id))
-                .flatMap((q) => (q.crop_rect_list ?? []).filter((r) => r.page_number === props.number).map((r, k) => <div key={`old-${q.id}-${k}`} className="rect old" style={box(r)} />))}
-            {Object.entries(props.existingIds ?? {})
-                .filter(([, r]) => r && r.page_number === props.number)
-                .map(([key, r]) => <div key={`old-id-${key}`} className="rect old" style={box(r!)} />)}
             {(props.ids ?? [])
                 .filter((i) => i.status !== "kept" && i.rect?.page_number === props.number)
                 .map((i) => (
                     <div key={`id-${i.key}`} className={`rect new id ${props.hovered === i.key ? "hovered" : ""}`} style={box(i.rect!)}>
-                        <span className="rect-label">{i.key === "name" ? "Name" : "ID"}</span>
+                        <span className="rect-label">{ID_SHORT[i.key]}</span>
                     </div>
                 ))}
             {leaves.flatMap((q) =>
@@ -590,6 +594,21 @@ export function PagePreview(props: {
                         </div>
                     ))
             )}
+            {/* Gradescope's regions go on top, so that they show where they are the same as the new. */}
+            {existing.flatMap((q) =>
+                onPage(q.question.crop_rect_list).map((r, k) => (
+                    <div key={`old-${q.question.id}-${k}`} className="rect old" style={box(r)}>
+                        <span className="rect-label">{q.number}</span>
+                    </div>
+                ))
+            )}
+            {Object.entries(props.existingIds ?? {})
+                .filter(([, r]) => r && r.page_number === props.number)
+                .map(([key, r]) => (
+                    <div key={`old-id-${key}`} className="rect old" style={box(r!)}>
+                        <span className="rect-label">{ID_SHORT[key] ?? key}</span>
+                    </div>
+                ))}
             <figcaption>Page {props.number}</figcaption>
         </figure>
     );

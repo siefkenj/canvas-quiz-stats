@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.8.1 (2026-11-03)
+
+### Fixed
+
+-   The Outline JSON preview draws Gradescope's regions on top of the new ones, numbered, so they
+    show where the two are the same; and draws a group's own region when its subquestions have
+    none.
+-   Subquestions are found under their group also if Gradescope gives their parent's id as text.
+-   The name region no longer reaches over other lines of the name block: it takes the first name
+    line and the name lines right after it, not every name line on the page.
+-   Editing the regions file by hand keeps the chosen exam; only opening a file goes back to the
+    first.
+
 ## 1.8.0 (2026-10-30)
 
 ### Added

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.8
+// @version  1.8.1
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -24213,11 +24213,15 @@ page and sees a preview of every question before anything is changed:
   const NAME_PAD = 3;
   function planIdRegions(names, pages2) {
     const spans = {};
+    let namesEnded = false;
     for (const line of names) {
       const key = idRegionKey(line.label);
       const p2 = pages2.get(line.start.page);
       const had = key ? spans[key] : void 0;
-      if (!key || !p2 || had && (key === "sid" || had[0].page !== line.start.page)) {
+      if (spans.name && key !== "name") {
+        namesEnded = true;
+      }
+      if (!key || !p2 || had && (key === "sid" || namesEnded || had[0].page !== line.start.page)) {
         continue;
       }
       const right = line.end.x > line.start.x ? line.end.x : p2.width - p2.margin.right;
@@ -24367,7 +24371,7 @@ page and sees a preview of every question before anything is changed:
     return tops.map((q2, k) => ({
       number: String(k + 1),
       question: q2,
-      children: outline.filter((c) => c.parent_id === q2.id).sort(byIndex).map((c, j) => ({ number: `${k + 1}.${j + 1}`, question: c, children: [] }))
+      children: outline.filter((c) => c.parent_id != null && String(c.parent_id) === String(q2.id)).sort(byIndex).map((c, j) => ({ number: `${k + 1}.${j + 1}`, question: c, children: [] }))
     }));
   }
   const sameRects = (a, b) => {
@@ -25328,7 +25332,7 @@ page and sees a preview of every question before anything is changed:
     root.render(/* @__PURE__ */ React.createElement(RubricTool, { client }));
     mounted$1 = { root, host, path: window.location.pathname };
   }
-  const css = "/* Styles for the Outline JSON tool, on top of the Rubric JSON tool's (see ../rubric/rubric-tool.css). */\n\n.outline-tool label.file-button {\n    gap: 0.35em;\n    padding: 0.3em 0.8em;\n}\n.outline-tool .step-row h3 {\n    display: inline-flex;\n    align-items: center;\n    gap: 0.45em;\n}\n.regions-input textarea {\n    resize: vertical;\n    margin-top: 0.4em;\n}\nol.ways {\n    margin: 0 0 0.4em;\n    padding-left: 1.4em;\n    font-size: 12.5px;\n}\nol.ways li {\n    margin-bottom: 0.3em;\n}\n.snippet-row {\n    display: flex;\n    align-items: flex-start;\n    gap: 0.4em;\n}\npre.snippet {\n    margin: 0.15em 0 0;\n    padding: 0.2em 0.5em;\n    font-size: 11.5px;\n    background: #f3f4f6;\n    border-radius: 4px;\n    user-select: all;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n.legend {\n    font-size: 12px;\n    padding: 0 0.5em;\n}\n.legend.new-rect {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.legend.old-rect {\n    border: 2px dashed #9ca3af;\n}\n\n/* The questions beside the template's pages; each side scrolls by itself. */\n.outline-grid {\n    flex: 1 1 0;\n    min-height: 0;\n    display: grid;\n    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);\n    grid-template-rows: minmax(0, 1fr);\n    gap: 1em;\n}\n@media (max-width: 900px) {\n    .outline-grid {\n        grid-template-columns: minmax(0, 1fr);\n        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);\n    }\n}\n.outline-list,\n.outline-pages {\n    min-height: 0;\n    overflow: auto;\n    border: 1px solid #e5e7eb;\n    border-radius: 6px;\n    background: #fafafa;\n    padding: 0.5em;\n}\n.outline-pages {\n    display: flex;\n    flex-direction: column;\n    gap: 0.75em;\n}\n\n.outline-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 12.5px;\n    background: #fff;\n}\n.outline-table th {\n    text-align: left;\n    font-weight: 600;\n    border-bottom: 1px solid var(--border);\n    padding: 0.25em 0.4em;\n}\n.outline-table td {\n    border-bottom: 1px solid #f3f4f6;\n    padding: 0.25em 0.4em;\n    vertical-align: top;\n}\n.outline-table td.num {\n    font-weight: 600;\n    white-space: nowrap;\n}\n.outline-table tr.child td.num {\n    padding-left: 1.4em;\n    font-weight: 400;\n}\n.outline-table td.pts,\n.outline-table td.pgs {\n    white-space: nowrap;\n}\n.outline-table td.pgs .tag {\n    margin-left: 0.35em;\n}\n.outline-table tr.hovered td {\n    background: #eff6ff;\n}\n.outline-table tr.deleted td {\n    color: #991b1b;\n    text-decoration: line-through;\n}\n.outline-table tr.deleted td:last-child {\n    text-decoration: none;\n}\n.outline-table .changes {\n    font-size: 11.5px;\n}\n.issues.errors {\n    color: #991b1b;\n}\n.issues.warnings {\n    color: #92400e;\n}\nlabel.check-line.confirm {\n    margin-top: 0.6em;\n    font-weight: 600;\n    color: #991b1b;\n}\n\nfigure.page {\n    position: relative;\n    margin: 0;\n    background: #fff;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\nfigure.page img {\n    display: block;\n    width: 100%;\n    height: auto;\n}\nfigure.page figcaption {\n    position: absolute;\n    right: 0.4em;\n    bottom: 0.2em;\n    font-size: 11px;\n    color: var(--muted);\n}\n.rect {\n    position: absolute;\n    box-sizing: border-box;\n    pointer-events: none;\n}\n.rect.old {\n    border: 2px dashed #9ca3af;\n}\n.rect.new {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.rect.new.fallback {\n    border-color: #d97706;\n    background: rgba(217, 119, 6, 0.08);\n}\n.rect.new.hovered {\n    background: rgba(29, 78, 216, 0.25);\n}\n.rect-label {\n    position: absolute;\n    top: 0;\n    left: 0;\n    font-size: 11px;\n    font-weight: 700;\n    color: #fff;\n    background: var(--blue);\n    padding: 0 0.3em;\n}\n.rect.fallback .rect-label {\n    background: #d97706;\n}\n\n.rect.new.id {\n    border-color: #059669;\n    background: rgba(5, 150, 105, 0.08);\n}\n.rect.new.id .rect-label {\n    background: #059669;\n}\n.outline-table tr.id-row td.num {\n    color: #047857;\n}\n";
+  const css = "/* Styles for the Outline JSON tool, on top of the Rubric JSON tool's (see ../rubric/rubric-tool.css). */\n\n.outline-tool label.file-button {\n    gap: 0.35em;\n    padding: 0.3em 0.8em;\n}\n.outline-tool .step-row h3 {\n    display: inline-flex;\n    align-items: center;\n    gap: 0.45em;\n}\n.regions-input textarea {\n    resize: vertical;\n    margin-top: 0.4em;\n}\nol.ways {\n    margin: 0 0 0.4em;\n    padding-left: 1.4em;\n    font-size: 12.5px;\n}\nol.ways li {\n    margin-bottom: 0.3em;\n}\n.snippet-row {\n    display: flex;\n    align-items: flex-start;\n    gap: 0.4em;\n}\npre.snippet {\n    margin: 0.15em 0 0;\n    padding: 0.2em 0.5em;\n    font-size: 11.5px;\n    background: #f3f4f6;\n    border-radius: 4px;\n    user-select: all;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n.legend {\n    font-size: 12px;\n    padding: 0 0.5em;\n}\n.legend.new-rect {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.legend.old-rect {\n    border: 2px dashed #4b5563;\n}\n\n/* The questions beside the template's pages; each side scrolls by itself. */\n.outline-grid {\n    flex: 1 1 0;\n    min-height: 0;\n    display: grid;\n    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);\n    grid-template-rows: minmax(0, 1fr);\n    gap: 1em;\n}\n@media (max-width: 900px) {\n    .outline-grid {\n        grid-template-columns: minmax(0, 1fr);\n        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);\n    }\n}\n.outline-list,\n.outline-pages {\n    min-height: 0;\n    overflow: auto;\n    border: 1px solid #e5e7eb;\n    border-radius: 6px;\n    background: #fafafa;\n    padding: 0.5em;\n}\n.outline-pages {\n    display: flex;\n    flex-direction: column;\n    gap: 0.75em;\n}\n\n.outline-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 12.5px;\n    background: #fff;\n}\n.outline-table th {\n    text-align: left;\n    font-weight: 600;\n    border-bottom: 1px solid var(--border);\n    padding: 0.25em 0.4em;\n}\n.outline-table td {\n    border-bottom: 1px solid #f3f4f6;\n    padding: 0.25em 0.4em;\n    vertical-align: top;\n}\n.outline-table td.num {\n    font-weight: 600;\n    white-space: nowrap;\n}\n.outline-table tr.child td.num {\n    padding-left: 1.4em;\n    font-weight: 400;\n}\n.outline-table td.pts,\n.outline-table td.pgs {\n    white-space: nowrap;\n}\n.outline-table td.pgs .tag {\n    margin-left: 0.35em;\n}\n.outline-table tr.hovered td {\n    background: #eff6ff;\n}\n.outline-table tr.deleted td {\n    color: #991b1b;\n    text-decoration: line-through;\n}\n.outline-table tr.deleted td:last-child {\n    text-decoration: none;\n}\n.outline-table .changes {\n    font-size: 11.5px;\n}\n.issues.errors {\n    color: #991b1b;\n}\n.issues.warnings {\n    color: #92400e;\n}\nlabel.check-line.confirm {\n    margin-top: 0.6em;\n    font-weight: 600;\n    color: #991b1b;\n}\n\nfigure.page {\n    position: relative;\n    margin: 0;\n    background: #fff;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\nfigure.page img {\n    display: block;\n    width: 100%;\n    height: auto;\n}\nfigure.page figcaption {\n    position: absolute;\n    right: 0.4em;\n    bottom: 0.2em;\n    font-size: 11px;\n    color: var(--muted);\n}\n.rect {\n    position: absolute;\n    box-sizing: border-box;\n    pointer-events: none;\n}\n.rect.old {\n    border: 2px dashed #4b5563;\n}\n/* Gradescope's number, at the bottom right (the new region's is at the top left). */\n.rect.old .rect-label {\n    top: auto;\n    left: auto;\n    right: 0;\n    bottom: 0;\n    background: #4b5563;\n    font-weight: 400;\n}\n.rect.new {\n    border: 2px solid var(--blue);\n    background: rgba(29, 78, 216, 0.08);\n}\n.rect.new.fallback {\n    border-color: #d97706;\n    background: rgba(217, 119, 6, 0.08);\n}\n.rect.new.hovered {\n    background: rgba(29, 78, 216, 0.25);\n}\n.rect-label {\n    position: absolute;\n    top: 0;\n    left: 0;\n    font-size: 11px;\n    font-weight: 700;\n    color: #fff;\n    background: var(--blue);\n    padding: 0 0.3em;\n}\n.rect.fallback .rect-label {\n    background: #d97706;\n}\n\n.rect.new.id {\n    border-color: #059669;\n    background: rgba(5, 150, 105, 0.08);\n}\n.rect.new.id .rect-label {\n    background: #059669;\n}\n.outline-table tr.id-row td.num {\n    color: #047857;\n}\n";
   function outlineProps(doc) {
     const el2 = doc.querySelector('[data-react-class="AssignmentOutline"]');
     const props = el2 == null ? void 0 : el2.dataset.reactProps;
@@ -25530,6 +25534,7 @@ ${regionsScript.trimEnd()}
 `;
   }
   const plural = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
+  const ID_SHORT = { name: "Name", sid: "ID" };
   const reloadPage = () => window.location.reload();
   function summarize(match, ids) {
     const all2 = flatten(match.questions);
@@ -25644,15 +25649,17 @@ ${regionsScript.trimEnd()}
         }
       });
       if (read) {
-        changeText(read.text);
+        changeText(read.text, { opened: true });
         if (read.attached) {
           flash(`Read the regions attached to ${f.name}.`);
         }
       }
     }
-    function changeText(value) {
+    function changeText(value, { opened = false } = {}) {
       setText(value);
-      setExamIndex(0);
+      if (opened) {
+        setExamIndex(0);
+      }
       setResults(null);
     }
     async function copy(text2, label) {
@@ -25763,7 +25770,7 @@ ${regionsScript.trimEnd()}
     return ps.length === 0 ? "–" : ps.length === 1 ? `p. ${ps[0]}` : `pp. ${ps.join(", ")}`;
   };
   function QuestionTable(props) {
-    const idRow = (i) => /* @__PURE__ */ React.createElement("tr", { key: i.key, className: `id-row ${props.hovered === i.key ? "hovered" : ""}`, onMouseEnter: () => props.setHovered(i.key), onMouseLeave: () => props.setHovered(null) }, /* @__PURE__ */ React.createElement("td", { className: "num" }, i.key === "name" ? "Name" : "ID"), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, ID_REGION_LABELS[i.key], " region")), /* @__PURE__ */ React.createElement("td", { className: "pts" }), /* @__PURE__ */ React.createElement("td", { className: "pgs" }, i.rect ? pagesOf([i.rect]) : "–"), /* @__PURE__ */ React.createElement("td", null, i.status === "kept" ? /* @__PURE__ */ React.createElement("span", { className: "tag same", title: "The exam's name block has no line for it, so Gradescope's stays as it is" }, i.existing ? "Kept" : "None") : /* @__PURE__ */ React.createElement("span", { className: `tag ${STATUS[i.status].className}` }, STATUS[i.status].label), i.status === "changed" && /* @__PURE__ */ React.createElement("span", { className: "hint changes" }, " region")));
+    const idRow = (i) => /* @__PURE__ */ React.createElement("tr", { key: i.key, className: `id-row ${props.hovered === i.key ? "hovered" : ""}`, onMouseEnter: () => props.setHovered(i.key), onMouseLeave: () => props.setHovered(null) }, /* @__PURE__ */ React.createElement("td", { className: "num" }, ID_SHORT[i.key]), /* @__PURE__ */ React.createElement("td", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, ID_REGION_LABELS[i.key], " region")), /* @__PURE__ */ React.createElement("td", { className: "pts" }), /* @__PURE__ */ React.createElement("td", { className: "pgs" }, i.rect ? pagesOf([i.rect]) : "–"), /* @__PURE__ */ React.createElement("td", null, i.status === "kept" ? /* @__PURE__ */ React.createElement("span", { className: "tag same", title: "The exam's name block has no line for it, so Gradescope's stays as it is" }, i.existing ? "Kept" : "None") : /* @__PURE__ */ React.createElement("span", { className: `tag ${STATUS[i.status].className}` }, STATUS[i.status].label), i.status === "changed" && /* @__PURE__ */ React.createElement("span", { className: "hint changes" }, " region")));
     const row = (q2, child) => /* @__PURE__ */ React.createElement(
       "tr",
       {
@@ -25783,13 +25790,21 @@ ${regionsScript.trimEnd()}
   function PagePreview(props) {
     const leaves = props.match ? flatten(props.match.questions).filter((q2) => !q2.children) : [];
     const box = (r2) => ({ left: `${r2.x1}%`, top: `${r2.y1}%`, width: `${r2.x2 - r2.x1}%`, height: `${r2.y2 - r2.y1}%` });
-    const isGroup = (id2) => props.existing.some((q2) => q2.parent_id === id2);
-    return /* @__PURE__ */ React.createElement("figure", { className: "page" }, /* @__PURE__ */ React.createElement("img", { src: props.url, alt: `Page ${props.number}`, loading: "lazy" }), props.existing.filter((q2) => !isGroup(q2.id)).flatMap((q2) => (q2.crop_rect_list ?? []).filter((r2) => r2.page_number === props.number).map((r2, k) => /* @__PURE__ */ React.createElement("div", { key: `old-${q2.id}-${k}`, className: "rect old", style: box(r2) }))), Object.entries(props.existingIds ?? {}).filter(([, r2]) => r2 && r2.page_number === props.number).map(([key, r2]) => /* @__PURE__ */ React.createElement("div", { key: `old-id-${key}`, className: "rect old", style: box(r2) })), (props.ids ?? []).filter((i) => {
+    const onPage = (rs) => (rs ?? []).filter((r2) => r2.page_number === props.number);
+    const existing = existingTree(props.existing).flatMap(
+      (q2) => q2.children.some((c) => {
+        var _a;
+        return (_a = c.question.crop_rect_list) == null ? void 0 : _a.length;
+      }) ? q2.children : [q2]
+    );
+    return /* @__PURE__ */ React.createElement("figure", { className: "page" }, /* @__PURE__ */ React.createElement("img", { src: props.url, alt: `Page ${props.number}`, loading: "lazy" }), (props.ids ?? []).filter((i) => {
       var _a;
       return i.status !== "kept" && ((_a = i.rect) == null ? void 0 : _a.page_number) === props.number;
-    }).map((i) => /* @__PURE__ */ React.createElement("div", { key: `id-${i.key}`, className: `rect new id ${props.hovered === i.key ? "hovered" : ""}`, style: box(i.rect) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, i.key === "name" ? "Name" : "ID"))), leaves.flatMap(
+    }).map((i) => /* @__PURE__ */ React.createElement("div", { key: `id-${i.key}`, className: `rect new id ${props.hovered === i.key ? "hovered" : ""}`, style: box(i.rect) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, ID_SHORT[i.key]))), leaves.flatMap(
       (q2) => q2.rects.filter((r2) => r2.page_number === props.number).map((r2, k) => /* @__PURE__ */ React.createElement("div", { key: `new-${q2.number}-${k}`, className: `rect new ${props.hovered === q2.number ? "hovered" : ""} ${q2.fallback ? "fallback" : ""}`, style: box(r2) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, q2.number)))
-    ), /* @__PURE__ */ React.createElement("figcaption", null, "Page ", props.number));
+    ), existing.flatMap(
+      (q2) => onPage(q2.question.crop_rect_list).map((r2, k) => /* @__PURE__ */ React.createElement("div", { key: `old-${q2.question.id}-${k}`, className: "rect old", style: box(r2) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, q2.number)))
+    ), Object.entries(props.existingIds ?? {}).filter(([, r2]) => r2 && r2.page_number === props.number).map(([key, r2]) => /* @__PURE__ */ React.createElement("div", { key: `old-id-${key}`, className: "rect old", style: box(r2) }, /* @__PURE__ */ React.createElement("span", { className: "rect-label" }, ID_SHORT[key] ?? key))), /* @__PURE__ */ React.createElement("figcaption", null, "Page ", props.number));
   }
   const HOST_ID = "canvas-quiz-stats-outline-tool";
   function outlineEditorRoute(pathname) {

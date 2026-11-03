@@ -70,6 +70,14 @@ describe("planOutline", () => {
         expect(idRegions.sid).toMatchObject({ y1: pct(160 - 6 - 3), y2: pct(160 + 3) });
     });
 
+    it("leaves out of the name region the lines after the name's, and name lines after them", () => {
+        const line = (label: string, y: number) => ({ label, start: { page: 1, x: 100, y }, end: { page: 1, x: 500, y } });
+        const names = [line("First name:", 100), line("Student number:", 130), line("Last name:", 160)];
+        const { idRegions } = planOutline({ ...FINAL, names }, template(5));
+        const pct = (y: number) => Math.round((y / 792) * 1000) / 10;
+        expect(idRegions.name).toMatchObject({ y1: pct(100 - 6 - 3), y2: pct(100 + 3) });
+    });
+
     it("refuses an exam the file does not have, rather than delete every question", () => {
         const plan = planOutline(FINAL, template(5), 1);
         expect(plan.questions).toEqual([]);
