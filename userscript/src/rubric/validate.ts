@@ -160,7 +160,7 @@ export function validateRubricText(text: string, assignment: Assignment): Valida
         error("(file)", `The file must contain a JSON object, not ${typeName(data)}.`);
         return result(null);
     }
-    checkKeys(data, "(file)", ["format", "version", "assignment", "questions"]);
+    checkKeys(data, "(file)", ["format", "version", "questions"], ["assignment"]);
     if ("format" in data && data.format !== RUBRIC_FORMAT) {
         error("format", `Must be "${RUBRIC_FORMAT}", not ${JSON.stringify(data.format)}.`);
     }

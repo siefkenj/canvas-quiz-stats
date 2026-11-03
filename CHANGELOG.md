@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.2 (2026-11-03)
+
+### Fixed
+
+-   A rubric JSON file no longer needs an `"assignment"`: the page says which assignment it is, so
+    one file can be uploaded to several assignments (e.g., the versions of a quiz). If the file
+    has one, it must still match the page.
+
 ## 1.8.1 (2026-11-03)
 
 ### Added

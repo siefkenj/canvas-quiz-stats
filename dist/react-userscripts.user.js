@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.8.1
+// @version  1.8.2
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -22770,8 +22770,10 @@ ${JSON.stringify(example, null, 2)}
 An object with exactly these keys:
 - \`"format"\`: the string \`"${RUBRIC_FORMAT}"\`.
 - \`"version"\`: the number \`${RUBRIC_FORMAT_VERSION}\`.
-- \`"assignment"\`: an object with \`"course_id"\` (\`${assignment.courseId}\`) and \`"assignment_id"\`
-  (\`${assignment.assignmentId}\`), both numbers, and optionally \`"title"\` (a string; not uploaded).
+- \`"assignment"\` (optional): an object with \`"course_id"\` (\`${assignment.courseId}\`) and
+  \`"assignment_id"\` (\`${assignment.assignmentId}\`), both numbers, and optionally \`"title"\` (a
+  string; not uploaded). If given, it must match this assignment. Leave it out to use the same file
+  for several assignments.
 - \`"questions"\`: a non-empty array of questions.
 
 ### Questions
@@ -23227,7 +23229,7 @@ page and sees a preview of every question before anything is changed:
       error("(file)", `The file must contain a JSON object, not ${typeName(data)}.`);
       return result(null);
     }
-    checkKeys(data, "(file)", ["format", "version", "assignment", "questions"]);
+    checkKeys(data, "(file)", ["format", "version", "questions"], ["assignment"]);
     if ("format" in data && data.format !== RUBRIC_FORMAT) {
       error("format", `Must be "${RUBRIC_FORMAT}", not ${JSON.stringify(data.format)}.`);
     }

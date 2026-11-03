@@ -39,7 +39,12 @@ export interface RubricQuestion {
 export interface RubricFile {
     format: typeof RUBRIC_FORMAT;
     version: typeof RUBRIC_FORMAT_VERSION;
-    assignment: {
+    /**
+     * The assignment the file is for. Optional: the page says which assignment it is, and this is
+     * only a check that the file is not uploaded to another. Leave it out to use one file for
+     * several assignments.
+     */
+    assignment?: {
         course_id: number;
         assignment_id: number;
         /** Informational only. */

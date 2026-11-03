@@ -69,6 +69,15 @@ describe("valid files", () => {
         ]);
     });
 
+    it("accepts a file with no assignment, for the assignment on the page", () => {
+        const file = validFile();
+        delete file.assignment;
+        const r = check(file);
+        expect(messages(r)).toBe("");
+        expect(messages(r, "warnings")).toBe("");
+        expect(r.plans.map((p) => p.number)).toEqual(["1", "2.1", "3"]);
+    });
+
     it("accepts the downloaded rubric unchanged, with every question unchanged", () => {
         const r = check(assignment.toRubricFile());
         expect(messages(r)).toBe("");
