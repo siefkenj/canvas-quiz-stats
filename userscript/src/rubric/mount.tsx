@@ -9,6 +9,7 @@ import { createRoot, type Root } from "react-dom/client";
 import css from "./rubric-tool.css?inline";
 import { GradescopeClient } from "./api";
 import { RubricTool } from "./RubricTool";
+import { styleShadowRoot } from "../shadow-styles";
 
 const HOST_ID = "canvas-quiz-stats-rubric-tool";
 
@@ -45,16 +46,7 @@ export function updateRubricTool(options: MountOptions = {}) {
     host.id = HOST_ID;
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: "open" });
-    // A constructed stylesheet also works where a page's Content-Security-Policy blocks <style>.
-    try {
-        const sheet = new CSSStyleSheet();
-        sheet.replaceSync(css);
-        shadow.adoptedStyleSheets = [sheet];
-    } catch {
-        const style = document.createElement("style");
-        style.textContent = css;
-        shadow.appendChild(style);
-    }
+    styleShadowRoot(shadow, css);
     const container = document.createElement("div");
     shadow.appendChild(container);
 

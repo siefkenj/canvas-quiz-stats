@@ -10,6 +10,7 @@ import rubricCss from "../rubric/rubric-tool.css?inline";
 import css from "./outline-tool.css?inline";
 import { OutlineClient } from "./api";
 import { OutlineTool } from "./OutlineTool";
+import { styleShadowRoot } from "../shadow-styles";
 
 const HOST_ID = "canvas-quiz-stats-outline-tool";
 
@@ -41,15 +42,7 @@ export function updateOutlineTool(options: { fetch?: typeof fetch } = {}) {
     host.id = HOST_ID;
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: "open" });
-    try {
-        const sheet = new CSSStyleSheet();
-        sheet.replaceSync(rubricCss + css);
-        shadow.adoptedStyleSheets = [sheet];
-    } catch {
-        const style = document.createElement("style");
-        style.textContent = rubricCss + css;
-        shadow.appendChild(style);
-    }
+    styleShadowRoot(shadow, rubricCss + css);
     const container = document.createElement("div");
     shadow.appendChild(container);
 

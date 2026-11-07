@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.8.4 (2026-11-07)
+
+### Fixed
+
+-   The Rubric JSON and Outline JSON buttons show on browsers that take the tools' styles without
+    applying them (older Firefox, for a script run by a userscript manager). The button was
+    unstyled at the bottom of the page, out of sight, and showed for a moment only as Gradescope
+    left the page. The tools now check that their styles apply, and add them as a <style> if not.
+
+## 1.8.3 (2026-11-07)
+
+### Changed
+
+-   A rubric JSON file whose `"assignment"` has a different title from the page's assignment is an
+    error, not a warning, like a different course or assignment id: nothing is uploaded until it is
+    fixed.
+
 ## 1.8.2 (2026-11-03)
 
 ### Fixed

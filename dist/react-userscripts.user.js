@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.8.2
+// @version  1.8.4
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -17107,7 +17107,7 @@
     var doc = ownerDocument(node);
     return doc && doc.defaultView || window;
   }
-  function getComputedStyle(node, psuedoElement) {
+  function getComputedStyle$1(node, psuedoElement) {
     return ownerWindow(node).getComputedStyle(node, psuedoElement);
   }
   var rUpper = /([A-Z])/g;
@@ -17126,7 +17126,7 @@
     var css2 = "";
     var transforms = "";
     if (typeof property === "string") {
-      return node.style.getPropertyValue(hyphenateStyleName(property)) || getComputedStyle(node).getPropertyValue(hyphenateStyleName(property));
+      return node.style.getPropertyValue(hyphenateStyleName(property)) || getComputedStyle$1(node).getPropertyValue(hyphenateStyleName(property));
     }
     Object.keys(property).forEach(function(key) {
       var value = property[key];
@@ -21267,6 +21267,8 @@
 
 :host {
     all: initial;
+    /* Shows that these styles are in effect (see ../shadow-styles.ts). */
+    --canvas-quiz-stats-styled: 1;
     font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: #1f2937;
     --blue: #1d4ed8;
@@ -22772,8 +22774,8 @@ An object with exactly these keys:
 - \`"version"\`: the number \`${RUBRIC_FORMAT_VERSION}\`.
 - \`"assignment"\` (optional): an object with \`"course_id"\` (\`${assignment.courseId}\`) and
   \`"assignment_id"\` (\`${assignment.assignmentId}\`), both numbers, and optionally \`"title"\` (a
-  string; not uploaded). If given, it must match this assignment. Leave it out to use the same file
-  for several assignments.
+  string; not uploaded). If given, each of its values must match this assignment. Leave it out to
+  use the same file for several assignments.
 - \`"questions"\`: a non-empty array of questions.
 
 ### Questions
@@ -23195,7 +23197,6 @@ page and sees a preview of every question before anything is changed:
       return result(null);
     }
     const error = (path, message2, question) => errors.push({ path, message: message2, question });
-    const warn = (path, message2, question) => warnings.push({ path, message: message2, question });
     const deferred = /* @__PURE__ */ new Map();
     const issuesFor = (question) => {
       if (!deferred.has(question)) {
@@ -23265,9 +23266,9 @@ page and sees a preview of every question before anything is changed:
           if (typeof a.title !== "string") {
             error("assignment.title", `Must be a string, not ${typeName(a.title)}.`);
           } else if (a.title.trim() !== assignment.title.trim()) {
-            warn(
+            error(
               "assignment.title",
-              `The title "${a.title}" differs from this assignment's title "${assignment.title}". (The title is not uploaded.)`
+              `This file is for the assignment titled "${a.title}", but this page is "${assignment.title}".`
             );
           }
         }
@@ -25329,6 +25330,24 @@ page and sees a preview of every question before anything is changed:
       props.errors.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "tag error", title: props.errors.map((e) => e.message).join("\n") }, plural$1(props.errors.length, "error"))
     ), changes && /* @__PURE__ */ React.createElement(EntryList, { entries: diffEntries(plan.current.rubric, next.rubric) }));
   }
+  const STYLED_MARKER = "--canvas-quiz-stats-styled";
+  function isStyled(shadow) {
+    return getComputedStyle(shadow.host).getPropertyValue(STYLED_MARKER).trim() === "1";
+  }
+  function styleShadowRoot(shadow, css2) {
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css2);
+      shadow.adoptedStyleSheets = [sheet];
+      if (isStyled(shadow)) {
+        return;
+      }
+    } catch {
+    }
+    const style2 = document.createElement("style");
+    style2.textContent = css2;
+    shadow.prepend(style2);
+  }
   const HOST_ID$1 = "canvas-quiz-stats-rubric-tool";
   function rubricEditorRoute(pathname) {
     const m2 = pathname.match(/^\/courses\/(\d+)\/assignments\/(\d+)\/rubric\/edit\/?$/);
@@ -25354,15 +25373,7 @@ page and sees a preview of every question before anything is changed:
     host.id = HOST_ID$1;
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: "open" });
-    try {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(rubricCss);
-      shadow.adoptedStyleSheets = [sheet];
-    } catch {
-      const style2 = document.createElement("style");
-      style2.textContent = rubricCss;
-      shadow.appendChild(style2);
-    }
+    styleShadowRoot(shadow, rubricCss);
     const container = document.createElement("div");
     shadow.appendChild(container);
     const client = new GradescopeClient({
@@ -25876,15 +25887,7 @@ ${regionsScript.trimEnd()}
     host.id = HOST_ID;
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: "open" });
-    try {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(rubricCss + css);
-      shadow.adoptedStyleSheets = [sheet];
-    } catch {
-      const style2 = document.createElement("style");
-      style2.textContent = rubricCss + css;
-      shadow.appendChild(style2);
-    }
+    styleShadowRoot(shadow, rubricCss + css);
     const container = document.createElement("div");
     shadow.appendChild(container);
     const client = new OutlineClient({

@@ -116,6 +116,9 @@ describe("structural errors", () => {
         ["string version", (f) => (f.version = "1"), /version: Must be the number 1/],
         ["wrong assignment", (f) => (f.assignment.assignment_id = 2), /this page is assignment 1/],
         ["wrong course", (f) => (f.assignment.course_id = 7), /this page is course 1/],
+        ["wrong title", (f) => (f.assignment.title = "Other"), /titled "Other", but this page is "Sample Problem Set"/],
+        ["assignment without its id", (f) => delete f.assignment.assignment_id, /Missing required key "assignment_id"/],
+        ["assignment without its course", (f) => delete f.assignment.course_id, /Missing required key "course_id"/],
         ["missing questions", (f) => delete f.questions, /Missing required key "questions"/],
         ["empty questions", (f) => (f.questions = []), /at least one question/],
         ["numeric question number", (f) => (f.questions[0].number = 1), /Must be a string such as "3.1"/],
@@ -210,7 +213,6 @@ describe("warnings", () => {
         ["ASCII operators", (f) => (f.questions[0].rubric[1].description = "$$x <= 1$$"), /ASCII operators/],
         ["line break in math", (f) => (f.questions[0].rubric[1].description = "$$x \neq 1$$"), /line break/],
         ["duplicate descriptions", (f) => (f.questions[0].rubric[1].description = f.questions[0].rubric[0].description), /same description/],
-        ["different title", (f) => (f.assignment.title = "Other"), /differs from this assignment's title/],
     ];
     for (const [name, mutate, expected] of warns) {
         it(`warns about ${name}`, () => {

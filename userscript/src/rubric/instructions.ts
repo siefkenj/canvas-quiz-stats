@@ -94,8 +94,8 @@ An object with exactly these keys:
 - \`"version"\`: the number \`${RUBRIC_FORMAT_VERSION}\`.
 - \`"assignment"\` (optional): an object with \`"course_id"\` (\`${assignment.courseId}\`) and
   \`"assignment_id"\` (\`${assignment.assignmentId}\`), both numbers, and optionally \`"title"\` (a
-  string; not uploaded). If given, it must match this assignment. Leave it out to use the same file
-  for several assignments.
+  string; not uploaded). If given, each of its values must match this assignment. Leave it out to
+  use the same file for several assignments.
 - \`"questions"\`: a non-empty array of questions.
 
 ### Questions

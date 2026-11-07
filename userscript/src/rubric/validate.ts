@@ -199,9 +199,9 @@ export function validateRubricText(text: string, assignment: Assignment): Valida
                 if (typeof a.title !== "string") {
                     error("assignment.title", `Must be a string, not ${typeName(a.title)}.`);
                 } else if (a.title.trim() !== assignment.title.trim()) {
-                    warn(
+                    error(
                         "assignment.title",
-                        `The title "${a.title}" differs from this assignment's title "${assignment.title}". (The title is not uploaded.)`
+                        `This file is for the assignment titled "${a.title}", but this page is "${assignment.title}".`
                     );
                 }
             }

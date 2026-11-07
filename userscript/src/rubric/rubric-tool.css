@@ -3,6 +3,8 @@
 
 :host {
     all: initial;
+    /* Shows that these styles are in effect (see ../shadow-styles.ts). */
+    --canvas-quiz-stats-styled: 1;
     font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: #1f2937;
     --blue: #1d4ed8;

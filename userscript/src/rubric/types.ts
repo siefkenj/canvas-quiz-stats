@@ -47,7 +47,7 @@ export interface RubricFile {
     assignment?: {
         course_id: number;
         assignment_id: number;
-        /** Informational only. */
+        /** Not uploaded, but if given it must be this assignment's title. */
         title?: string;
     };
     questions: RubricQuestion[];
