@@ -1,0 +1,79 @@
+{
+ "format": "examy-rubric",
+ "exam-name": null,
+ "rubrics": [
+  {
+   "address": [
+    0
+   ],
+   "display-name": "1",
+   "level": 1,
+   "points": 2,
+   "bonus-points": null,
+   "rubric": [
+    {
+     "type": "item",
+     "points": 2,
+     "description": "**Correct**: hypotheses and conclusion.",
+     "annotation": null
+    },
+    {
+     "type": "item",
+     "points": 1,
+     "description": "**Partial**: conclusion only.",
+     "annotation": null
+    }
+   ]
+  },
+  {
+   "address": [
+    1,
+    0
+   ],
+   "display-name": "2 (a)",
+   "level": 2,
+   "points": 1,
+   "bonus-points": null,
+   "rubric": [
+    {
+     "type": "item",
+     "points": 1,
+     "description": "Yes, with a reason.",
+     "annotation": null
+    }
+   ]
+  },
+  {
+   "address": [
+    1,
+    1
+   ],
+   "display-name": "2 (b)",
+   "level": 2,
+   "points": 2,
+   "bonus-points": null,
+   "rubric": [
+    {
+     "type": "group",
+     "title": "**Proof**",
+     "note": null,
+     "annotation": "pick one",
+     "items": [
+      {
+       "type": "item",
+       "points": 2,
+       "description": "Complete",
+       "annotation": null
+      },
+      {
+       "type": "item",
+       "points": 1,
+       "description": "Gaps",
+       "annotation": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.9.0 (2026-11-12)
+
+### Changed
+
+-   The Outline JSON and Rubric JSON dialogs read what examy 1.1.0 and later attach to an exam's
+    PDF (`embed-metadata`): `examy-regions.json` and `examy-rubric.json`, in examy's own formats.
+    The Outline JSON dialog shows examy's commands (compile with
+    `--input embed-metadata=question-regions`, or write the file with
+    `query(<examy-regions>)`), and its AI instructions describe examy's format and upgrading an
+    exam to examy 1.1.0. `gradescope.typ` is gone: examy writes the regions itself. Regions files
+    from `gradescope.typ` and examy 1.0.0's rubrics still open.
+-   From examy's regions, a question or part without answer boxes takes its text from its label to
+    where examy says it ends, so a part in a column takes its column, not the page's width.
+-   A question not yet on Gradescope gets, in a rubric file made from an exam, the weight the
+    Outline JSON tool would give it.
+
+### Added
+
+-   A part without answer boxes (multiple choice, blanks) in a question whose other parts have
+    some adds its text to the question's region, as a question without boxes already did; such
+    regions are listed with a warning.
+
+### Fixed
+
+-   A damaged regions file (pasted in part, say) is reported, saying what is wrong with it, instead
+    of leaving the Outline JSON dialog blank. A damaged rubrics file attached to a PDF is reported
+    as neither examy's rubrics nor a rubric JSON file.
+
 ## 1.8.4 (2026-11-07)
 
 ### Fixed

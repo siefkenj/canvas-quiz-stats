@@ -13,8 +13,7 @@ import { uploadPlans, type UploadResult } from "./upload";
 import { validateRubricText, type Issue, type QuestionPlan, type ValidationResult } from "./validate";
 import { rubricFromExamy, rubricsKind, RUBRICS_ATTACHMENT, type ExamyRubrics } from "./from-examy";
 import { findAttachment, readFileOrAttachment } from "../pdf-attachments";
-import { REGIONS_ATTACHMENT } from "../outline/outline";
-import type { RegionsFile } from "../outline/types";
+import { parseRegions, REGIONS_ATTACHMENT } from "../outline/outline";
 
 const slug = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "assignment";
@@ -175,7 +174,7 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
         setPanel("preview");
     }
 
-    /** Load a rubric JSON file, or the rubrics attached to an exam's PDF (by gradescope.typ). */
+    /** Load a rubric JSON file, or the rubrics attached to an exam's PDF (by examy's `embed-metadata`). */
     async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
         const f = e.target.files?.[0];
         e.target.value = ""; // allow choosing the same file again after editing it
@@ -200,8 +199,8 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
             const a = assignment ?? (await client.load());
             const regions = findAttachment(attachments, REGIONS_ATTACHMENT, f.name);
             const { file, warnings } = rubricFromExamy(
-                JSON.parse(text) as ExamyRubrics[],
-                regions && REGIONS_ATTACHMENT.is(regions.text) ? (JSON.parse(regions.text) as RegionsFile) : null,
+                JSON.parse(text) as ExamyRubrics,
+                regions ? parseRegions(regions.text).file : null,
                 a
             );
             return { text: JSON.stringify(file, null, 2) + "\n", from, warnings: [...notes, ...warnings] };
@@ -478,12 +477,12 @@ export function RubricTool({ client }: { client: GradescopeClient }) {
                                     },
                                     {
                                         label: "From an examy exam's PDF…",
-                                        title: "The rubrics (#rubric[..]) of an exam whose PDF was made with gradescope.typ in it (#show: gradescope(e, answer-box)), as Gradescope's: see Outline JSON for gradescope.typ",
+                                        title: "The rubrics (#rubric[..]) of an exam whose PDF was compiled with examy 1.1.0 or later and --input embed-metadata=true (the answer key, say, not the students' copy), as Gradescope's",
                                         onClick: () => fileInput.current?.click(),
                                     },
                                 ]}
                             />
-                            <label className="icon-button file-button" title="Load a rubric JSON file into the box below, or the rubrics of an examy exam's PDF made with gradescope.typ">
+                            <label className="icon-button file-button" title="Load a rubric JSON file into the box below, or the rubrics attached to an examy exam's PDF (examy 1.1.0 or later, compiled with --input embed-metadata=true)">
                                 <FileIcon />
                                 <input ref={fileInput} type="file" accept=".json,application/json,.pdf,application/pdf" onChange={onFile} />
                             </label>

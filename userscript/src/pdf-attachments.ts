@@ -1,5 +1,5 @@
 /**
- * Read the files attached to a PDF (as Typst's `pdf.attach` writes them, e.g. by gradescope.typ):
+ * Read the files attached to a PDF (as Typst's `pdf.attach` writes them, e.g. examy's):
  * no PDF library, just the file specifications and their streams. Handles PDFs as Typst writes
  * them, and as programs that save them again often do: with objects packed into (Flate
  * compressed) object streams, names as hex or escaped strings, and incremental updates (the last
@@ -255,12 +255,14 @@ export function isPdf(data: ArrayBuffer | Uint8Array) {
 export interface AttachmentKind {
     /** What it holds, for messages: "regions". */
     what: string;
-    /** The name gradescope.typ gives it. */
-    name: string;
+    /** The names the tools that attach it give it, the newest first (the first is the one to name in messages). */
+    names: string[];
     /** The names it may have, e.g. /regions\.json$/i. */
     pattern: RegExp;
     /** Whether `text` is one. */
     is: (text: string) => boolean;
+    /** examy's `embed-metadata` option that attaches it. */
+    embed: string;
 }
 
 export interface FoundAttachment {
@@ -272,9 +274,9 @@ export interface FoundAttachment {
 
 /**
  * The attachment of kind `kind` among `attachments`, of those whose names fit, by priority: one
- * whose contents are of the kind; then the name gradescope.typ gives it; then one named after the
- * PDF (`pdfName` "midterm.pdf": "midterm-regions.json"); then the first in the PDF. Null if no
- * name fits.
+ * whose contents are of the kind; then one with a name a tool gives it (`kind.names`, in order);
+ * then one named after the PDF (`pdfName` "midterm.pdf": "midterm-regions.json"); then the first
+ * in the PDF. Null if no name fits.
  */
 export function findAttachment(attachments: Map<string, string>, kind: AttachmentKind, pdfName?: string): FoundAttachment | null {
     const base = (pdfName ?? "").replace(/\.pdf$/i, "").toLowerCase();
@@ -283,7 +285,12 @@ export function findAttachment(attachments: Map<string, string>, kind: Attachmen
         .filter(({ name }) => kind.pattern.test(name))
         .map((a) => ({
             ...a,
-            rank: [kind.is(a.text) ? 0 : 1, a.name === kind.name ? 0 : 1, base && a.name.toLowerCase().startsWith(base) ? 0 : 1, a.order],
+            rank: [
+                kind.is(a.text) ? 0 : 1,
+                kind.names.includes(a.name) ? kind.names.indexOf(a.name) : kind.names.length,
+                base && a.name.toLowerCase().startsWith(base) ? 0 : 1,
+                a.order,
+            ],
         }))
         // By the first criterion in which they differ.
         .sort((a, b) => a.rank.reduce((d, r, k) => d || r - b.rank[k], 0));
@@ -304,7 +311,7 @@ export async function readFileOrAttachment(file: Blob & { name?: string }, kind:
     const attached = findAttachment(attachments, kind, file.name);
     if (!attached) {
         throw new Error(
-            `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.name}). Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
+            `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.names[0]}). Compile the exam with examy 1.1.0 or later and \`--input embed-metadata=${kind.embed}\` to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
         );
     }
     return { text: attached.text, attachments, attached };

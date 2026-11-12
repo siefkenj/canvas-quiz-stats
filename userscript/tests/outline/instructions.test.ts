@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import regionsScript from "../../src/outline/gradescope.typ?raw";
-import { outlineAiInstructions, regionsCommand, shellQuote } from "../../src/outline/instructions";
+import { embedCommand, outlineAiInstructions, regionsCommand, shellQuote } from "../../src/outline/instructions";
 import type { GsOutlineProps } from "../../src/outline/types";
 
 const props = {
@@ -23,17 +22,31 @@ describe("outlineAiInstructions", () => {
         expect(md).toContain("| `2.1` | (a) | 4 | 3 |");
         expect(md).toContain("name on page 1, student ID not set");
     });
-    it("gives the command for the template's exam and embeds gradescope.typ whole", () => {
-        expect(regionsCommand(props)).toBe("typst eval --in gradescope.typ --input exam=midterm.typ 'query(<gs-regions>).first().value' > midterm-regions.json");
+    it("gives examy's commands for the template's exam, which write new files beside it", () => {
+        expect(regionsCommand(props)).toBe(
+            "typst eval --in midterm.typ --input embed-metadata=question-regions 'query(<examy-regions>).first().value' > midterm-regions.json"
+        );
+        expect(embedCommand(props)).toBe("typst compile --input embed-metadata=question-regions midterm.typ midterm-regions.pdf");
         expect(md).toContain(regionsCommand(props));
-        expect(md).toContain("```typst\n" + regionsScript.trimEnd() + "\n```");
+        expect(md).toContain("`midterm-examy-1.1.0.typ`");
+        expect(md).not.toMatch(/scratch/i);
+        // Checking the layout never compiles over the template's PDF.
+        expect(md).toContain("`typst compile midterm.typ midterm-check.pdf`");
+        expect(md).toContain(embedCommand(props));
+    });
+    it("describes examy 1.1.0's format, not gradescope.typ's", () => {
+        expect(md).toContain('"format": "examy-regions"');
+        expect(md).toContain("examy 1.1.0 or later");
+        expect(md).not.toMatch(/gradescope\.typ|examy-gradescope-regions/);
     });
     it("quotes file names the shell would split", () => {
         const spaced = { ...props, template: { ...props.template!, filename: "Term Test 1.pdf" } };
-        expect(regionsCommand(spaced)).toBe("typst eval --in gradescope.typ --input 'exam=Term Test 1.typ' 'query(<gs-regions>).first().value' > 'Term Test 1-regions.json'");
+        expect(regionsCommand(spaced)).toBe(
+            "typst eval --in 'Term Test 1.typ' --input embed-metadata=question-regions 'query(<examy-regions>).first().value' > 'Term Test 1-regions.json'"
+        );
         expect(shellQuote("it's")).toBe("'it'\\''s'");
     });
     it("works before the outline has loaded", () => {
-        expect(outlineAiInstructions(null)).toContain("--input exam=exam.typ");
+        expect(outlineAiInstructions(null)).toContain("--in exam.typ");
     });
 });

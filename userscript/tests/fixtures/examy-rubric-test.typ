@@ -1,6 +1,7 @@
-// Source of examy-rubric-test.pdf (kept base64 encoded, as examy-rubric-test.pdf.base64): a small exam with rubrics, compiled with gradescope.typ, whose
-// attachments are examy-rubric-test.regions.json and examy-rubric-test.rubric.json. To remake it,
-// put this next to gradescope.typ and a clone of examy 1.0.0 (typst-examy/), and compile it.
+// Source of examy-rubric-test.pdf (kept base64 encoded, as examy-rubric-test.pdf.base64): a small
+// exam with rubrics, in the older formats: compiled with examy 1.0.0 and gradescope.typ (since
+// removed; see git history), whose attachments are examy-rubric-test.regions.json and
+// examy-rubric-test.rubric.json. examy-1.1-test.typ is the same exam in examy 1.1.0's formats.
 #import "typst-examy/src/lib.typ": *
 #import "gradescope.typ": gradescope
 #show: gradescope(e, answer-box)

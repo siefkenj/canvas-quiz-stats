@@ -1,0 +1,168 @@
+{
+ "format": "examy-regions",
+ "exam-name": null,
+ "pages": [
+  {
+   "page": 1,
+   "width": 595.3,
+   "height": 841.9,
+   "margin": {
+    "top": 70.9,
+    "bottom": 70.9,
+    "left": 70.9,
+    "right": 70.9
+   }
+  }
+ ],
+ "name-block-regions": [
+  {
+   "display-name": "Name:",
+   "start": {
+    "page": 1,
+    "x": 125.1,
+    "y": 70.9
+   },
+   "end": {
+    "page": 1,
+    "x": 524.4,
+    "y": 82.0
+   }
+  },
+  {
+   "display-name": "Student ID:",
+   "start": {
+    "page": 1,
+    "x": 125.1,
+    "y": 93.0
+   },
+   "end": {
+    "page": 1,
+    "x": 524.4,
+    "y": 104.0
+   }
+  }
+ ],
+ "question-regions": [
+  {
+   "address": [
+    0
+   ],
+   "display-name": "1",
+   "level": 1,
+   "points": 2,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 70.9,
+    "y": 117.2
+   },
+   "end": {
+    "page": 1,
+    "x": 524.7,
+    "y": 395.2
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 1,
+      "x": 87.1,
+      "y": 131.4
+     },
+     "bottom": {
+      "page": 1,
+      "x": 524.7,
+      "y": 395.2
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    1
+   ],
+   "display-name": "2",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 70.9,
+    "y": 407.9
+   },
+   "end": {
+    "page": 1,
+    "x": 524.7,
+    "y": 771.3
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    0
+   ],
+   "display-name": "2 (a)",
+   "level": 2,
+   "points": 1,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 87.4,
+    "y": 407.9
+   },
+   "end": {
+    "page": 1,
+    "x": 524.4,
+    "y": 480.4
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 1,
+      "x": 209.5,
+      "y": 407.9
+     },
+     "bottom": {
+      "page": 1,
+      "x": 266.7,
+      "y": 480.4
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    1,
+    1
+   ],
+   "display-name": "2 (b)",
+   "level": 2,
+   "points": 2,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 87.4,
+    "y": 493.3
+   },
+   "end": {
+    "page": 1,
+    "x": 524.7,
+    "y": 771.3
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 1,
+      "x": 103.6,
+      "y": 507.5
+     },
+     "bottom": {
+      "page": 1,
+      "x": 524.7,
+      "y": 771.3
+     }
+    }
+   ]
+  }
+ ]
+}

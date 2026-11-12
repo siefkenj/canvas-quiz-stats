@@ -1,0 +1,634 @@
+{
+ "format": "examy-regions",
+ "exam-name": null,
+ "pages": [
+  {
+   "page": 1,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 2,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 3,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 4,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 5,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  },
+  {
+   "page": 6,
+   "width": 612.0,
+   "height": 792.0,
+   "margin": {
+    "top": 54.0,
+    "bottom": 54.0,
+    "left": 54.0,
+    "right": 54.0
+   }
+  }
+ ],
+ "name-block-regions": [
+  {
+   "display-name": "(Given then Family) \n NAME:",
+   "start": {
+    "page": 1,
+    "x": 164.3,
+    "y": 68.3
+   },
+   "end": {
+    "page": 1,
+    "x": 558.0,
+    "y": 80.5
+   }
+  },
+  {
+   "display-name": "Email address:",
+   "start": {
+    "page": 1,
+    "x": 164.3,
+    "y": 93.1
+   },
+   "end": {
+    "page": 1,
+    "x": 558.0,
+    "y": 103.7
+   }
+  },
+  {
+   "display-name": "UTORid:",
+   "start": {
+    "page": 1,
+    "x": 164.3,
+    "y": 114.7
+   },
+   "end": {
+    "page": 1,
+    "x": 558.0,
+    "y": 126.9
+   }
+  }
+ ],
+ "question-regions": [
+  {
+   "address": [
+    0
+   ],
+   "display-name": "1",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 54.0,
+    "y": 189.3
+   },
+   "end": {
+    "page": 1,
+    "x": 558.3,
+    "y": 686.8
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    0,
+    0
+   ],
+   "display-name": "1 (a)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 70.5,
+    "y": 209.7
+   },
+   "end": {
+    "page": 1,
+    "x": 558.0,
+    "y": 366.2
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    0,
+    1
+   ],
+   "display-name": "1 (b)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 70.5,
+    "y": 379.4
+   },
+   "end": {
+    "page": 1,
+    "x": 558.0,
+    "y": 410.8
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    0,
+    2
+   ],
+   "display-name": "1 (c)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 1,
+    "x": 70.5,
+    "y": 424.0
+   },
+   "end": {
+    "page": 1,
+    "x": 558.3,
+    "y": 686.8
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 1,
+      "x": 86.8,
+      "y": 438.2
+     },
+     "bottom": {
+      "page": 1,
+      "x": 558.3,
+      "y": 686.8
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    1
+   ],
+   "display-name": "2",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 54.0,
+    "y": 54.0
+   },
+   "end": {
+    "page": 2,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    0
+   ],
+   "display-name": "2 (a)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 70.5,
+    "y": 74.4
+   },
+   "end": {
+    "page": 2,
+    "x": 558.0,
+    "y": 81.7
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    1
+   ],
+   "display-name": "2 (b)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 70.5,
+    "y": 94.9
+   },
+   "end": {
+    "page": 2,
+    "x": 558.0,
+    "y": 126.3
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    2
+   ],
+   "display-name": "2 (c)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 70.5,
+    "y": 139.5
+   },
+   "end": {
+    "page": 2,
+    "x": 558.0,
+    "y": 171.0
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    3
+   ],
+   "display-name": "2 (d)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 70.5,
+    "y": 184.2
+   },
+   "end": {
+    "page": 2,
+    "x": 558.0,
+    "y": 215.6
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    1,
+    4
+   ],
+   "display-name": "2 (e)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 2,
+    "x": 70.5,
+    "y": 228.8
+   },
+   "end": {
+    "page": 2,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 2,
+      "x": 86.8,
+      "y": 242.9
+     },
+     "bottom": {
+      "page": 2,
+      "x": 558.3,
+      "y": 738.2
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    2
+   ],
+   "display-name": "3",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 3,
+    "x": 54.0,
+    "y": 54.0
+   },
+   "end": {
+    "page": 3,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    2,
+    0
+   ],
+   "display-name": "3 (a)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 3,
+    "x": 68.9,
+    "y": 324.5
+   },
+   "end": {
+    "page": 3,
+    "x": 301.1,
+    "y": 664.7
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    2,
+    1
+   ],
+   "display-name": "3 (b)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 3,
+    "x": 325.8,
+    "y": 324.5
+   },
+   "end": {
+    "page": 3,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 3,
+      "x": 340.4,
+      "y": 368.6
+     },
+     "bottom": {
+      "page": 3,
+      "x": 558.3,
+      "y": 738.2
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    3
+   ],
+   "display-name": "4",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 4,
+    "x": 54.0,
+    "y": 54.0
+   },
+   "end": {
+    "page": 5,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    3,
+    0
+   ],
+   "display-name": "4 (a)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 4,
+    "x": 70.5,
+    "y": 152.4
+   },
+   "end": {
+    "page": 4,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 4,
+      "x": 86.8,
+      "y": 166.6
+     },
+     "bottom": {
+      "page": 4,
+      "x": 558.3,
+      "y": 738.2
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    3,
+    1
+   ],
+   "display-name": "4 (b)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 5,
+    "x": 70.5,
+    "y": 54.0
+   },
+   "end": {
+    "page": 5,
+    "x": 558.3,
+    "y": 738.2
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 5,
+      "x": 86.8,
+      "y": 68.1
+     },
+     "bottom": {
+      "page": 5,
+      "x": 558.3,
+      "y": 738.2
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    4
+   ],
+   "display-name": "5",
+   "level": 1,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 6,
+    "x": 54.0,
+    "y": 54.0
+   },
+   "end": {
+    "page": 6,
+    "x": 558.3,
+    "y": 738.3
+   },
+   "answer-boxes": []
+  },
+  {
+   "address": [
+    4,
+    0
+   ],
+   "display-name": "5 (a)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 6,
+    "x": 70.5,
+    "y": 123.7
+   },
+   "end": {
+    "page": 6,
+    "x": 558.3,
+    "y": 315.1
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 6,
+      "x": 86.8,
+      "y": 137.8
+     },
+     "bottom": {
+      "page": 6,
+      "x": 558.3,
+      "y": 315.1
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    4,
+    1
+   ],
+   "display-name": "5 (b)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 6,
+    "x": 70.5,
+    "y": 328.0
+   },
+   "end": {
+    "page": 6,
+    "x": 558.3,
+    "y": 519.5
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 6,
+      "x": 86.8,
+      "y": 342.2
+     },
+     "bottom": {
+      "page": 6,
+      "x": 558.3,
+      "y": 519.5
+     }
+    }
+   ]
+  },
+  {
+   "address": [
+    4,
+    2
+   ],
+   "display-name": "5 (c)",
+   "level": 2,
+   "points": null,
+   "bonus-points": null,
+   "start": {
+    "page": 6,
+    "x": 70.5,
+    "y": 532.4
+   },
+   "end": {
+    "page": 6,
+    "x": 558.3,
+    "y": 738.3
+   },
+   "answer-boxes": [
+    {
+     "top": {
+      "page": 6,
+      "x": 86.8,
+      "y": 561.0
+     },
+     "bottom": {
+      "page": 6,
+      "x": 558.3,
+      "y": 738.3
+     }
+    }
+   ]
+  }
+ ]
+}

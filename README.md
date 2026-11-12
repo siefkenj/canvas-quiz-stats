@@ -43,11 +43,19 @@ On a Gradescope assignment's rubric editor (*Edit Rubric*), *Canvas Quiz Stats* 
     points: 1.5"); under negative scoring (students start with full marks), any positive items
     are marked.
 - **New rubric**: paste rubric JSON into the box, open a file, or use *Autogenerate*. The file can
-  also be the PDF of an [examy](https://github.com/siefkenj/typst-examy) exam made with
-  `gradescope.typ` in it (see "Gradescope outline from examy"): its rubrics (`#rubric[..]`) are put
-  in the box, numbered as the Outline JSON tool numbers the questions (from the regions attached
-  beside them; a rubric JSON file attached instead goes in the box as it is), with Gradescope's weights and scoring types and Gradescope's math (`$x$` becomes
-  `$$x$$`, `$$x$$` becomes `$$$x$$$`). What Gradescope has no place for (annotations, notes, groups
+  also be the PDF of an [examy](https://github.com/siefkenj/typst-examy) exam (examy 1.1.0 or
+  later) compiled with its rubrics attached:
+
+  ```
+  typst compile --input show-solutions=true --input embed-metadata=true quiz-04a.typ quiz-04a-key.pdf
+  ```
+
+  (the answer key, say: anyone with a PDF can read what is attached to it, so not the students'
+  copy). Its rubrics (`#rubric[..]`) are put in the box, numbered as the Outline JSON tool numbers
+  the questions (from the regions attached beside them; see "Gradescope outline from examy"), with
+  Gradescope's weights and scoring types and Gradescope's math (`$x$` becomes `$$x$$`, `$$x$$`
+  becomes `$$$x$$$`). A rubric JSON file attached instead goes in the box as it is; the rubrics
+  examy 1.0.0 exported (attached by the older `gradescope.typ`) are read too. What Gradescope has no place for (annotations, notes, groups
   inside groups) is left out, and listed above the box.
   - *Start from the current rubric* puts the current rubric in the box, to edit it in place;
   - *Uniform rubric for all questions…* opens a small dialog that gives every chosen question the
@@ -104,44 +112,45 @@ the rubric JSON instead always uses `points`, the change to the score.
 On a Gradescope assignment's outline editor (*Edit Outline*), *Canvas Quiz Stats* adds an
 **Outline JSON** button. It sets the outline (questions, subquestions, points, and the region of
 the page each one takes) from an exam written with [examy](https://github.com/siefkenj/typst-examy)
-1.0.0 or later, with each region around the question's answer boxes, and the name and student ID
+1.1.0 or later, with each region around the question's answer boxes, and the name and student ID
 regions from the exam's name block.
 
-1. Make the regions file with `gradescope.typ` (download it from the dialog and put it next to
-   the exam). It lays the exam out as it is (adding only invisible markers) and records where
-   every answer box and name block line is, each question's points, and the pages' sizes. Either:
+1. Make the regions: examy 1.1.0 and later write where every question, part, answer box, and name
+   block line is, each one's points, and the pages' sizes (`embed-metadata`; see examy's manual,
+   "Exam metadata"). In the exam's folder, either:
 
-   - run the command the dialog shows, for an exam left as it is, e.g.
+   - compile it to a PDF that carries them (as `examy-regions.json`), laid out as without them:
 
      ```
-     typst eval --in gradescope.typ --input exam=quiz-04a.typ 'query(<gs-regions>).first().value' > quiz-04a-regions.json
+     typst compile --input embed-metadata=question-regions quiz-04a.typ quiz-04a-regions.pdf
      ```
 
-     `--input examy=1.1.0` picks the examy version the exam imports (1.0.0 by default), and
-     `--input examy=path/to/src/lib.typ` an examy that is not installed as a package; or
-   - make the exam's PDF carry it: after examy's import, add
+   - or write the regions file:
 
-     ```typst
-     #import "gradescope.typ": gradescope
-     #show: gradescope(e, answer-box)
+     ```
+     typst eval --in quiz-04a.typ --input embed-metadata=question-regions 'query(<examy-regions>).first().value' > quiz-04a-regions.json
      ```
 
-     The PDF then has the regions attached as `gradescope-regions.json` (and the exam's rubrics,
-     as examy exports them, as `examy-rubric.json`); `pdfdetach -save 1 exam.pdf` saves them.
-     The dialogs read them from that PDF, and from one saved again by a program that keeps
-     attachments (some, such as print-to-PDF, drop them). Other names work too: the Outline JSON
-     dialog takes any attachment named `*regions.json`, the Rubric JSON dialog any `*rubric.json`
-     or `*rubrics.json` (examy's export, or a rubric JSON file as this tool downloads it). If
-     several fit, the dialog takes, in order: one whose contents are of the right kind; the name
-     `gradescope.typ` gives; one named after the PDF (`midterm-regions.json` in `midterm.pdf`);
-     the first in the PDF. It says which it took, and what else fits.
+   The dialog shows both commands for the template's exam. An exam can also attach them itself
+   (`#show: exam.with(embed-metadata: "question-regions")`). The dialogs read attachments from
+   examy's PDF, and from one saved again by a program that keeps them (some, such as
+   print-to-PDF, drop them). Other names work too: the Outline JSON dialog takes any attachment
+   named `*regions.json` (`*regions-2.json` for a document's second exam), the Rubric JSON dialog
+   any `*rubric.json` or `*rubrics.json` (examy's, or a rubric JSON file as this tool downloads
+   it). If several fit, the dialog takes, in order: one whose contents are of the right kind; the
+   name examy gives (then the older `gradescope.typ`'s); one named after the PDF
+   (`midterm-regions.json` in `midterm.pdf`); the first in the PDF. It says which it took, and
+   what else fits. `pdfdetach -saveall exam.pdf` saves them all.
+
+   Regions files from the older `gradescope.typ` (for examy 1.0.0; `gradescope-regions.json`)
+   still open.
 
    Or give the dialog's **AI instructions** (collapsed at the top; copy or download them) to an AI
    agent that can read the exam and run Typst. They describe this assignment's template and
-   outline, how to bring an older exam up to examy 1.0.0 on a copy in a scratch folder (without
-   touching the exam's folder) and check that its layout still matches the template, the command,
-   and what to check in the result, and they hold the whole of `gradescope.typ`.
-2. Open the exam's PDF (made with `gradescope.typ` in it) or the regions file, or paste the regions
+   outline, how to bring an older exam up to examy 1.1.0 on a copy (leaving the exam's file as it
+   is) and check that its layout still matches the template, the command, and what to check in
+   the result.
+2. Open the exam's PDF (with its regions attached) or the regions file, or paste the regions
    file. The dialog shows the outline next to Gradescope's template,
    with the new regions drawn over its pages (Gradescope's regions now, dashed), and for each
    question its points, pages, and whether it is new, changes, or stays the same.
@@ -154,9 +163,14 @@ How the exam becomes an outline:
   way to them (titled with examy's labels, e.g. "(a) i"), and a part with the points covers its
   subparts. Weights are examy's points (bonus points are not counted).
 - A question's region is one rectangle per page around its answer boxes (and its parts'), 2pt past
-  their borders. A question without answer boxes (such as a multiple choice one; examy also does
-  not mark boxes that hold `choices`) gets its text instead, from its start to the next question
-  or part, the width of the page's text; these are marked "text".
+  their borders. A question without answer boxes (such as a multiple choice one) gets its text
+  instead, from its label to the end of everything in it, as examy measures it (in a column, the
+  column's); these are marked "text". (From `gradescope.typ`'s regions, which do not say where
+  a question ends: to the next question or part, the width of the page's text.) A part without
+  answer boxes in a question (or part) that has some elsewhere adds its text to the region the
+  same way.
+  Anything else students write in (a table, a blank in a question's own text) is not marked, so it
+  is outside the regions.
 - Questions are matched to Gradescope's by number (by position: 1, 2, 2.1, ...), so they keep
   their ids, and with them their rubrics and grading. A question whose place holds a group (or
   the other way round) is new, and questions left over are deleted. Before deleting a question

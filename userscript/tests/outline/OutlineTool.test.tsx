@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { matchOutline, planOutline } from "../../src/outline/outline";
+import { matchOutline, parseRegions, planOutline } from "../../src/outline/outline";
 import { PagePreview, QuestionTable } from "../../src/outline/OutlineTool";
-import type { GsOutlineQuestion, RegionsFile } from "../../src/outline/types";
+import type { GsOutlineQuestion } from "../../src/outline/types";
 import finalExam from "./fixtures/examy-final-exam.json";
 
 const template = { page_count: 5, pages: [1, 2, 3, 4, 5].map((number) => ({ number, width: 2550, height: 3300, url: `page${number}.jpg` })) };
-const plan = planOutline(finalExam as RegionsFile, template);
+const plan = planOutline(parseRegions(JSON.stringify(finalExam)).file!, template);
 const outline: GsOutlineQuestion[] = [
     { id: 11, type: "FreeResponseQuestion", title: "Sets", parent_id: null, weight: "1.0", crop_rect_list: [{ x1: 10, x2: 90, y1: 20, y2: 30, page_number: 2 }], index: 1 },
     { id: 12, type: "FreeResponseQuestion", title: "", parent_id: null, weight: "1.0", crop_rect_list: [], index: 2 },

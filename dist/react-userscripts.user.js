@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.8.4
+// @version  1.9.0
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -23154,7 +23154,7 @@ page and sees a preview of every question before anything is changed:
       return /* @__PURE__ */ React.createElement(React.Fragment, { key: b }, out);
     }));
   }
-  const isObject = (v2) => typeof v2 === "object" && v2 !== null && !Array.isArray(v2);
+  const isObject$2 = (v2) => typeof v2 === "object" && v2 !== null && !Array.isArray(v2);
   function typeName(v2) {
     return v2 === null ? "null" : Array.isArray(v2) ? "an array" : `a ${typeof v2}`;
   }
@@ -23226,7 +23226,7 @@ page and sees a preview of every question before anything is changed:
       }
       return ok2;
     }
-    if (!isObject(data)) {
+    if (!isObject$2(data)) {
       error("(file)", `The file must contain a JSON object, not ${typeName(data)}.`);
       return result(null);
     }
@@ -23242,7 +23242,7 @@ page and sees a preview of every question before anything is changed:
     }
     const a = data.assignment;
     if ("assignment" in data) {
-      if (!isObject(a)) {
+      if (!isObject$2(a)) {
         error("assignment", `Must be an object, not ${typeName(a)}.`);
       } else {
         checkKeys(a, "assignment", ["course_id", "assignment_id"], ["title"]);
@@ -23292,7 +23292,7 @@ page and sees a preview of every question before anything is changed:
       }
     }
     function checkQuestion(q2, path, seen, n2) {
-      if (!isObject(q2)) {
+      if (!isObject$2(q2)) {
         error(path, `Each question must be an object, not ${typeName(q2)}.`);
         return null;
       }
@@ -23390,7 +23390,7 @@ page and sees a preview of every question before anything is changed:
       return parsed;
     }
     function checkEntry(e, path, question, inGroup, gs) {
-      if (!isObject(e)) {
+      if (!isObject$2(e)) {
         error(path, `Each rubric entry must be an object, not ${typeName(e)}.`, question);
         return null;
       }
@@ -24105,8 +24105,9 @@ page and sees a preview of every question before anything is changed:
     const order = new Map(plans.map((p2, k) => [p2.number, k]));
     return results.sort((a, b) => order.get(a.number) - order.get(b.number));
   }
-  const REGIONS_FORMAT = "examy-gradescope-regions";
-  const REGIONS_FORMAT_VERSION = 1;
+  const EXAMY_REGIONS_FORMAT = "examy-regions";
+  const LEGACY_REGIONS_FORMAT = "examy-gradescope-regions";
+  const LEGACY_REGIONS_FORMAT_VERSION = 1;
   const BOX_PAD = 2;
   const LINE = 14;
   function parseRegions(text) {
@@ -24116,25 +24117,143 @@ page and sees a preview of every question before anything is changed:
     } catch (e) {
       return { file: null, errors: [{ message: `Not JSON: ${e instanceof Error ? e.message : String(e)}` }] };
     }
-    const f = data;
-    if (!f || typeof f !== "object" || f.format !== REGIONS_FORMAT) {
-      return {
-        file: null,
-        errors: [{ message: `Not a regions file: "format" should be "${REGIONS_FORMAT}". Make it with gradescope.typ (see "Regions from examy").` }]
-      };
+    const format = data && typeof data === "object" ? data.format : void 0;
+    if (format === EXAMY_REGIONS_FORMAT || format === LEGACY_REGIONS_FORMAT) {
+      const problem = format === EXAMY_REGIONS_FORMAT ? examyRegionsProblem(data) : legacyRegionsProblem(data);
+      if (problem) {
+        return { file: null, errors: [{ message: `Not a valid regions file: ${problem}.` }] };
+      }
+      try {
+        return format === EXAMY_REGIONS_FORMAT ? fromExamyRegions(data) : fromLegacyRegions(data);
+      } catch (e) {
+        return { file: null, errors: [{ message: `Not a valid regions file: ${e instanceof Error ? e.message : String(e)}.` }] };
+      }
     }
-    if (f.version !== REGIONS_FORMAT_VERSION) {
-      return { file: null, errors: [{ message: `Regions file version ${f.version} is not supported (expected ${REGIONS_FORMAT_VERSION}). Download gradescope.typ again.` }] };
+    return {
+      file: null,
+      errors: [
+        {
+          message: `Not a regions file: "format" should be "${EXAMY_REGIONS_FORMAT}". Make it with examy 1.1.0 or later (see "Regions from examy").`
+        }
+      ]
+    };
+  }
+  const NO_QUESTIONS = { file: null, errors: [{ message: "The regions file has no questions." }] };
+  const isObject$1 = (v2) => !!v2 && typeof v2 === "object" && !Array.isArray(v2);
+  const isPosition = (v2) => isObject$1(v2) && [v2.page, v2.x, v2.y].every(Number.isFinite);
+  const isNumberOr = (v2, other) => v2 === other || Number.isFinite(v2);
+  const isPage = (v2) => isObject$1(v2) && [v2.page, v2.width, v2.height].every(Number.isFinite) && isObject$1(v2.margin) && [v2.margin.top, v2.margin.bottom, v2.margin.left, v2.margin.right].every(Number.isFinite);
+  const isTextOrNull$1 = (v2) => v2 === null || typeof v2 === "string";
+  const isBox = (v2) => isObject$1(v2) && isPosition(v2.top) && isPosition(v2.bottom);
+  function listProblem(list, name, check, optional = true) {
+    if (list === void 0 && optional) {
+      return null;
+    }
+    if (!Array.isArray(list)) {
+      return `"${name}" is not a list`;
+    }
+    for (const [k, item] of list.entries()) {
+      const problem = isObject$1(item) ? check(item) : "is not an object";
+      if (problem) {
+        return `"${name}" ${k + 1} ${problem}`;
+      }
+    }
+    return null;
+  }
+  function examyRegionsProblem(f) {
+    const file = f;
+    return listProblem(file.pages, "pages", (p2) => isPage(p2) ? null : "is not a page (page, width, height, and margin's top, bottom, left, right)") ?? listProblem(
+      file["name-block-regions"],
+      "name-block-regions",
+      (n2) => !isPosition(n2.start) || !isPosition(n2.end) ? "has no start or end" : !isTextOrNull$1(n2["display-name"]) ? 'has a "display-name" that is not text' : null
+    ) ?? listProblem(
+      file["question-regions"],
+      "question-regions",
+      (q2) => !Array.isArray(q2.address) || q2.address.length === 0 || !q2.address.every(Number.isInteger) ? 'has no "address"' : typeof q2["display-name"] !== "string" ? 'has no "display-name"' : !Number.isInteger(q2.level) ? 'has no "level"' : !isNumberOr(q2.points, null) || !isNumberOr(q2["bonus-points"], null) ? "has points that are not numbers" : !(q2.start === null || isPosition(q2.start)) || !(q2.end === null || isPosition(q2.end)) ? "has a start or end that is not a position" : !Array.isArray(q2["answer-boxes"]) || !q2["answer-boxes"].every(isBox) ? 'has "answer-boxes" that are not boxes' : null,
+      false
+    );
+  }
+  function legacyRegionsProblem(f) {
+    const file = f;
+    const exams = Array.isArray(file.exams) ? file.exams : [];
+    return listProblem(file.pages, "pages", (p2) => isPage(p2) ? null : "is not a page (page, width, height, and margin's top, bottom, left, right)") ?? listProblem(
+      file.names,
+      "names",
+      (n2) => !isPosition(n2.start) || !isPosition(n2.end) ? "has no start or end" : !isTextOrNull$1(n2.label ?? null) ? 'has a "label" that is not text' : null
+    ) ?? listProblem(file.ends, "ends", (e) => isPosition(e) ? null : "is not a position") ?? exams.map(
+      (rows, k) => listProblem(
+        rows,
+        `exams[${k}]`,
+        (d) => typeof d.number !== "string" || typeof d.label !== "string" || !Number.isInteger(d.level) ? 'has no "number", "label", or "level"' : !Number.isFinite(d.points) || !isNumberOr(d.bonus, null) ? "has points that are not numbers" : !(d.start === null || isPosition(d.start)) ? "has a start that is not a position" : !Array.isArray(d.boxes) || !d.boxes.every(isBox) ? 'has "boxes" that are not boxes' : null
+      )
+    ).find((p2) => p2) ?? null;
+  }
+  function fromExamyRegions(f) {
+    var _a;
+    const qs = f["question-regions"];
+    if (!Array.isArray(qs) || qs.length === 0) {
+      return NO_QUESTIONS;
+    }
+    const number = (q2) => q2.address.map((a) => a + 1).join(".");
+    const inside = (q2, d) => q2.address.length >= d.address.length && d.address.every((a, k) => q2.address[k] === a);
+    const divisions = qs.map((d) => {
+      const all2 = qs.filter((q2) => inside(q2, d));
+      const bonuses = all2.map((q2) => q2["bonus-points"]).filter((b) => b != null);
+      return {
+        number: number(d),
+        label: d["display-name"],
+        level: d.level,
+        points: sum(all2.map((q2) => q2.points ?? 0)),
+        bonus: bonuses.length ? sum(bonuses) : null,
+        start: d.start,
+        end: d.end,
+        boxes: (d["answer-boxes"] ?? []).map((b) => ({ top: b.top, bottom: b.bottom }))
+      };
+    });
+    return {
+      file: {
+        source: EXAMY_REGIONS_FORMAT,
+        exam: ((_a = f["exam-name"]) == null ? void 0 : _a.trim()) || null,
+        pages: f.pages ?? [],
+        ends: [null],
+        names: (f["name-block-regions"] ?? []).map((n2) => ({ label: n2["display-name"], start: n2.start, end: n2.end })),
+        exams: [divisions]
+      },
+      errors: []
+    };
+  }
+  function fromLegacyRegions(f) {
+    if (f.version !== LEGACY_REGIONS_FORMAT_VERSION) {
+      return { file: null, errors: [{ message: `gradescope.typ's regions file version ${f.version} is not supported. Make the regions with examy 1.1.0 or later instead.` }] };
     }
     if (!Array.isArray(f.exams) || f.exams.length === 0 || !Array.isArray(f.exams[0]) || f.exams[0].length === 0) {
-      return { file: null, errors: [{ message: "The regions file has no questions." }] };
+      return NO_QUESTIONS;
     }
-    return { file: { ...f, pages: f.pages ?? [], ends: f.ends ?? [] }, errors: [] };
+    const exams = f.exams.map(
+      (rows) => rows.map((r2) => ({
+        ...r2,
+        start: r2.start ? { ...r2.start, y: r2.start.y - LINE } : null,
+        end: null,
+        boxes: r2.boxes.map((b) => {
+          const i = b.inset ?? { top: 0, bottom: 0, left: 0, right: 0 };
+          const rest = b.bottom.x <= b.top.x;
+          return {
+            top: { ...b.top, x: b.top.x - i.left, y: b.top.y - i.top },
+            bottom: { ...b.bottom, x: rest ? b.top.x - i.left : b.bottom.x + i.right, y: b.bottom.y + i.bottom }
+          };
+        })
+      }))
+    );
+    return {
+      file: { source: LEGACY_REGIONS_FORMAT, exam: f.exam ?? null, pages: f.pages ?? [], ends: f.ends ?? [], names: f.names ?? [], exams },
+      errors: []
+    };
   }
   const REGIONS_ATTACHMENT = {
     what: "regions",
-    name: "gradescope-regions.json",
-    pattern: /regions\.json$/i,
+    names: ["examy-regions.json", "gradescope-regions.json"],
+    embed: "question-regions",
+    pattern: /regions(-\d+)?\.json$/i,
     is: (text) => parseRegions(text).file !== null
   };
   const round1 = (v2) => Math.round(v2 * 10) / 10;
@@ -24172,16 +24291,9 @@ page and sees a preview of every question before anything is changed:
     return spans;
   }
   function boxSpans(b, pages2) {
-    const inset = b.inset ?? { top: 0, bottom: 0, left: 0, right: 0 };
     const p2 = pages2.get(b.bottom.page);
-    const right = b.bottom.x > b.top.x ? b.bottom.x + inset.right : p2 ? p2.width - p2.margin.right : void 0;
-    return spansBetween(
-      { ...b.top, y: b.top.y - inset.top },
-      { ...b.bottom, y: b.bottom.y + inset.bottom },
-      pages2,
-      b.top.x - inset.left,
-      right
-    );
+    const right = b.bottom.x > b.top.x ? b.bottom.x : p2 ? p2.width - p2.margin.right : void 0;
+    return spansBetween(b.top, b.bottom, pages2, b.top.x, right);
   }
   function toRects(spans, pages2, pad) {
     const byPage = /* @__PURE__ */ new Map();
@@ -24246,6 +24358,7 @@ page and sees a preview of every question before anything is changed:
     return out;
   }
   function planOutline(file, template, examIndex = 0) {
+    var _a;
     const errors = [];
     const warnings = [];
     const exam = file.exams[examIndex];
@@ -24270,20 +24383,29 @@ page and sees a preview of every question before anything is changed:
     const after = (d) => {
       const last = subtree(d).at(-1);
       const next = rows.slice(rows.indexOf(last) + 1).find((r2) => r2.start);
-      return (next == null ? void 0 : next.start) ? { ...next.start, y: next.start.y - LINE } : end;
+      return (next == null ? void 0 : next.start) ?? end;
     };
-    const regionOf = (d, ds) => {
-      const boxes = ds.flatMap((x2) => x2.boxes);
-      if (boxes.length) {
-        const spans2 = boxes.flatMap((b) => boxSpans(b, pages2));
-        return { rects: toRects(spans2, pages2, BOX_PAD), fallback: false };
+    const textOf = (d) => {
+      if (d.start && d.end) {
+        return spansBetween(d.start, d.end, pages2, d.start.x, d.end.x > d.start.x ? d.end.x : void 0);
       }
       const to = after(d);
-      if (!d.start || !to) {
-        return { rects: [], fallback: true };
+      return d.start && to ? spansBetween(d.start, to, pages2) : [];
+    };
+    const hasBoxes = (d) => subtree(d).some((x2) => x2.boxes.length > 0);
+    const parentOf = (d) => rows.find((r2) => r2.level === d.level - 1 && d.number.startsWith(r2.number + "."));
+    const regionOf = (d, ds) => {
+      const boxes = ds.flatMap((x2) => x2.boxes);
+      if (!boxes.length) {
+        return { rects: toRects(textOf(d), pages2, 0), fallback: true };
       }
-      const spans = spansBetween({ ...d.start, y: d.start.y - LINE }, to, pages2);
-      return { rects: toRects(spans, pages2, 0), fallback: true };
+      const bare = ds.filter((x2) => x2 !== d && !hasBoxes(x2) && hasBoxes(parentOf(x2) ?? d));
+      const rects = toRects(boxes.flatMap((b) => boxSpans(b, pages2)), pages2, BOX_PAD);
+      if (!bare.length) {
+        return { rects, fallback: false };
+      }
+      const text = toRects(bare.flatMap(textOf), pages2, 0);
+      return { rects: mergeRects([...rects, ...text]), fallback: false, textParts: bare.map((x2) => x2.label) };
     };
     const questions = [];
     rows.filter((r2) => r2.level === 1).forEach((q2, k) => {
@@ -24293,8 +24415,7 @@ page and sees a preview of every question before anything is changed:
       }
       if (!splits(q2)) {
         const ds = subtree(q2);
-        const { rects, fallback } = regionOf(q2, ds);
-        questions.push({ number, covers: ds.map((d) => d.number), label: q2.label, title: "", weight: q2.points, rects, fallback });
+        questions.push({ number, covers: ds.map((d) => d.number), label: q2.label, title: "", weight: q2.points, ...regionOf(q2, ds) });
         if (childrenOf(q2).length && own(q2) > 1e-9 && childrenOf(q2).some((c) => c.points > 0)) {
           warnings.push({ message: `Question ${q2.number} has points of its own and in its parts, so it is one question on Gradescope.`, number });
         }
@@ -24302,9 +24423,8 @@ page and sees a preview of every question before anything is changed:
       }
       const children = units(q2).map((u2, j) => {
         const ds = subtree(u2);
-        const { rects, fallback } = regionOf(u2, ds);
         const title = u2.label.startsWith(q2.label) ? u2.label.slice(q2.label.length).trim() : u2.label;
-        return { number: `${number}.${j + 1}`, covers: ds.map((d) => d.number), label: u2.label, title, weight: u2.points, rects, fallback };
+        return { number: `${number}.${j + 1}`, covers: ds.map((d) => d.number), label: u2.label, title, weight: u2.points, ...regionOf(u2, ds) };
       });
       const ownBoxes = q2.boxes.flatMap((b) => boxSpans(b, pages2));
       const groupRects = mergeRects([...children.flatMap((c) => c.rects), ...toRects(ownBoxes, pages2, BOX_PAD)]);
@@ -24327,11 +24447,17 @@ page and sees a preview of every question before anything is changed:
         errors.push({ message: `Question ${p2.number} (examy ${p2.label}) has no region: it has no answer boxes, and its position is unknown.`, number: p2.number });
       } else if (p2.fallback) {
         warnings.push({ message: `Question ${p2.number} (examy ${p2.label}) has no answer boxes examy marks; its region is its text, to the next question or part.`, number: p2.number });
+      } else if ((_a = p2.textParts) == null ? void 0 : _a.length) {
+        const parts = p2.textParts.join(", ");
+        warnings.push({
+          message: `Question ${p2.number} (examy ${p2.label}): ${parts} ${p2.textParts.length === 1 ? "has" : "have"} no answer boxes examy marks, so ${p2.textParts.length === 1 ? "its" : "their"} text is in the region, around the answer boxes.`,
+          number: p2.number
+        });
       }
       if (p2.weight <= 0) {
         const bonus = p2.covers.some((n2) => {
-          var _a;
-          return (((_a = rows.find((r2) => r2.number === n2)) == null ? void 0 : _a.bonus) ?? 0) > 0;
+          var _a2;
+          return (((_a2 = rows.find((r2) => r2.number === n2)) == null ? void 0 : _a2.bonus) ?? 0) > 0;
         });
         warnings.push({
           message: bonus ? `Question ${p2.number} (examy ${p2.label}) has only bonus points, so it is worth 0 on Gradescope.` : `Question ${p2.number} (examy ${p2.label}) has no points, so it is worth 0 on Gradescope.`,
@@ -24354,8 +24480,8 @@ page and sees a preview of every question before anything is changed:
         }
       }
     }
-    const idRegions = planIdRegions(file.names ?? [], pages2);
-    if (file.names && !idRegions.name && !idRegions.sid) {
+    const idRegions = planIdRegions(file.names, pages2);
+    if (file.names.length && !idRegions.name && !idRegions.sid) {
       warnings.push({ message: "The name block has no line labelled with a name or student ID, so Gradescope's name and ID regions stay as they are." });
     }
     return { questions, idRegions, errors, warnings };
@@ -24465,6 +24591,22 @@ page and sees a preview of every question before anything is changed:
       question_data: match.questions.map(data)
     };
   }
+  const isObject = (v2) => !!v2 && typeof v2 === "object" && !Array.isArray(v2);
+  const isText = (v2) => typeof v2 === "string";
+  const isTextOrNull = (v2) => v2 === null || typeof v2 === "string";
+  function areEntries(es) {
+    return Array.isArray(es) && es.every(
+      (e) => isObject(e) && (e.type === "item" ? (e.points === null || Number.isFinite(e.points)) && isText(e.description) : e.type === "group" ? isText(e.title) && isTextOrNull(e.note ?? null) && areEntries(e.items) : e.type === "note" && isText(e.text))
+    );
+  }
+  const isExamyRubric = (data) => isObject(data) && data.format === "examy-rubric" && Array.isArray(data.rubrics) && data.rubrics.every(
+    (r2) => isObject(r2) && Array.isArray(r2.address) && r2.address.length > 0 && r2.address.every(Number.isInteger) && isText(r2["display-name"]) && (r2.points === null || Number.isFinite(r2.points)) && areEntries(r2.rubric)
+  );
+  const isLegacyExamyRubrics = (data) => Array.isArray(data) && data.length > 0 && data.every(
+    (x2) => isObject(x2) && Array.isArray(x2.questions) && x2.questions.every(
+      (q2) => isObject(q2) && isTextOrNull(q2.number) && isTextOrNull(q2.title ?? null) && (q2.points === null || Number.isFinite(q2.points)) && areEntries(q2.rubric)
+    )
+  );
   function rubricsKind(text) {
     let data;
     try {
@@ -24472,16 +24614,17 @@ page and sees a preview of every question before anything is changed:
     } catch {
       return null;
     }
-    if (Array.isArray(data) && data.length > 0 && data.every((x2) => x2 && typeof x2 === "object" && Array.isArray(x2.questions))) {
+    if (isExamyRubric(data) || isLegacyExamyRubrics(data)) {
       return "examy";
     }
     return data && typeof data === "object" && data.format === RUBRIC_FORMAT ? "rubric-file" : null;
   }
   const RUBRICS_ATTACHMENT = {
     what: "rubrics",
-    name: "examy-rubric.json",
-    pattern: /rubrics?\.json$/i,
-    is: (text) => rubricsKind(text) !== null
+    names: ["examy-rubric.json"],
+    pattern: /rubrics?(-\d+)?\.json$/i,
+    is: (text) => rubricsKind(text) !== null,
+    embed: "rubric"
   };
   function gradescopeMath(text) {
     return text.replace(
@@ -24491,14 +24634,27 @@ page and sees a preview of every question before anything is changed:
   }
   function rubricFromExamy(rubrics, regions, assignment) {
     const warnings = /* @__PURE__ */ new Set();
-    const exam = rubrics[0];
-    if (!exam) {
-      throw new Error("The PDF's examy-rubric.json holds no exam.");
-    }
-    if (rubrics.length > 1) {
-      warnings.add(`The PDF holds the rubrics of ${rubrics.length} exams; these are the first's.`);
+    let exam;
+    if (isExamyRubric(rubrics)) {
+      exam = {
+        // Titled as examy 1.0.0 titled them ("Question 2 (a)"), for a Gradescope question without one.
+        questions: rubrics.rubrics.map((r2) => ({
+          number: r2.address.map((a) => a + 1).join("."),
+          title: `Question ${r2["display-name"]}`,
+          points: r2.points,
+          rubric: r2.rubric
+        }))
+      };
+    } else if (isLegacyExamyRubrics(rubrics)) {
+      exam = rubrics[0];
+      if (rubrics.length > 1) {
+        warnings.add(`The PDF holds the rubrics of ${rubrics.length} exams; these are the first's.`);
+      }
+    } else {
+      throw new Error("This is not examy's rubrics: an entry is missing, or of the wrong kind.");
     }
     const gradescopeNumber = /* @__PURE__ */ new Map();
+    const plannedWeight = /* @__PURE__ */ new Map();
     const groups = /* @__PURE__ */ new Set();
     if (regions) {
       for (const q2 of flatten(planOutline(regions, null).questions)) {
@@ -24506,6 +24662,7 @@ page and sees a preview of every question before anything is changed:
           groups.add(q2.covers[0]);
           continue;
         }
+        plannedWeight.set(q2.number, q2.weight);
         for (const n2 of q2.covers) {
           gradescopeNumber.set(n2, q2.number);
         }
@@ -24560,7 +24717,7 @@ page and sees a preview of every question before anything is changed:
     }
     const header = assignment.toRubricFile();
     const questions = [...byNumber.entries()].map(([number, { examy, rubric }]) => {
-      var _a;
+      var _a, _b;
       const gs = assignment.question(number);
       if (!gs) {
         warnings.add(`Examy question ${examy.join(", ")} is question ${number}, which is not on Gradescope; set the outline first (Outline JSON).`);
@@ -24568,8 +24725,8 @@ page and sees a preview of every question before anything is changed:
       const points = exam.questions.filter((q2) => q2.number && examy.includes(q2.number)).reduce((a, q2) => a + (q2.points ?? 0), 0);
       return {
         number,
-        title: (gs == null ? void 0 : gs.title) || ((_a = exam.questions.find((q2) => q2.number === examy[0])) == null ? void 0 : _a.title) || void 0,
-        weight: gs ? parseFloat(gs.weight) : points,
+        title: (gs == null ? void 0 : gs.title) || ((_b = (_a = exam.questions.find((q2) => q2.number === examy[0])) == null ? void 0 : _a.title) == null ? void 0 : _b.replace(/\s+/g, " ")) || void 0,
+        weight: gs ? parseFloat(gs.weight) : plannedWeight.get(number) ?? points,
         scoring: (gs == null ? void 0 : gs.scoring_type) ?? "positive",
         rubric
       };
@@ -24793,7 +24950,12 @@ page and sees a preview of every question before anything is changed:
     const base = (pdfName ?? "").replace(/\.pdf$/i, "").toLowerCase();
     const ranked = [...attachments.entries()].map(([name, text], order) => ({ name, text, order })).filter(({ name }) => kind.pattern.test(name)).map((a) => ({
       ...a,
-      rank: [kind.is(a.text) ? 0 : 1, a.name === kind.name ? 0 : 1, base && a.name.toLowerCase().startsWith(base) ? 0 : 1, a.order]
+      rank: [
+        kind.is(a.text) ? 0 : 1,
+        kind.names.includes(a.name) ? kind.names.indexOf(a.name) : kind.names.length,
+        base && a.name.toLowerCase().startsWith(base) ? 0 : 1,
+        a.order
+      ]
     })).sort((a, b) => a.rank.reduce((d, r2, k) => d || r2 - b.rank[k], 0));
     const [best, ...rest] = ranked;
     return best ? { name: best.name, text: best.text, others: rest.map((a) => a.name) } : null;
@@ -24807,7 +24969,7 @@ page and sees a preview of every question before anything is changed:
     const attached = findAttachment(attachments, kind, file.name);
     if (!attached) {
       throw new Error(
-        `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.name}). Compile the exam with gradescope.typ (\`#show: gradescope(e, answer-box)\`) to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
+        `${file.name ?? "The PDF"} has no ${kind.what} attached (a file named like ${kind.names[0]}). Compile the exam with examy 1.1.0 or later and \`--input embed-metadata=${kind.embed}\` to attach it, and use the PDF Typst makes (a program that saves the PDF again may drop it).`
       );
     }
     return { text: attached.text, attachments, attached };
@@ -24966,7 +25128,7 @@ page and sees a preview of every question before anything is changed:
         const regions = findAttachment(attachments, REGIONS_ATTACHMENT, f.name);
         const { file: file2, warnings } = rubricFromExamy(
           JSON.parse(text2),
-          regions && REGIONS_ATTACHMENT.is(regions.text) ? JSON.parse(regions.text) : null,
+          regions ? parseRegions(regions.text).file : null,
           a
         );
         return { text: JSON.stringify(file2, null, 2) + "\n", from, warnings: [...notes, ...warnings] };
@@ -25144,7 +25306,7 @@ page and sees a preview of every question before anything is changed:
             },
             {
               label: "From an examy exam's PDF…",
-              title: "The rubrics (#rubric[..]) of an exam whose PDF was made with gradescope.typ in it (#show: gradescope(e, answer-box)), as Gradescope's: see Outline JSON for gradescope.typ",
+              title: "The rubrics (#rubric[..]) of an exam whose PDF was compiled with examy 1.1.0 or later and --input embed-metadata=true (the answer key, say, not the students' copy), as Gradescope's",
               onClick: () => {
                 var _a;
                 return (_a = fileInput.current) == null ? void 0 : _a.click();
@@ -25152,7 +25314,7 @@ page and sees a preview of every question before anything is changed:
             }
           ]
         }
-      ), /* @__PURE__ */ React.createElement("label", { className: "icon-button file-button", title: "Load a rubric JSON file into the box below, or the rubrics of an examy exam's PDF made with gradescope.typ" }, /* @__PURE__ */ React.createElement(FileIcon, null), /* @__PURE__ */ React.createElement("input", { ref: fileInput, type: "file", accept: ".json,application/json,.pdf,application/pdf", onChange: onFile })), iconButton(
+      ), /* @__PURE__ */ React.createElement("label", { className: "icon-button file-button", title: "Load a rubric JSON file into the box below, or the rubrics attached to an examy exam's PDF (examy 1.1.0 or later, compiled with --input embed-metadata=true)" }, /* @__PURE__ */ React.createElement(FileIcon, null), /* @__PURE__ */ React.createElement("input", { ref: fileInput, type: "file", accept: ".json,application/json,.pdf,application/pdf", onChange: onFile })), iconButton(
         "Download the JSON in the box",
         /* @__PURE__ */ React.createElement(DownloadIcon, null),
         () => download(text, `${(exports == null ? void 0 : exports.base) ?? "assignment"}-new-rubric.json`, "application/json"),
@@ -25449,17 +25611,19 @@ page and sees a preview of every question before anything is changed:
       await this.request("PATCH", `${this.base}/outline/`, { body: payload });
     }
   }
-  const regionsScript = '// Gradescope data for an examy exam, for Canvas Quiz Stats\' "Outline JSON" tool: where the answer\n// boxes and the name block\'s lines are, each question\'s points, and the pages\' sizes (the\n// "regions"), and the exam\'s rubrics. Needs examy 1.0.0 or later. Use it either way:\n//\n// 1. In the exam, so that its PDF carries the data (as attached files `gradescope-regions.json`,\n//    and `examy-rubric.json` if the exam has rubrics). Put this file next to the exam and, after\n//    examy\'s import:\n//\n//      #import "@preview/examy:1.0.0": *\n//      #import "gradescope.typ": gradescope\n//      #show: gradescope(e, answer-box)\n//\n// 2. From the command line, for an exam left as it is: put this file next to the exam and run\n//\n//      typst eval --in gradescope.typ --input exam=quiz-04a.typ \'query(<gs-regions>).first().value\' > quiz-04a-regions.json\n//\n//    `--input examy=1.1.0` picks the examy version the exam imports (1.0.0 by default), and\n//    `--input examy=path/to/examy/src/lib.typ` an examy that is not installed as a package.\n//\n// Either way the exam is laid out exactly as it is: this adds only invisible markers. (It sets the\n// page\'s `foreground` to one of them; an exam that sets its own page foreground loses the page\n// sizes, and the tool then uses Gradescope\'s.) Positions are in pt from the page\'s top left.\n\n#let _pt(l) = calc.round(l / 1pt, digits: 2)\n#let _plain(c) = if type(c) == str { c } else if c.has("text") { c.text } else if c.has("children") { c.children.map(_plain).join() } else if c.has("body") { _plain(c.body) } else { "" }\n\n// A box\'s or block\'s inset, in pt on each side. Needs context (for `em`).\n#let _insets(i) = {\n  let abs(v) = if v == none or v == auto { 0 } else if type(v) == relative { _pt(v.length.to-absolute()) } else if type(v) == length { _pt(v.to-absolute()) } else { 0 }\n  if type(i) != dictionary {\n    return (top: abs(i), bottom: abs(i), left: abs(i), right: abs(i))\n  }\n  let rest = i.at("rest", default: none)\n  let x = i.at("x", default: rest)\n  let y = i.at("y", default: rest)\n  (\n    top: abs(i.at("top", default: y)),\n    bottom: abs(i.at("bottom", default: y)),\n    left: abs(i.at("left", default: x)),\n    right: abs(i.at("right", default: x)),\n  )\n}\n\n// A page\'s margins, in pt, however they were set. Needs context.\n#let _margins() = {\n  let (w, h) = (page.width, page.height)\n  let m = page.margin\n  let all(v) = (top: v, bottom: v, left: v, right: v)\n  let sides = if m == auto {\n    all(2.5 / 21 * calc.min(w, h))\n  } else if type(m) != dictionary {\n    all(m)\n  } else {\n    let rest = m.at("rest", default: auto)\n    let x = m.at("x", default: rest)\n    let y = m.at("y", default: rest)\n    (\n      top: m.at("top", default: y),\n      bottom: m.at("bottom", default: y),\n      left: m.at("left", default: m.at("inside", default: x)),\n      right: m.at("right", default: m.at("outside", default: x)),\n    )\n  }\n  let resolve(v, size) = if v == auto { 2.5 / 21 * calc.min(w, h) } else if type(v) == ratio { v * size } else if type(v) == relative { v.ratio * size + v.length } else { v }\n  (\n    top: _pt(resolve(sides.top, h)),\n    bottom: _pt(resolve(sides.bottom, h)),\n    left: _pt(resolve(sides.left, w)),\n    right: _pt(resolve(sides.right, w)),\n  )\n}\n\n// The regions, from the markers, and examy\'s own record of its divisions (under the names of\n// examy version `P`, e.g. "@preview/examy,v1.0.0"); `none` if there is no exam. Needs context.\n#let _regions(P, exam) = {\n  let at(loc) = {\n    let p = loc.position()\n    (page: p.page, x: _pt(p.x), y: _pt(p.y))\n  }\n  // Where each division starts, and each answer box, under the division it is in: its top left\n  // and bottom right inside its inset, and the inset.\n  let starts = (:)\n  let boxes = (:)\n  let division = none\n  let top = none\n  for m in query(selector(label(P + "/division")).or(<gs-box>)) {\n    if m.label != <gs-box> {\n      division = str(m.value)\n      starts.insert(division, at(m.location()))\n    } else if m.value.edge == "top" {\n      top = (at: at(m.location()), inset: m.value.inset)\n    } else if division != none and top != none {\n      let b = (top: top.at, bottom: at(m.location()), inset: top.inset)\n      boxes.insert(division, boxes.at(division, default: ()) + (b,))\n      top = none\n    }\n  }\n\n  // The name block\'s lines, each with its label: where the line starts (its top left) and ends.\n  let names = ()\n  let name = none\n  let start = none\n  for m in query(<gs-name>) {\n    if m.value.kind == "label" {\n      name = m.value.text\n    } else if m.value.kind == "start" {\n      start = at(m.location())\n    } else if start != none {\n      names.push((label: name, start: start, end: at(m.location())))\n      (name, start) = (none, none)\n    }\n  }\n\n  let exams = state(P + "/points-data").final()\n  if exams == none or exams.len() == 0 {\n    return none\n  }\n  let number(address) = address.map(n => if type(n) == int { str(n + 1) } else { str(n) }).join(".")\n  (\n    format: "examy-gradescope-regions",\n    version: 1,\n    exam: exam,\n    pages: query(<gs-page>).map(m => (page: m.location().page(), ..m.value)),\n    names: names,\n    // Where each exam\'s questions end (in the same order as `exams`).\n    ends: query(label(P + "/pages")).map(m => at(m.location())),\n    exams: exams.map(rows => rows.map(r => (\n      number: number(r.address),\n      label: _plain(r.label),\n      level: r.level,\n      points: r.total_points,\n      bonus: r.total_bonus_points,\n      start: starts.at(str(r.id), default: none),\n      boxes: boxes.at(str(r.id), default: ()),\n    ))),\n  )\n}\n\n/// A show rule that records the regions of an examy exam, and attaches them and the exam\'s rubrics\n/// to its PDF: `#show: gradescope(e, answer-box)`, with `e` and `answer-box` from the exam\'s examy\n/// import. `attach: false` only records them (for `query(<gs-regions>)`). `exam`: the exam\'s name,\n/// written into the regions.\n#let gradescope(e, answer-box, attach: true, exam: none) = doc => {\n  // examy\'s names for its records, e.g. "@preview/examy,v1.0.0", from the answer box\'s id\n  // ("e_@preview/examy,v1.0.0_---_answer-box").\n  let P = e.data(answer-box).eid.split("_---_").first().trim("e_", at: start, repeat: false)\n\n  set page(foreground: context [#metadata((width: _pt(page.width), height: _pt(page.height), margin: _margins()))<gs-page>])\n\n  // Each answer box is drawn again with invisible markers placed at its top left and bottom right,\n  // inside its inset (its position alone is that of a line\'s baseline when it sits in a line of\n  // text).\n  show e.selector(answer-box): it => {\n    let fields = it.fields()\n    let body = fields.remove("body", default: none)\n    let _ = fields.remove("label", default: none)\n    let inset = fields.at("inset", default: none)\n    let edges = (\n      place(top + left, context [#metadata((edge: "top", inset: _insets(inset)))<gs-box>])\n        + place(bottom + right, [#metadata((edge: "bottom"))<gs-box>])\n    )\n    (it.func())(..fields, edges + body)\n  }\n\n  // The rows of a `name-block`: a label (a box with only a bottom inset) and a line to write on (a\n  // box with only a bottom stroke, and an inset at its bottom and sides). Markers go before the\n  // label (with its text) and on either side of the line.\n  show box: it => {\n    let (stroke, inset) = (it.stroke, it.inset)\n    let shaped(d, keys) = type(d) == dictionary and d.keys().sorted() == keys\n    if shaped(inset, ("bottom",)) and stroke in (none, (:)) {\n      [#metadata((kind: "label", text: _plain(it.body).trim()))<gs-name>#it]\n    } else if shaped(stroke, ("bottom",)) and shaped(inset, ("bottom", "left", "right")) {\n      [#metadata((kind: "start"))<gs-name>#it#metadata((kind: "end"))<gs-name>]\n    } else {\n      it\n    }\n  }\n\n  doc\n\n  context {\n    let data = _regions(P, exam)\n    if data == none {\n      return\n    }\n    [#metadata(data)<gs-regions>]\n    if attach {\n      pdf.attach(\n        "gradescope-regions.json",\n        bytes(json.encode(data)),\n        mime-type: "application/json",\n        description: "Where the exam\'s answer boxes are, for Gradescope\'s outline (Canvas Quiz Stats)",\n      )\n      // examy\'s own export of the rubrics (see its documentation, "Rubrics").\n      let rubrics = query(<examy-rubric>).map(m => m.value)\n      if rubrics.len() > 0 {\n        pdf.attach(\n          "examy-rubric.json",\n          bytes(json.encode(rubrics)),\n          mime-type: "application/json",\n          description: "The exam\'s rubrics, as examy exports them",\n        )\n      }\n    }\n  }\n}\n\n// From the command line (see the top): lay out the exam named by `--input exam=..`.\n#if "exam" in sys.inputs {\n  let EXAMY = sys.inputs.at("examy", default: "1.0.0")\n  import (if EXAMY.ends-with(".typ") { EXAMY } else { "@preview/examy:" + EXAMY }): e, answer-box\n  show: gradescope(e, answer-box, exam: sys.inputs.exam)\n  include sys.inputs.exam\n}\n';
   function examBase(props) {
     var _a, _b;
     return ((_b = (_a = props == null ? void 0 : props.template) == null ? void 0 : _a.filename) == null ? void 0 : _b.replace(/(-solutions)?\.pdf$/i, "")) || "exam";
   }
-  const IMPORT_SNIPPET = `#import "gradescope.typ": gradescope
-#show: gradescope(e, answer-box)`;
+  const EXAMY_VERSION = "1.1.0";
   const shellQuote = (arg) => /^[\w.\/=@%+:,-]+$/.test(arg) ? arg : `'${arg.replace(/'/g, `'\\''`)}'`;
+  function embedCommand(props) {
+    const base = examBase(props);
+    return `typst compile --input embed-metadata=question-regions ${shellQuote(`${base}.typ`)} ${shellQuote(`${base}-regions.pdf`)}`;
+  }
   function regionsCommand(props) {
     const base = examBase(props);
-    return `typst eval --in gradescope.typ --input ${shellQuote(`exam=${base}.typ`)} 'query(<gs-regions>).first().value' > ${shellQuote(`${base}-regions.json`)}`;
+    return `typst eval --in ${shellQuote(`${base}.typ`)} --input embed-metadata=question-regions 'query(<examy-regions>).first().value' > ${shellQuote(`${base}-regions.json`)}`;
   }
   const pages = (rects) => [...new Set((rects ?? []).map((r2) => r2.page_number))].join(", ") || "–";
   function outlineAiInstructions(props) {
@@ -25476,9 +25640,9 @@ page and sees a preview of every question before anything is changed:
 
 You are helping set the outline of a Gradescope assignment (its questions, their points, and the
 region of the page each one takes) from the Typst source of the exam, written with the examy
-package. You will write a **regions file**: JSON that \`gradescope.typ\` (below) writes
-from the exam. The person then opens it in the "Outline JSON" dialog on Gradescope's outline
-editor, which previews it and saves it. Do not write or edit the JSON by hand.
+package. You will make a **regions file**: the JSON that examy ${EXAMY_VERSION} and later write about an
+exam (\`examy-regions.json\`). The person then opens it in the "Outline JSON" dialog on Gradescope's
+outline editor, which previews it and saves it. Do not write or edit the JSON by hand.
 
 ## This assignment
 
@@ -25499,47 +25663,56 @@ and so on. Questions left over are deleted.` : "Gradescope's outline is empty no
 
 ## Rules
 
-- **Work in a scratch folder, not in the exam's folder.** Do not change, add, or compile anything
-  in the exam's folder. Copy the exam into the scratch folder (with any files it reads: images,
-  included files), and make any changes (below) to the copy.
-- The copy must lay out **exactly like the template PDF**: same pages, and every answer box and
-  name block line in the same place. Text may differ slightly within a line; boxes and lines may
-  not move.
+- **Do not change the exam's file.** It is what the template PDF was made from. If it needs
+  changes (an upgrade, below), make a copy next to it, so that the copy reads the same images and
+  included files, and change the copy. The commands below only read the exam, and write new files
+  beside it.
+- What you make the regions from must lay out **exactly like the template PDF**: same pages, and
+  every answer box and name block line in the same place. Text may differ slightly within a line;
+  boxes and lines may not move.
 
 ## Steps
 
-1. **Find the exam** that matches the template: \`${base}.typ\`, or ask. Copy it into the scratch
-   folder, and note which examy version it imports (\`#import "@preview/examy:X.Y.Z": *\`).
-2. **It needs examy 1.0.0 or later.** If it imports an older version, change the copy to import
-   1.0.0 (see "Upgrading to examy 1.0.0"). If Typst says \`version 1.0.0 does not exist\`, examy
-   1.0.0 is not published yet: clone <https://github.com/siefkenj/typst-examy> and import its
-   \`src/lib.typ\` by path instead (e.g. clone it into the scratch folder and
-   \`#import "typst-examy/src/lib.typ": *\`).
+1. **Find the exam** that matches the template: \`${base}.typ\`, or ask. Note which examy version
+   it imports (\`#import "@preview/examy:X.Y.Z": *\`).
+2. **It needs examy ${EXAMY_VERSION} or later**, which writes the regions. If it imports an older
+   version, copy it next to itself (e.g. as \`${base}-examy-${EXAMY_VERSION}.typ\`) and change the copy to
+   import ${EXAMY_VERSION} (see "Upgrading to examy ${EXAMY_VERSION}"). Use the copy's name in place of
+   \`${base}.typ\` below.
 3. **Check the layout against the template PDF** (the person's compiled \`${base}.pdf\`, or the one
-   they uploaded). Compile the copy (into the scratch folder) and compare it page by page, e.g. render both with
-   \`pdftoppm -r 72 -png\` and compare where the long horizontal and vertical lines (box borders,
-   name lines) are. Fix the copy until they match.
-4. **Save \`gradescope.typ\`** (below) in the scratch folder, next to the copy, and run:
+   they uploaded) if you made a copy, or are not sure the PDF is of the exam as it is now. Compile
+   it to a new PDF, not over the template's (\`typst compile ${shellQuote(`${base}.typ`)} ${shellQuote(`${base}-check.pdf`)}\`), and
+   compare the two page by page, e.g. render both with \`pdftoppm -r 72 -png\` and compare where
+   the long horizontal and vertical lines (box borders, name lines) are. If you made a copy, fix
+   the copy until they match. If the exam itself does not match the template, stop and tell the
+   person: the template was made from another version of the exam, and its regions would be
+   wrong.
+4. **Write the regions file**, in the exam's folder:
 
    \`\`\`
    ${regionsCommand(props)}
    \`\`\`
 
-   there. Add \`--input examy=1.1.0\` if the exam imports a
-   version other than 1.0.0; if it imports examy by path, add
-   \`--input examy=path/to/src/lib.typ\` (the path as seen from \`gradescope.typ\`). If the exam and examy are not inside the folder of
-   \`gradescope.typ\`, add \`--root\` with a folder that holds them all.
+   \`embed-metadata=question-regions\` has examy record the regions, and \`query(<examy-regions>)\`
+   writes them out. Add \`--root\` with a folder that holds the exam and every file it reads, if
+   they are not all in its folder.
 5. **Check the regions file** (see "What to check") and give it to the person: they open it in
    the Outline JSON dialog, which shows the regions over the template's pages before saving.
 
-(Exams can also carry this data themselves: with \`#import "gradescope.typ": gradescope\` and
-\`#show: gradescope(e, answer-box)\` after examy's import, their PDF has \`gradescope-regions.json\`
-(and \`examy-rubric.json\`) attached. Only make that change if the person asks for it: it changes
-the exam's file.)
+The PDF can carry the regions instead: \`${embedCommand(props)}\` compiles the exam with
+\`examy-regions.json\` attached, to a PDF of its own (laid out as the exam's; the exam's PDF is
+left as it is), and the dialog opens that PDF. An exam can also attach them itself, with
+\`embed-metadata: "question-regions"\` in its config (e.g.
+\`#show: exam.with(embed-metadata: "question-regions")\`); only make that change if the person asks
+for it, as it changes the exam's file. Do not attach the rubrics (\`embed-metadata: true\` or
+\`"rubric"\`) to a PDF students will have: anyone with the PDF could read them.
 
-## Upgrading to examy 1.0.0
+## Upgrading to examy ${EXAMY_VERSION}
 
-From examy 0.4.0 (examy's own list of breaking changes, and what else it took):
+From examy 1.0.0: change the import; nothing else changes the layout. (The rubric data,
+\`<examy-rubric>\`, has a new format, which matters only to a document that reads it.)
+
+From examy 0.4.0 (examy's own list of breaking changes in 1.0.0, and what else it took):
 
 - \`#points-table\` is a function: write \`#points-table()\`.
 - \`num-points\` and \`num-questions\` are functions that need context: \`#context num-points()\`.
@@ -25559,33 +25732,32 @@ can stay.)
 
 ## What to check
 
-The file is \`{"format": "${REGIONS_FORMAT}", "version": ${REGIONS_FORMAT_VERSION}, "pages": [..], "names": [..], "ends": [..], "exams": [[..]]}\`:
+The file is \`{"format": "${EXAMY_REGIONS_FORMAT}", "exam-name": .., "pages": [..], "name-block-regions": [..], "question-regions": [..]}\`
+(examy's manual, "Exam metadata", has its whole schema). Positions are in pt from the page's top
+left.
 
-- \`pages\`: one per page, ${template ? `**${template.page_count}**, as the template has` : "as many as the template has"}, with their size and margins in pt.
-- \`names\`: the name block's lines with their labels. A line labelled with a name ("Name:") becomes
-  Gradescope's name region, one labelled with a student ID ("Student ID:", "Student number:",
-  "UTORid:") its student ID region. Without them, Gradescope's stay as they are.
-- \`exams[0]\`: every question, part, and subpart: \`number\` ("2.1" is 2 (a)), \`label\`, \`level\`,
-  \`points\`, \`start\`, and \`boxes\` (each answer box's top left and bottom right, inside its \`inset\`).
-  Positions are in pt from the page's top left.
+- \`pages\`: one per page, ${template ? `**${template.page_count}**, as the template has` : "as many as the template has"}, with their size and margins.
+- \`name-block-regions\`: the name block's lines, each with its label (\`display-name\`). A line
+  labelled with a name ("Name:", "Last name:") becomes Gradescope's name region, one labelled with
+  a student ID ("Student ID:", "Student number:", "UTORid:") its student ID region. Without them,
+  Gradescope's stay as they are.
+- \`question-regions\`: every question, part, and subpart, in order: \`address\` (\`[1, 0]\` is
+  2 (a)), \`display-name\`, \`level\`, its own \`points\` (not its parts'), \`start\` (the top left of
+  its label), \`end\` (the bottom right of everything in it), and \`answer-boxes\`.
 
 How the dialog turns it into the outline, to judge whether it is right:
 
-- Each question is a Gradescope question, worth its points (bonus points are not counted). If its
-  points are in its parts, the parts are its subquestions; Gradescope has two levels only, so a
-  part whose points are all in its subparts gives way to them (titled "(a) i"), and a part that
-  has the points covers its subparts.
+- Each question is a Gradescope question, worth its points and its parts' (bonus points are not
+  counted). If its points are in its parts, the parts are its subquestions; Gradescope has two
+  levels only, so a part whose points are all in its subparts gives way to them (titled "(a) i"),
+  and a part that has the points covers its subparts.
 - A question's region is a rectangle per page around its answer boxes and its parts'. One with no
-  answer boxes (multiple choice, or a box examy does not mark, such as one holding \`choices\`)
-  gets its text instead, from its start to the next question or part. Tell the person which
-  questions have no boxes.
+  answer boxes (multiple choice, say) gets its text instead, from its \`start\` to its \`end\`; so
+  does a part with no answer boxes in a question whose other parts have them (its text joins the
+  region). Tell the person which questions and parts have no boxes. Anything else students write
+  in that is neither an answer box nor in a part of its own (a table in a question's own text, a
+  blank beside a question's prompt) is outside the regions: mention it.
 - A question or part with 0 points is worth 0 on Gradescope; mention any.
-
-## gradescope.typ
-
-\`\`\`typst
-${regionsScript.trimEnd()}
-\`\`\`
 `;
   }
   const plural = (n2, word) => `${n2} ${word}${n2 === 1 ? "" : "s"}`;
@@ -25761,29 +25933,19 @@ ${regionsScript.trimEnd()}
       {
         name: "instructions",
         label: "AI instructions",
-        title: "Instructions for an AI agent to make the regions file from the exam: upgrading it to examy 1.0.0 on a copy, checking its layout, the command, and gradescope.typ.",
+        title: "Instructions for an AI agent to make the regions file from the exam: upgrading it to examy 1.1.0 on a copy if needed, checking its layout, and the command.",
         open: instructionsOpen,
         setOpen: setInstructionsOpen,
         tools: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Give these to an AI agent that can read the exam and run Typst."), instructionsTools),
         collapsedTools: instructionsTools
       },
       /* @__PURE__ */ React.createElement("pre", { className: "viewer-text", title: "The AI instructions (Markdown)" }, instructions)
-    )), /* @__PURE__ */ React.createElement("section", { className: "regions-input" }, /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { className: "step" }, "1"), " Regions from examy"), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        className: "small",
-        title: "Download gradescope.typ; put it next to the exam",
-        onClick: () => download(regionsScript, "gradescope.typ", "text/plain")
-      },
-      /* @__PURE__ */ React.createElement(DownloadIcon, null),
-      " gradescope.typ"
-    ), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "Put it next to the exam (examy 1.0.0 or later), then either:")), /* @__PURE__ */ React.createElement("ol", { className: "ways" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "add to the exam, after examy's import, so that its PDF carries the regions (and its rubrics, for Rubric JSON):"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "gradescope.typ attaches gradescope-regions.json (and examy-rubric.json) to the PDF" }, IMPORT_SNIPPET), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy these lines", onClick: () => copy(IMPORT_SNIPPET, "the lines") }, /* @__PURE__ */ React.createElement(CopyIcon, null)))), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or, leaving the exam as it is, run next to it:"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "Writes the regions file; add --input examy=.. for another examy version (see gradescope.typ)" }, regionsCommand(props)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy the command", onClick: () => copy(regionsCommand(props), "the command") }, /* @__PURE__ */ React.createElement(CopyIcon, null))))), /* @__PURE__ */ React.createElement("div", { className: "row tight" }, /* @__PURE__ */ React.createElement("label", { className: "file-button", title: "Open the exam's PDF (made with gradescope.typ in it) or the regions file" }, /* @__PURE__ */ React.createElement(FileIcon, null), " Open PDF or regions file", /* @__PURE__ */ React.createElement("input", { type: "file", accept: ".pdf,application/pdf,.json,application/json", onChange: onFile })), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or paste the regions file:"), exams > 1 && /* @__PURE__ */ React.createElement("select", { value: exam, onChange: (e) => setExamIndex(Number(e.target.value)), title: "The file holds several exams" }, Array.from({ length: exams }, (_, k) => /* @__PURE__ */ React.createElement("option", { key: k, value: k }, "Exam ", k + 1)))), /* @__PURE__ */ React.createElement(
+    )), /* @__PURE__ */ React.createElement("section", { className: "regions-input" }, /* @__PURE__ */ React.createElement("div", { className: "row step-row" }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { className: "step" }, "1"), " Regions from examy"), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "The exam needs examy ", EXAMY_VERSION, " or later. In its folder, either:")), /* @__PURE__ */ React.createElement("ol", { className: "ways" }, /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "compile it to a PDF that carries its regions (laid out as without them):"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "Attaches examy-regions.json to the PDF; the exam's file is not changed" }, embedCommand(props)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy the command", onClick: () => copy(embedCommand(props), "the command") }, /* @__PURE__ */ React.createElement(CopyIcon, null)))), /* @__PURE__ */ React.createElement("li", null, /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or write the regions file:"), /* @__PURE__ */ React.createElement("div", { className: "snippet-row" }, /* @__PURE__ */ React.createElement("pre", { className: "snippet", title: "Writes examy's regions (query(<examy-regions>)); the exam's file is not changed" }, regionsCommand(props)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "icon-button", title: "Copy the command", onClick: () => copy(regionsCommand(props), "the command") }, /* @__PURE__ */ React.createElement(CopyIcon, null))))), /* @__PURE__ */ React.createElement("div", { className: "row tight" }, /* @__PURE__ */ React.createElement("label", { className: "file-button", title: "Open the exam's PDF (compiled with --input embed-metadata=question-regions) or the regions file (also gradescope.typ's, for examy 1.0.0)" }, /* @__PURE__ */ React.createElement(FileIcon, null), " Open PDF or regions file", /* @__PURE__ */ React.createElement("input", { type: "file", accept: ".pdf,application/pdf,.json,application/json", onChange: onFile })), /* @__PURE__ */ React.createElement("span", { className: "hint" }, "or paste the regions file:"), exams > 1 && /* @__PURE__ */ React.createElement("select", { value: exam, onChange: (e) => setExamIndex(Number(e.target.value)), title: "The file holds several exams" }, Array.from({ length: exams }, (_, k) => /* @__PURE__ */ React.createElement("option", { key: k, value: k }, "Exam ", k + 1)))), /* @__PURE__ */ React.createElement(
       "textarea",
       {
         value: text,
         onChange: (e) => changeText(e.target.value),
-        placeholder: '{ "format": "examy-gradescope-regions", … }',
+        placeholder: '{ "format": "examy-regions", … }',
         spellCheck: false,
         rows: 3,
         title: "The regions file. Nothing is sent to Gradescope until you press Save."

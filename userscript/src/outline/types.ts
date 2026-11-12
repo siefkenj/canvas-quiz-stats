@@ -1,11 +1,8 @@
 /**
- * Types for the regions file that `gradescope.typ` writes from an examy exam, and for
- * the subset of Gradescope's outline editor data (`AssignmentOutline`'s props) and its save
- * request that the outline tool uses.
+ * Types for the regions files the outline tool reads (examy's, and the older one of
+ * `gradescope.typ`), the regions as the tool works with them, and the subset of Gradescope's
+ * outline editor data (`AssignmentOutline`'s props) and its save request that the tool uses.
  */
-
-export const REGIONS_FORMAT = "examy-gradescope-regions";
-export const REGIONS_FORMAT_VERSION = 1;
 
 /** A point on a page, in pt from its top left. `page` counts from 1. */
 export interface Position {
@@ -21,6 +18,73 @@ export interface RegionsPage {
     margin: { top: number; bottom: number; left: number; right: number };
 }
 
+// ------------------------------------------------------------- examy's regions (examy 1.1.0)
+
+/**
+ * `examy-regions.json`, which examy 1.1.0 and later attach to an exam's PDF (`embed-metadata`), or
+ * `query(<examy-regions>)`: one exam's. See examy's manual, "Exam metadata".
+ */
+export const EXAMY_REGIONS_FORMAT = "examy-regions";
+
+export interface ExamyRegions {
+    format: typeof EXAMY_REGIONS_FORMAT;
+    "exam-name": string | null;
+    pages: RegionsPage[];
+    "name-block-regions": { "display-name": string | null; start: Position; end: Position }[];
+    "question-regions": ExamyQuestionRegion[];
+}
+
+/** A question, part, or subpart, where it is on the page. */
+export interface ExamyQuestionRegion {
+    /** Its place among its siblings at each level, from 0: `[0, 2]` is 1 (c). */
+    address: number[];
+    /** Its label, e.g. "1 (c)". */
+    "display-name": string;
+    level: number;
+    /** Points given to it directly, not its parts'. */
+    points: number | null;
+    "bonus-points": number | null;
+    /** The top left of its label. */
+    start: Position | null;
+    /** The bottom right of everything in it, its parts' too. */
+    end: Position | null;
+    /** Its own answer boxes, to the outside of their borders. */
+    "answer-boxes": { top: Position; bottom: Position }[];
+}
+
+// ------------------------------------------------------- gradescope.typ's regions (older)
+
+/** The regions file `gradescope.typ` wrote (for examy 1.0.0), still read. */
+export const LEGACY_REGIONS_FORMAT = "examy-gradescope-regions";
+export const LEGACY_REGIONS_FORMAT_VERSION = 1;
+
+export interface LegacyRegionsFile {
+    format: typeof LEGACY_REGIONS_FORMAT;
+    version: typeof LEGACY_REGIONS_FORMAT_VERSION;
+    /** The exam's file, if made from the command line. */
+    exam?: string | null;
+    pages: RegionsPage[];
+    /** Where each exam's questions end. */
+    ends: Position[];
+    /** The lines of the name block: the top left of its row, and the line's end. */
+    names?: { label: string | null; start: Position; end: Position }[];
+    /** Each exam's divisions, in order. */
+    exams: {
+        number: string;
+        label: string;
+        level: number;
+        /** Its points, its parts' included. */
+        points: number;
+        bonus: number | null;
+        /** The baseline of its first line. */
+        start: Position | null;
+        /** Its own answer boxes: top left and bottom right inside the inset, and the inset. */
+        boxes: { top: Position; bottom: Position; inset?: { top: number; bottom: number; left: number; right: number } }[];
+    }[][];
+}
+
+// -------------------------------------------------------------- the regions, as the tool reads them
+
 /** An examy question, part, or subpart. */
 export interface RegionsDivision {
     /** Its numbers from the question down, joined by dots: "2.1" for 2 (a). */
@@ -32,37 +96,42 @@ export interface RegionsDivision {
     /** Its points, its parts' and subparts' included (bonus points not). */
     points: number;
     bonus: number | null;
-    /** Where it starts (the baseline of its first line). */
+    /** The top left of its first line. */
     start: Position | null;
+    /** The bottom right of everything in it, if known (else it runs to the next division). */
+    end: Position | null;
     /** Its own answer boxes (not its parts'). */
     boxes: RegionsBox[];
 }
 
-/** An answer box: its top left and bottom right inside its inset, and the inset, in pt. */
+/**
+ * An answer box, to the outside of its border: its top left and bottom right. A bottom right no
+ * further right than the top left means the box takes the rest of the line.
+ */
 export interface RegionsBox {
     top: Position;
     bottom: Position;
-    inset?: { top: number; bottom: number; left: number; right: number };
 }
 
 /** A line of the name block (`name-block`) and its label ("Name:"). */
 export interface RegionsNameLine {
     label: string | null;
-    /** Its top left; and its bottom (its left again, if the line takes the full width). */
+    /** Its top left; and its bottom right (its left again, if the line takes the full width). */
     start: Position;
     end: Position;
 }
 
+/** A regions file, read (`parseRegions`), whichever format it came in. */
 export interface RegionsFile {
-    format: typeof REGIONS_FORMAT;
-    version: typeof REGIONS_FORMAT_VERSION;
-    /** The exam's file, if made from the command line. */
-    exam?: string | null;
+    /** The file's format. */
+    source: typeof EXAMY_REGIONS_FORMAT | typeof LEGACY_REGIONS_FORMAT;
+    /** The exam's name, or its file. */
+    exam: string | null;
     pages: RegionsPage[];
-    /** Where each exam's questions end. */
-    ends: Position[];
+    /** Where each exam's questions end, if known. */
+    ends: (Position | null)[];
     /** The lines of the name block, if there is one. */
-    names?: RegionsNameLine[];
+    names: RegionsNameLine[];
     /** Each exam's divisions, in order. */
     exams: RegionsDivision[][];
 }

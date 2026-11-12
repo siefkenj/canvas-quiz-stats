@@ -1,28 +1,35 @@
 /**
  * The "AI instructions" markdown for the outline tool: everything an AI agent (or a person) with
- * the exam's source and Typst needs to write the regions file the tool reads, including this
- * assignment's template and outline, and the whole of `gradescope.typ`.
+ * the exam's source and Typst needs to make the regions examy writes (examy 1.1.0 and later), which
+ * the tool reads, including this assignment's template and outline.
  */
-import regionsScript from "./gradescope.typ?raw";
 import { existingTree } from "./outline";
-import { REGIONS_FORMAT, REGIONS_FORMAT_VERSION, type CropRect, type GsOutlineProps } from "./types";
+import { EXAMY_REGIONS_FORMAT, type CropRect, type GsOutlineProps } from "./types";
 
 /** The exam's file name, from the template's ("quiz-05.pdf" → "quiz-05"). */
 export function examBase(props: GsOutlineProps | null) {
     return props?.template?.filename?.replace(/(-solutions)?\.pdf$/i, "") || "exam";
 }
 
-/** What an exam adds after examy's import to have its PDF carry the regions (and its rubrics). */
-export const IMPORT_SNIPPET = `#import "gradescope.typ": gradescope
-#show: gradescope(e, answer-box)`;
+/** The examy version whose metadata the tool reads (`embed-metadata`). */
+export const EXAMY_VERSION = "1.1.0";
 
 /** `arg` for a POSIX shell: as it is if it is safe, else single-quoted. */
 export const shellQuote = (arg: string) => (/^[\w.\/=@%+:,-]+$/.test(arg) ? arg : `'${arg.replace(/'/g, `'\\''`)}'`);
 
-/** The command that writes the regions file for the template's exam. */
+/**
+ * The command that compiles the template's exam with its regions attached, to a PDF of its own
+ * (the layout is the same as without them).
+ */
+export function embedCommand(props: GsOutlineProps | null) {
+    const base = examBase(props);
+    return `typst compile --input embed-metadata=question-regions ${shellQuote(`${base}.typ`)} ${shellQuote(`${base}-regions.pdf`)}`;
+}
+
+/** The command that writes the regions file for the template's exam, next to it. */
 export function regionsCommand(props: GsOutlineProps | null) {
     const base = examBase(props);
-    return `typst eval --in gradescope.typ --input ${shellQuote(`exam=${base}.typ`)} 'query(<gs-regions>).first().value' > ${shellQuote(`${base}-regions.json`)}`;
+    return `typst eval --in ${shellQuote(`${base}.typ`)} --input embed-metadata=question-regions 'query(<examy-regions>).first().value' > ${shellQuote(`${base}-regions.json`)}`;
 }
 
 const pages = (rects: CropRect[] | null) => [...new Set((rects ?? []).map((r) => r.page_number))].join(", ") || "–";
@@ -42,9 +49,9 @@ export function outlineAiInstructions(props: GsOutlineProps | null): string {
 
 You are helping set the outline of a Gradescope assignment (its questions, their points, and the
 region of the page each one takes) from the Typst source of the exam, written with the examy
-package. You will write a **regions file**: JSON that \`gradescope.typ\` (below) writes
-from the exam. The person then opens it in the "Outline JSON" dialog on Gradescope's outline
-editor, which previews it and saves it. Do not write or edit the JSON by hand.
+package. You will make a **regions file**: the JSON that examy ${EXAMY_VERSION} and later write about an
+exam (\`examy-regions.json\`). The person then opens it in the "Outline JSON" dialog on Gradescope's
+outline editor, which previews it and saves it. Do not write or edit the JSON by hand.
 
 ## This assignment
 
@@ -69,47 +76,56 @@ and so on. Questions left over are deleted.`
 
 ## Rules
 
-- **Work in a scratch folder, not in the exam's folder.** Do not change, add, or compile anything
-  in the exam's folder. Copy the exam into the scratch folder (with any files it reads: images,
-  included files), and make any changes (below) to the copy.
-- The copy must lay out **exactly like the template PDF**: same pages, and every answer box and
-  name block line in the same place. Text may differ slightly within a line; boxes and lines may
-  not move.
+- **Do not change the exam's file.** It is what the template PDF was made from. If it needs
+  changes (an upgrade, below), make a copy next to it, so that the copy reads the same images and
+  included files, and change the copy. The commands below only read the exam, and write new files
+  beside it.
+- What you make the regions from must lay out **exactly like the template PDF**: same pages, and
+  every answer box and name block line in the same place. Text may differ slightly within a line;
+  boxes and lines may not move.
 
 ## Steps
 
-1. **Find the exam** that matches the template: \`${base}.typ\`, or ask. Copy it into the scratch
-   folder, and note which examy version it imports (\`#import "@preview/examy:X.Y.Z": *\`).
-2. **It needs examy 1.0.0 or later.** If it imports an older version, change the copy to import
-   1.0.0 (see "Upgrading to examy 1.0.0"). If Typst says \`version 1.0.0 does not exist\`, examy
-   1.0.0 is not published yet: clone <https://github.com/siefkenj/typst-examy> and import its
-   \`src/lib.typ\` by path instead (e.g. clone it into the scratch folder and
-   \`#import "typst-examy/src/lib.typ": *\`).
+1. **Find the exam** that matches the template: \`${base}.typ\`, or ask. Note which examy version
+   it imports (\`#import "@preview/examy:X.Y.Z": *\`).
+2. **It needs examy ${EXAMY_VERSION} or later**, which writes the regions. If it imports an older
+   version, copy it next to itself (e.g. as \`${base}-examy-${EXAMY_VERSION}.typ\`) and change the copy to
+   import ${EXAMY_VERSION} (see "Upgrading to examy ${EXAMY_VERSION}"). Use the copy's name in place of
+   \`${base}.typ\` below.
 3. **Check the layout against the template PDF** (the person's compiled \`${base}.pdf\`, or the one
-   they uploaded). Compile the copy (into the scratch folder) and compare it page by page, e.g. render both with
-   \`pdftoppm -r 72 -png\` and compare where the long horizontal and vertical lines (box borders,
-   name lines) are. Fix the copy until they match.
-4. **Save \`gradescope.typ\`** (below) in the scratch folder, next to the copy, and run:
+   they uploaded) if you made a copy, or are not sure the PDF is of the exam as it is now. Compile
+   it to a new PDF, not over the template's (\`typst compile ${shellQuote(`${base}.typ`)} ${shellQuote(`${base}-check.pdf`)}\`), and
+   compare the two page by page, e.g. render both with \`pdftoppm -r 72 -png\` and compare where
+   the long horizontal and vertical lines (box borders, name lines) are. If you made a copy, fix
+   the copy until they match. If the exam itself does not match the template, stop and tell the
+   person: the template was made from another version of the exam, and its regions would be
+   wrong.
+4. **Write the regions file**, in the exam's folder:
 
    \`\`\`
    ${regionsCommand(props)}
    \`\`\`
 
-   there. Add \`--input examy=1.1.0\` if the exam imports a
-   version other than 1.0.0; if it imports examy by path, add
-   \`--input examy=path/to/src/lib.typ\` (the path as seen from \`gradescope.typ\`). If the exam and examy are not inside the folder of
-   \`gradescope.typ\`, add \`--root\` with a folder that holds them all.
+   \`embed-metadata=question-regions\` has examy record the regions, and \`query(<examy-regions>)\`
+   writes them out. Add \`--root\` with a folder that holds the exam and every file it reads, if
+   they are not all in its folder.
 5. **Check the regions file** (see "What to check") and give it to the person: they open it in
    the Outline JSON dialog, which shows the regions over the template's pages before saving.
 
-(Exams can also carry this data themselves: with \`#import "gradescope.typ": gradescope\` and
-\`#show: gradescope(e, answer-box)\` after examy's import, their PDF has \`gradescope-regions.json\`
-(and \`examy-rubric.json\`) attached. Only make that change if the person asks for it: it changes
-the exam's file.)
+The PDF can carry the regions instead: \`${embedCommand(props)}\` compiles the exam with
+\`examy-regions.json\` attached, to a PDF of its own (laid out as the exam's; the exam's PDF is
+left as it is), and the dialog opens that PDF. An exam can also attach them itself, with
+\`embed-metadata: "question-regions"\` in its config (e.g.
+\`#show: exam.with(embed-metadata: "question-regions")\`); only make that change if the person asks
+for it, as it changes the exam's file. Do not attach the rubrics (\`embed-metadata: true\` or
+\`"rubric"\`) to a PDF students will have: anyone with the PDF could read them.
 
-## Upgrading to examy 1.0.0
+## Upgrading to examy ${EXAMY_VERSION}
 
-From examy 0.4.0 (examy's own list of breaking changes, and what else it took):
+From examy 1.0.0: change the import; nothing else changes the layout. (The rubric data,
+\`<examy-rubric>\`, has a new format, which matters only to a document that reads it.)
+
+From examy 0.4.0 (examy's own list of breaking changes in 1.0.0, and what else it took):
 
 - \`#points-table\` is a function: write \`#points-table()\`.
 - \`num-points\` and \`num-questions\` are functions that need context: \`#context num-points()\`.
@@ -129,32 +145,31 @@ can stay.)
 
 ## What to check
 
-The file is \`{"format": "${REGIONS_FORMAT}", "version": ${REGIONS_FORMAT_VERSION}, "pages": [..], "names": [..], "ends": [..], "exams": [[..]]}\`:
+The file is \`{"format": "${EXAMY_REGIONS_FORMAT}", "exam-name": .., "pages": [..], "name-block-regions": [..], "question-regions": [..]}\`
+(examy's manual, "Exam metadata", has its whole schema). Positions are in pt from the page's top
+left.
 
-- \`pages\`: one per page, ${template ? `**${template.page_count}**, as the template has` : "as many as the template has"}, with their size and margins in pt.
-- \`names\`: the name block's lines with their labels. A line labelled with a name ("Name:") becomes
-  Gradescope's name region, one labelled with a student ID ("Student ID:", "Student number:",
-  "UTORid:") its student ID region. Without them, Gradescope's stay as they are.
-- \`exams[0]\`: every question, part, and subpart: \`number\` ("2.1" is 2 (a)), \`label\`, \`level\`,
-  \`points\`, \`start\`, and \`boxes\` (each answer box's top left and bottom right, inside its \`inset\`).
-  Positions are in pt from the page's top left.
+- \`pages\`: one per page, ${template ? `**${template.page_count}**, as the template has` : "as many as the template has"}, with their size and margins.
+- \`name-block-regions\`: the name block's lines, each with its label (\`display-name\`). A line
+  labelled with a name ("Name:", "Last name:") becomes Gradescope's name region, one labelled with
+  a student ID ("Student ID:", "Student number:", "UTORid:") its student ID region. Without them,
+  Gradescope's stay as they are.
+- \`question-regions\`: every question, part, and subpart, in order: \`address\` (\`[1, 0]\` is
+  2 (a)), \`display-name\`, \`level\`, its own \`points\` (not its parts'), \`start\` (the top left of
+  its label), \`end\` (the bottom right of everything in it), and \`answer-boxes\`.
 
 How the dialog turns it into the outline, to judge whether it is right:
 
-- Each question is a Gradescope question, worth its points (bonus points are not counted). If its
-  points are in its parts, the parts are its subquestions; Gradescope has two levels only, so a
-  part whose points are all in its subparts gives way to them (titled "(a) i"), and a part that
-  has the points covers its subparts.
+- Each question is a Gradescope question, worth its points and its parts' (bonus points are not
+  counted). If its points are in its parts, the parts are its subquestions; Gradescope has two
+  levels only, so a part whose points are all in its subparts gives way to them (titled "(a) i"),
+  and a part that has the points covers its subparts.
 - A question's region is a rectangle per page around its answer boxes and its parts'. One with no
-  answer boxes (multiple choice, or a box examy does not mark, such as one holding \`choices\`)
-  gets its text instead, from its start to the next question or part. Tell the person which
-  questions have no boxes.
+  answer boxes (multiple choice, say) gets its text instead, from its \`start\` to its \`end\`; so
+  does a part with no answer boxes in a question whose other parts have them (its text joins the
+  region). Tell the person which questions and parts have no boxes. Anything else students write
+  in that is neither an answer box nor in a part of its own (a table in a question's own text, a
+  blank beside a question's prompt) is outside the regions: mention it.
 - A question or part with 0 points is worth 0 on Gradescope; mention any.
-
-## gradescope.typ
-
-\`\`\`typst
-${regionsScript.trimEnd()}
-\`\`\`
 `;
 }

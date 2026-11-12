@@ -1,14 +1,13 @@
 /**
  * The "Outline JSON" dialog on Gradescope's outline editor: read the regions an examy exam's
- * answer boxes take (from `gradescope.typ`), preview them over the template's pages next
+ * answer boxes take (examy's `examy-regions.json`), preview them over the template's pages next
  * to the outline Gradescope has, and save them as the outline.
  */
 import React from "react";
-import regionsScript from "./gradescope.typ?raw";
 import { useModal } from "../rubric/hooks";
 import { CopyIcon, DownloadIcon, FileIcon } from "../rubric/icons";
 import { copyText, download, ReferenceSection } from "../rubric/RubricTool";
-import { examBase, IMPORT_SNIPPET, outlineAiInstructions, regionsCommand } from "./instructions";
+import { embedCommand, examBase, EXAMY_VERSION, outlineAiInstructions, regionsCommand } from "./instructions";
 import { readFileOrAttachment } from "../pdf-attachments";
 import type { OutlineClient } from "./api";
 import {
@@ -279,7 +278,7 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
                         <ReferenceSection
                             name="instructions"
                             label="AI instructions"
-                            title="Instructions for an AI agent to make the regions file from the exam: upgrading it to examy 1.0.0 on a copy, checking its layout, the command, and gradescope.typ."
+                            title="Instructions for an AI agent to make the regions file from the exam: upgrading it to examy 1.1.0 on a copy if needed, checking its layout, and the command."
                             open={instructionsOpen}
                             setOpen={setInstructionsOpen}
                             tools={
@@ -301,34 +300,24 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
                             <h3>
                                 <span className="step">1</span> Regions from examy
                             </h3>
-                            <button
-                                type="button"
-                                className="small"
-                                title="Download gradescope.typ; put it next to the exam"
-                                onClick={() => download(regionsScript, "gradescope.typ", "text/plain")}
-                            >
-                                <DownloadIcon /> gradescope.typ
-                            </button>
-                            <span className="hint">Put it next to the exam (examy 1.0.0 or later), then either:</span>
+                            <span className="hint">The exam needs examy {EXAMY_VERSION} or later. In its folder, either:</span>
                         </div>
                         <ol className="ways">
                             <li>
-                                <span className="hint">
-                                    add to the exam, after examy's import, so that its PDF carries the regions (and its rubrics, for Rubric JSON):
-                                </span>
+                                <span className="hint">compile it to a PDF that carries its regions (laid out as without them):</span>
                                 <div className="snippet-row">
-                                    <pre className="snippet" title="gradescope.typ attaches gradescope-regions.json (and examy-rubric.json) to the PDF">
-                                        {IMPORT_SNIPPET}
+                                    <pre className="snippet" title="Attaches examy-regions.json to the PDF; the exam's file is not changed">
+                                        {embedCommand(props)}
                                     </pre>
-                                    <button type="button" className="icon-button" title="Copy these lines" onClick={() => copy(IMPORT_SNIPPET, "the lines")}>
+                                    <button type="button" className="icon-button" title="Copy the command" onClick={() => copy(embedCommand(props), "the command")}>
                                         <CopyIcon />
                                     </button>
                                 </div>
                             </li>
                             <li>
-                                <span className="hint">or, leaving the exam as it is, run next to it:</span>
+                                <span className="hint">or write the regions file:</span>
                                 <div className="snippet-row">
-                                    <pre className="snippet" title="Writes the regions file; add --input examy=.. for another examy version (see gradescope.typ)">
+                                    <pre className="snippet" title="Writes examy's regions (query(<examy-regions>)); the exam's file is not changed">
                                         {regionsCommand(props)}
                                     </pre>
                                     <button type="button" className="icon-button" title="Copy the command" onClick={() => copy(regionsCommand(props), "the command")}>
@@ -338,7 +327,7 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
                             </li>
                         </ol>
                         <div className="row tight">
-                            <label className="file-button" title="Open the exam's PDF (made with gradescope.typ in it) or the regions file">
+                            <label className="file-button" title="Open the exam's PDF (compiled with --input embed-metadata=question-regions) or the regions file (also gradescope.typ's, for examy 1.0.0)">
                                 <FileIcon /> Open PDF or regions file
                                 <input type="file" accept=".pdf,application/pdf,.json,application/json" onChange={onFile} />
                             </label>
@@ -356,7 +345,7 @@ export function OutlineTool({ client }: { client: OutlineClient }) {
                         <textarea
                             value={text}
                             onChange={(e) => changeText(e.target.value)}
-                            placeholder={'{ "format": "examy-gradescope-regions", … }'}
+                            placeholder={'{ "format": "examy-regions", … }'}
                             spellCheck={false}
                             rows={3}
                             title="The regions file. Nothing is sent to Gradescope until you press Save."

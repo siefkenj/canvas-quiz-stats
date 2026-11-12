@@ -1,11 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { existingTree, flatten, idRegionKey, matchIdRegions, matchOutline, outlinePayload, parseRegions, planOutline, type PlannedQuestion } from "../../src/outline/outline";
 import type { GsOutlineProps, GsOutlineQuestion, RegionsFile } from "../../src/outline/types";
+// Regions in gradescope.typ's format (examy 1.0.0): examy's final-exam example, and the MAT246
+// midterm (with its rubrics).
 import finalExam from "./fixtures/examy-final-exam.json";
 import midterm from "./fixtures/midterm.json";
+// The MAT246 midterm reflection, in gradescope.typ's format: no points, and parts with answer boxes
+// beside multiple choice ones.
+import reflection from "./fixtures/midterm-reflection.json";
+// The same exams' regions as examy 1.1.0 writes them (examy-regions.json); the reflection's
+// question 3 has its parts in columns.
+import finalExam11 from "./fixtures/examy-final-exam.examy-regions.json";
+import midterm11 from "./fixtures/midterm.examy-regions.json";
+import reflection11 from "./fixtures/midterm-reflection.examy-regions.json";
 
-const FINAL = finalExam as RegionsFile;
-const MIDTERM = midterm as RegionsFile;
+/** A regions file, read as the dialog reads it. */
+const read = (data: unknown): RegionsFile => {
+    const { file, errors } = parseRegions(JSON.stringify(data));
+    expect(errors).toEqual([]);
+    return file!;
+};
+const FINAL = read(finalExam);
+const MIDTERM = read(midterm);
+const FINAL11 = read(finalExam11);
+const MIDTERM11 = read(midterm11);
 
 const template = (count: number): GsOutlineProps["template"] => ({
     page_count: count,
@@ -16,8 +34,34 @@ const shape = (qs: PlannedQuestion[]): unknown[] =>
     qs.map((q) => (q.children ? [q.number, q.title, q.weight, shape(q.children)] : [q.number, q.title, q.weight]));
 
 describe("parseRegions", () => {
-    it("reads a regions file", () => {
-        expect(parseRegions(JSON.stringify(FINAL)).errors).toEqual([]);
+    it("reads examy's regions: numbers from addresses, and points with the parts' own", () => {
+        expect(FINAL11.source).toBe("examy-regions");
+        expect(FINAL11.exams).toHaveLength(1);
+        const rows = FINAL11.exams[0].map((d) => [d.number, d.level, d.points]);
+        // examy gives 2 no points of its own: its parts' 2 and 3 make 5, as gradescope.typ's file has it.
+        expect(rows).toEqual(FINAL.exams[0].map((d) => [d.number, d.level, d.points]));
+        expect(MIDTERM11.exam).toBe("MAT246H1F Midterm LEC0101");
+    });
+    it("reads gradescope.typ's older regions", () => {
+        expect(FINAL.source).toBe("examy-gradescope-regions");
+        expect(FINAL.exams[0][0].end).toBe(null);
+    });
+    it("reports a damaged file instead of failing on it", () => {
+        const errors = (data: unknown) => parseRegions(JSON.stringify(data)).errors.map((e) => e.message);
+        // A question cut short, as by pasting part of the file.
+        const cut = { ...finalExam11, "question-regions": [{ "display-name": "1", level: 1 }] };
+        expect(errors(cut)).toEqual(['Not a valid regions file: "question-regions" 1 has no "address".']);
+        const noBoxes = { ...finalExam11, "question-regions": finalExam11["question-regions"].map(({ "answer-boxes": _, ...q }) => q) };
+        expect(errors(noBoxes)).toEqual(['Not a valid regions file: "question-regions" 1 has "answer-boxes" that are not boxes.']);
+        expect(errors({ ...finalExam11, pages: [{ page: 1 }] })[0]).toMatch(/"pages" 1 is not a page/);
+        const noMargins = { ...finalExam11, pages: finalExam11.pages.map((p) => ({ ...p, margin: {} })) };
+        expect(errors(noMargins)[0]).toMatch(/"pages" 1 is not a page/);
+        const numberLabel = { ...finalExam11, "name-block-regions": finalExam11["name-block-regions"].map((n) => ({ ...n, "display-name": 7 })) };
+        expect(errors(numberLabel)).toEqual(['Not a valid regions file: "name-block-regions" 1 has a "display-name" that is not text.']);
+        expect(errors({ ...finalExam, names: [{ ...finalExam.names[0], label: 7 }] })).toEqual(['Not a valid regions file: "names" 1 has a "label" that is not text.']);
+        // gradescope.typ's, with a division missing its boxes.
+        const legacy = { ...finalExam, exams: [[{ ...finalExam.exams[0][0], boxes: undefined }]] };
+        expect(errors(legacy)).toEqual(['Not a valid regions file: "exams[0]" 1 has "boxes" that are not boxes.']);
     });
     it("explains other files", () => {
         expect(parseRegions("{").errors[0].message).toMatch(/^Not JSON/);
@@ -78,6 +122,56 @@ describe("planOutline", () => {
         expect(idRegions.name).toMatchObject({ y1: pct(100 - 6 - 3), y2: pct(100 + 3) });
     });
 
+    it("plans the same outline from examy's regions as from gradescope.typ's", () => {
+        for (const [old, now, pages] of [
+            [FINAL, FINAL11, 5],
+            [MIDTERM, MIDTERM11, 9],
+        ] as const) {
+            const a = planOutline(old, template(pages));
+            const b = planOutline(now, template(pages));
+            expect(shape(b.questions)).toEqual(shape(a.questions));
+            // Regions around answer boxes agree to within a few tenths of a percent (examy measures
+            // to the outside of a box's border, gradescope.typ inside it).
+            for (const [p, q] of flatten(a.questions).map((p, k) => [p, flatten(b.questions)[k]] as const)) {
+                if (p.fallback || p.textParts) {
+                    continue;
+                }
+                expect(q.rects.map((r) => r.page_number)).toEqual(p.rects.map((r) => r.page_number));
+                q.rects.forEach((r, k) => {
+                    for (const key of ["x1", "x2", "y1", "y2"] as const) {
+                        expect(Math.abs(r[key] - p.rects[k][key])).toBeLessThanOrEqual(0.3);
+                    }
+                });
+            }
+            expect(Object.keys(b.idRegions)).toEqual(Object.keys(a.idRegions));
+        }
+    });
+
+    it("bounds a part without answer boxes by where examy says it ends", () => {
+        const plan = planOutline(MIDTERM11, template(9));
+        const [a, b] = plan.questions[1].children!;
+        // 2 (a) runs from its label (95.2pt down page 3) to the end of its text (213pt), the width
+        // of its text: not to 2 (b)'s start.
+        expect(a.fallback).toBe(true);
+        expect(a.rects).toEqual([{ x1: 11.5, x2: 91.2, y1: 12, y2: 26.9, page_number: 3 }]);
+        expect(b.rects[0].y1).toBeGreaterThan(a.rects[0].y2);
+    });
+
+    it("puts a part in a column, without answer boxes, in its question's region, beside the other column's", () => {
+        // The reflection's question 3: (a) a table to fill in, in the left column; (b) an answer
+        // box, in the right one. No points, so it is one question.
+        const plan = planOutline(read(reflection11), template(6));
+        expect(plan.errors).toEqual([]);
+        const q3 = plan.questions[2];
+        expect(q3.textParts).toEqual(["3 (a)"]);
+        const [r] = q3.rects;
+        // From the left column's label to the right column's box, down to the bottom of the box.
+        expect(r.page_number).toBe(3);
+        expect(r.x1).toBeLessThan(14);
+        expect(r.x2).toBeGreaterThan(90);
+        expect(r.y2).toBeGreaterThan(93);
+    });
+
     it("refuses an exam the file does not have, rather than delete every question", () => {
         const plan = planOutline(FINAL, template(5), 1);
         expect(plan.questions).toEqual([]);
@@ -98,6 +192,24 @@ describe("planOutline", () => {
         expect(plan.warnings.filter((w) => /no answer boxes/.test(w.message)).map((w) => w.number)).toEqual(["2.1", "2.2", "2.3", "2.4"]);
     });
 
+    it("adds the text of parts without answer boxes to a region around the others' boxes", () => {
+        const plan = planOutline(read(reflection), template(6));
+        expect(plan.errors).toEqual([]);
+        // No points anywhere, so each question is one Gradescope question.
+        expect(plan.questions.map((q) => [q.number, q.weight, !!q.children])).toEqual([1, 2, 3, 4, 5].map((n) => [String(n), 0, false]));
+        const [q1, q2, q3] = plan.questions;
+        // 1 (a) and 1 (b) are multiple choice; 1 (c) has a box. The region runs from 1 (a)'s first
+        // line, the width of the text, to the bottom of 1 (c)'s box.
+        expect(q1.textParts).toEqual(["1 (a)", "1 (b)"]);
+        expect(q1.fallback).toBe(false);
+        expect(q1.rects).toEqual([{ x1: 8.8, x2: 91.5, y1: 25.6, y2: 86.9, page_number: 1 }]);
+        expect(q2.textParts).toEqual(["2 (a)", "2 (b)", "2 (c)", "2 (d)"]);
+        // A question whose boxes are all its own is only around them.
+        expect(q3.textParts).toBe(undefined);
+        expect(q3.rects).toEqual([{ x1: 43, x2: 91.5, y1: 43.8, y2: 93.4, page_number: 3 }]);
+        expect(plan.warnings.filter((w) => /text is in the region/.test(w.message)).map((w) => w.number)).toEqual(["1", "2"]);
+    });
+
     it("splits a part whose points are all in its subparts, titling them with examy's labels", () => {
         const at = (y: number) => ({ page: 1, x: 70, y });
         const div = (number: string, label: string, points: number, boxes: [number, number][] = []) => ({
@@ -107,6 +219,7 @@ describe("planOutline", () => {
             points,
             bonus: null,
             start: at(boxes[0]?.[0] ?? 100),
+            end: null,
             boxes: boxes.map(([t, b]) => ({ top: at(t), bottom: at(b) })),
         });
         const file: RegionsFile = {

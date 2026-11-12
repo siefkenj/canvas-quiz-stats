@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 import { findAttachment, isPdf, pdfAttachments, pdfString, readFileOrAttachment } from "../src/pdf-attachments";
 import { REGIONS_ATTACHMENT } from "../src/outline/outline";
 import { RUBRICS_ATTACHMENT } from "../src/rubric/from-examy";
-// The PDF, base64 encoded (`base64 -w 0 examy-rubric-test.pdf`), so that it imports as text.
+// A PDF compiled with examy 1.1.0 and embed-metadata, base64 encoded (`base64 -w 0`), so that it
+// imports as text.
+import pdf11Base64 from "./fixtures/examy-1.1-test.pdf.base64?raw";
+import regions11 from "./fixtures/examy-1.1-test.regions.json";
+import rubrics11 from "./fixtures/examy-1.1-test.rubric.json";
+// The same exam compiled with examy 1.0.0 and gradescope.typ, as above.
 import pdfBase64 from "./fixtures/examy-rubric-test.pdf.base64?raw";
 // The same PDF saved again by qpdf (pikepdf), with its objects packed into an object stream.
 import resavedBase64 from "./fixtures/examy-rubric-test-resaved.pdf.base64?raw";
@@ -12,7 +17,13 @@ import rubrics from "./fixtures/examy-rubric-test.rubric.json";
 const bytesOf = (base64: string) => Uint8Array.from(atob(base64.trim()), (c) => c.charCodeAt(0));
 
 describe("pdfAttachments", () => {
-    it("reads the files gradescope.typ attaches to an exam's PDF", async () => {
+    it("reads the files examy attaches to an exam's PDF", async () => {
+        const files = await pdfAttachments(bytesOf(pdf11Base64));
+        expect([...files.keys()].sort()).toEqual(["examy-regions.json", "examy-rubric.json"]);
+        expect(JSON.parse(files.get("examy-regions.json")!)).toEqual(regions11);
+        expect(JSON.parse(files.get("examy-rubric.json")!)).toEqual(rubrics11);
+    });
+    it("reads the files gradescope.typ attached to an exam's PDF", async () => {
         const pdf = bytesOf(pdfBase64);
         expect(isPdf(pdf)).toBe(true);
         const files = await pdfAttachments(pdf);
@@ -65,14 +76,16 @@ describe("findAttachment", () => {
         expect(names(new Map([["notes.json", regionsText], ["Midterm-Regions.JSON", regionsText]]))).toEqual(["Midterm-Regions.JSON"]);
         expect(findAttachment(new Map([["notes.json", regionsText]]), REGIONS_ATTACHMENT)).toBe(null);
     });
-    it("prefers one that is a regions file, then gradescope.typ's name, then one named after the PDF, then the first", () => {
+    it("prefers one that is a regions file, then examy's name (then gradescope.typ's), then one named after the PDF, then the first", () => {
         const m = new Map([
             ["a-regions.json", regionsText],
             ["old-regions.json", "{}"],
             ["midterm-regions.json", regionsText],
             ["gradescope-regions.json", regionsText],
+            ["examy-regions.json", JSON.stringify(regions11)],
         ]);
-        expect(names(m, "midterm.pdf")).toEqual(["gradescope-regions.json", "midterm-regions.json", "a-regions.json", "old-regions.json"]);
+        expect(names(m, "midterm.pdf")).toEqual(["examy-regions.json", "gradescope-regions.json", "midterm-regions.json", "a-regions.json", "old-regions.json"]);
+        m.delete("examy-regions.json");
         m.delete("gradescope-regions.json");
         expect(names(m, "Midterm.pdf")).toEqual(["midterm-regions.json", "a-regions.json", "old-regions.json"]);
         expect(names(m)).toEqual(["a-regions.json", "midterm-regions.json", "old-regions.json"]);
@@ -90,13 +103,18 @@ describe("readFileOrAttachment", () => {
         const read = await readFileOrAttachment(file('{"a": 1}', "anything.json"), REGIONS_ATTACHMENT);
         expect(read).toEqual({ text: '{"a": 1}', attachments: null, attached: null });
     });
+    it("takes a document's second exam's file (examy-regions-2.json) as a regions file", () => {
+        expect(findAttachment(new Map([["examy-regions-2.json", JSON.stringify(regions11)]]), REGIONS_ATTACHMENT)?.name).toBe("examy-regions-2.json");
+    });
     it("reads a PDF's attachment of the kind, and says what else fits", async () => {
+        const now = await readFileOrAttachment(file(bytesOf(pdf11Base64), "exam.pdf"), REGIONS_ATTACHMENT);
+        expect(now.attached).toMatchObject({ name: "examy-regions.json", others: [] });
         const read = await readFileOrAttachment(file(bytesOf(pdfBase64), "exam.pdf"), RUBRICS_ATTACHMENT);
         expect(read.attached).toMatchObject({ name: "examy-rubric.json", others: [] });
         expect(JSON.parse(read.text)).toEqual(rubrics);
     });
     it("says which kind of file a PDF lacks", async () => {
         const noAttachments = new TextEncoder().encode("%PDF-1.7\n%%EOF\n");
-        await expect(readFileOrAttachment(file(noAttachments, "plain.pdf"), REGIONS_ATTACHMENT)).rejects.toThrow(/plain\.pdf has no regions attached \(a file named like gradescope-regions\.json\)/);
+        await expect(readFileOrAttachment(file(noAttachments, "plain.pdf"), REGIONS_ATTACHMENT)).rejects.toThrow(/plain\.pdf has no regions attached \(a file named like examy-regions\.json\)\. Compile the exam with examy 1\.1\.0 or later and `--input embed-metadata=question-regions`/);
     });
 });
