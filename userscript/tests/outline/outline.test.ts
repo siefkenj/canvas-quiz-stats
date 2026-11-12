@@ -70,26 +70,61 @@ describe("parseRegions", () => {
 });
 
 describe("planOutline", () => {
-    it("makes parts subquestions, and folds subparts into a part that has the points", () => {
+    it("makes each part and subpart a subquestion, side by side in its question's group", () => {
         const plan = planOutline(FINAL, template(5));
         expect(plan.errors).toEqual([]);
+        // 3 (a) has points of its own (2), and two subparts with none: all three are subquestions.
         expect(shape(plan.questions)).toEqual([
             ["1", "", 3],
             ["2", "", 5, [["2.1", "(a)", 2], ["2.2", "(b)", 3]]],
-            ["3", "", 5, [["3.1", "(a)", 2], ["3.2", "(b)", 3], ["3.3", "(c)", 0]]],
+            ["3", "", 5, [["3.1", "(a)", 2], ["3.2", "(a) i", 0], ["3.3", "(a) ii", 0], ["3.4", "(b)", 3], ["3.5", "(c)", 0]]],
         ]);
-        expect(plan.questions[2].children![0].covers).toEqual(["3.1", "3.1.1", "3.1.2"]);
+        expect(plan.questions[2].children!.map((c) => c.covers)).toEqual([["3.1"], ["3.1.1"], ["3.1.2"], ["3.2"], ["3.3"]]);
         expect(plan.warnings.map((w) => w.message)).toEqual([
-            "Question 3.3 (examy 3 (c)) has only bonus points, so it is worth 0 on Gradescope.",
+            "Question 3.1 (examy 3 (a)) has no answer boxes examy marks; its region is its text.",
+            "Question 3.2 (examy 3 (a) i) has no points, so it is worth 0 on Gradescope.",
+            "Question 3.3 (examy 3 (a) ii) has no points, so it is worth 0 on Gradescope.",
+            "Question 3.5 (examy 3 (c)) has only bonus points, so it is worth 0 on Gradescope.",
         ]);
+    });
+
+    it("makes a question with parts a group even when its points are its own, the question first", () => {
+        const at = (y: number) => ({ page: 1, x: 70, y });
+        const div = (number: string, label: string, points: number, boxes: [number, number][]) => ({
+            number,
+            label,
+            level: number.split(".").length,
+            points,
+            bonus: null,
+            start: at(boxes[0][0] - 10),
+            end: null,
+            boxes: boxes.map(([t, b]) => ({ top: at(t), bottom: { page: 1, x: 500, y: b } })),
+        });
+        // 1 has a box and 1 point of its own; its part 1.1 has 2.
+        const file: RegionsFile = { ...FINAL, exams: [[div("1", "1", 3, [[100, 200]]), div("1.1", "1 (a)", 2, [[300, 400], [450, 500]])]] };
+        const [q] = planOutline(file, template(5)).questions;
+        expect(shape([q])).toEqual([["1", "", 3, [["1.1", "", 1], ["1.2", "(a)", 2]]]]);
+        // A part whose subpart has the bonus has none itself.
+        const bonusFile: RegionsFile = {
+            ...FINAL,
+            exams: [[{ ...div("1", "1", 0, [[100, 150]]), bonus: 1 }, { ...div("1.1", "1 (a)", 0, [[300, 400]]), bonus: 1 }]],
+        };
+        expect(planOutline(bonusFile, template(5)).warnings.map((w) => w.message)).toEqual([
+            "Question 1.1 (examy 1) has no points, so it is worth 0 on Gradescope.",
+            "Question 1.2 (examy 1 (a)) has only bonus points, so it is worth 0 on Gradescope.",
+        ]);
+        // A part with two boxes: one rectangle around both.
+        expect(q.children![1].rects).toHaveLength(1);
+        expect(q.children![1].rects[0].y1).toBeLessThan(q.children![1].rects[0].y2 - 20);
     });
 
     it("puts a region around the answer boxes, 2pt past their borders", () => {
         const plan = planOutline(FINAL, template(5));
         // Q1's box: 70.5pt to 558pt across and 101.33pt to 738pt down page 2 (612 by 792pt).
         expect(plan.questions[0].rects).toEqual([{ x1: 11.2, x2: 91.5, y1: 12.5, y2: 93.4, page_number: 2 }]);
-        // 3 (a)'s subparts' boxes, together.
-        expect(plan.questions[2].children![0].rects).toEqual([{ x1: 16.6, x2: 91.5, y1: 15.9, y2: 93.4, page_number: 4 }]);
+        // 3 (a) i's box, by itself (3 (a) ii's is its own).
+        expect(plan.questions[2].children![1].rects).toEqual([{ x1: 16.6, x2: 91.5, y1: 15.9, y2: 53.2, page_number: 4 }]);
+        expect(plan.questions[2].children![2].rects).toEqual([{ x1: 16.6, x2: 91.5, y1: 56.1, y2: 93.4, page_number: 4 }]);
         // A group's region is around its subquestions'.
         expect(plan.questions[1].rects).toEqual([{ x1: 13.9, x2: 91.5, y1: 13.3, y2: 93.4, page_number: 3 }]);
     });
@@ -133,7 +168,8 @@ describe("planOutline", () => {
             // Regions around answer boxes agree to within a few tenths of a percent (examy measures
             // to the outside of a box's border, gradescope.typ inside it).
             for (const [p, q] of flatten(a.questions).map((p, k) => [p, flatten(b.questions)[k]] as const)) {
-                if (p.fallback || p.textParts) {
+                // Text regions differ: examy says where a part ends; gradescope.typ's do not.
+                if (p.fallback || p.children?.some((c) => c.fallback)) {
                     continue;
                 }
                 expect(q.rects.map((r) => r.page_number)).toEqual(p.rects.map((r) => r.page_number));
@@ -157,19 +193,16 @@ describe("planOutline", () => {
         expect(b.rects[0].y1).toBeGreaterThan(a.rects[0].y2);
     });
 
-    it("puts a part in a column, without answer boxes, in its question's region, beside the other column's", () => {
+    it("gives a part in a column, without answer boxes, its column's text, beside the other column's part", () => {
         // The reflection's question 3: (a) a table to fill in, in the left column; (b) an answer
-        // box, in the right one. No points, so it is one question.
+        // box, in the right one.
         const plan = planOutline(read(reflection11), template(6));
         expect(plan.errors).toEqual([]);
-        const q3 = plan.questions[2];
-        expect(q3.textParts).toEqual(["3 (a)"]);
-        const [r] = q3.rects;
-        // From the left column's label to the right column's box, down to the bottom of the box.
-        expect(r.page_number).toBe(3);
-        expect(r.x1).toBeLessThan(14);
-        expect(r.x2).toBeGreaterThan(90);
-        expect(r.y2).toBeGreaterThan(93);
+        const [a, b] = plan.questions[2].children!;
+        expect([a.fallback, b.fallback]).toEqual([true, false]);
+        // (a): from its label over the table, in the left column; (b): its box, in the right one.
+        expect(a.rects).toEqual([{ x1: 11.3, x2: 49.2, y1: 41, y2: 83.9, page_number: 3 }]);
+        expect(b.rects).toEqual([{ x1: 55.3, x2: 91.6, y1: 46.3, y2: 93.5, page_number: 3 }]);
     });
 
     it("refuses an exam the file does not have, rather than delete every question", () => {
@@ -192,22 +225,24 @@ describe("planOutline", () => {
         expect(plan.warnings.filter((w) => /no answer boxes/.test(w.message)).map((w) => w.number)).toEqual(["2.1", "2.2", "2.3", "2.4"]);
     });
 
-    it("adds the text of parts without answer boxes to a region around the others' boxes", () => {
+    it("makes a group of a question with parts even without points, each part with a region of its own", () => {
         const plan = planOutline(read(reflection), template(6));
         expect(plan.errors).toEqual([]);
-        // No points anywhere, so each question is one Gradescope question.
-        expect(plan.questions.map((q) => [q.number, q.weight, !!q.children])).toEqual([1, 2, 3, 4, 5].map((n) => [String(n), 0, false]));
-        const [q1, q2, q3] = plan.questions;
-        // 1 (a) and 1 (b) are multiple choice; 1 (c) has a box. The region runs from 1 (a)'s first
-        // line, the width of the text, to the bottom of 1 (c)'s box.
-        expect(q1.textParts).toEqual(["1 (a)", "1 (b)"]);
-        expect(q1.fallback).toBe(false);
-        expect(q1.rects).toEqual([{ x1: 8.8, x2: 91.5, y1: 25.6, y2: 86.9, page_number: 1 }]);
-        expect(q2.textParts).toEqual(["2 (a)", "2 (b)", "2 (c)", "2 (d)"]);
-        // A question whose boxes are all its own is only around them.
-        expect(q3.textParts).toBe(undefined);
-        expect(q3.rects).toEqual([{ x1: 43, x2: 91.5, y1: 43.8, y2: 93.4, page_number: 3 }]);
-        expect(plan.warnings.filter((w) => /text is in the region/.test(w.message)).map((w) => w.number)).toEqual(["1", "2"]);
+        expect(plan.questions.map((q) => [q.number, q.weight, q.children?.length ?? 0])).toEqual([
+            ["1", 0, 3],
+            ["2", 0, 5],
+            // 3's halves are labelled by hand, not examy parts: one question.
+            ["3", 0, 0],
+            ["4", 0, 2],
+            ["5", 0, 3],
+        ]);
+        const [a, b, c] = plan.questions[0].children!;
+        // 1 (a) and 1 (b) are multiple choice: their text, to the next part's start. 1 (c): its box.
+        expect([a.fallback, b.fallback, c.fallback]).toEqual([true, true, false]);
+        expect(a.rects).toEqual([{ x1: 8.8, x2: 91.2, y1: 25.6, y2: 47, page_number: 1 }]);
+        expect(c.rects).toEqual([{ x1: 13.9, x2: 91.5, y1: 55.1, y2: 86.9, page_number: 1 }]);
+        // The group's region is around its subquestions'.
+        expect(plan.questions[0].rects).toEqual([{ x1: 8.8, x2: 91.5, y1: 25.6, y2: 86.9, page_number: 1 }]);
     });
 
     it("splits a part whose points are all in its subparts, titling them with examy's labels", () => {
@@ -269,13 +304,13 @@ describe("matchOutline", () => {
         expect(existingTree(savedOutline(plan)).map((e) => [e.number, e.children.map((c) => c.number)])).toEqual([
             ["1", []],
             ["2", ["2.1", "2.2"]],
-            ["3", ["3.1", "3.2", "3.3"]],
+            ["3", ["3.1", "3.2", "3.3", "3.4", "3.5"]],
         ]);
     });
 
     it("finds nothing to change in the outline it saved, and keeps question titles", () => {
         const m = matchOutline(plan, savedOutline(plan, { "1": "Sets" }));
-        expect(flatten(m.questions).map((q) => q.status)).toEqual(Array(8).fill("same"));
+        expect(flatten(m.questions).map((q) => q.status)).toEqual(Array(10).fill("same"));
         expect(m.questions[0].title).toBe("Sets");
         expect(m.deleted).toEqual([]);
     });
@@ -299,13 +334,13 @@ describe("matchOutline", () => {
     it("saves ids, nests subquestions, and keeps the name and ID regions", () => {
         const name = { x1: 23.8, x2: 92, y1: 4.4, y2: 8.5, page_number: 1 };
         const props = { assignment: { id_regions: { name, sid: null } } } as unknown as GsOutlineProps;
-        const outline = savedOutline(plan).filter((q) => q.id !== 8); // without 3 (c)
+        const outline = savedOutline(plan).filter((q) => q.id !== 10); // without 3 (c)
         const body = outlinePayload(matchOutline(plan, outline), props);
         expect(body.assignment).toEqual({ identification_regions: { name, sid: null } });
         expect(body.question_data.map((q) => [q.id, q.weight, q.children?.map((c) => c.id)])).toEqual([
             [1, 3, undefined],
             [2, 5, [3, 4]],
-            [5, 5, [6, 7, undefined]],
+            [5, 5, [6, 7, 8, 9, undefined]],
         ]);
         expect(body.question_data[1].children![0]).toEqual({ title: "(a)", weight: 2, crop_rect_list: plan[1].children![0].rects, id: 3 });
     });

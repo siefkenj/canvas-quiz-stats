@@ -160,16 +160,17 @@ left.
 
 How the dialog turns it into the outline, to judge whether it is right:
 
-- Each question is a Gradescope question, worth its points and its parts' (bonus points are not
-  counted). If its points are in its parts, the parts are its subquestions; Gradescope has two
-  levels only, so a part whose points are all in its subparts gives way to them (titled "(a) i"),
-  and a part that has the points covers its subparts.
-- A question's region is a rectangle per page around its answer boxes and its parts'. One with no
-  answer boxes (multiple choice, say) gets its text instead, from its \`start\` to its \`end\`; so
-  does a part with no answer boxes in a question whose other parts have them (its text joins the
-  region). Tell the person which questions and parts have no boxes. Anything else students write
-  in that is neither an answer box nor in a part of its own (a table in a question's own text, a
-  blank beside a question's prompt) is outside the regions: mention it.
+- Each question is a Gradescope question. A question with parts is a group, and each of its parts
+  and subparts a subquestion of it, side by side (Gradescope has two levels only), titled "(a)",
+  "(a) i". A part with subparts is a subquestion itself only if it has answer boxes or points of
+  its own; so is the question, first in its group. Each is worth its own points (bonus points are
+  not counted).
+- Each question and subquestion has a region of its own: a rectangle per page around its own
+  answer boxes (not its parts'). One with no answer boxes (multiple choice, say) gets its text
+  instead, from its \`start\` to its \`end\` (to its first part's \`start\`, if it has parts). Tell
+  the person which questions and parts have no boxes. Anything else students write in that is
+  neither an answer box nor in a part of its own (a table in a question's own text, a blank
+  beside a question's prompt) is outside the regions: mention it.
 - A question or part with 0 points is worth 0 on Gradescope; mention any.
 `;
 }

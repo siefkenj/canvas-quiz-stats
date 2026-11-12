@@ -5,8 +5,8 @@
  *
  * Examy numbers its questions, parts, and subparts ("3.1.2"); Gradescope has two levels, so they
  * are numbered as the Outline JSON tool numbers them, from the regions attached beside the rubrics
- * (a part that has the points covers its subparts; one whose points are in its subparts gives way
- * to them). Weights and scoring types are Gradescope's. Math goes from examy's `$..$` (inline) and
+ * (a question's parts and subparts side by side in its group, "3.1", "3.2", ...). Weights and
+ * scoring types are Gradescope's. Math goes from examy's `$..$` (inline) and
  * `$$..$$` (display) to Gradescope's `$$..$$` and `$$$..$$$`.
  */
 import type { Assignment } from "./assignment";
@@ -167,11 +167,12 @@ export function rubricFromExamy(rubrics: ExamyRubrics, regions: RegionsFile | nu
     const gradescopeNumber = new Map<string, string>();
     /** Each Gradescope question's weight, as the Outline JSON tool gives it. */
     const plannedWeight = new Map<string, number>();
-    const groups = new Set<string>();
+    /** The examy divisions in Gradescope's groups (some of which are not questions themselves). */
+    const grouped = new Set<string>();
     if (regions) {
         for (const q of flatten(planOutline(regions, null).questions)) {
             if (q.children) {
-                groups.add(q.covers[0]);
+                q.covers.forEach((n) => grouped.add(n));
                 continue;
             }
             plannedWeight.set(q.number, q.weight);
@@ -222,8 +223,10 @@ export function rubricFromExamy(rubrics: ExamyRubrics, regions: RegionsFile | nu
             warnings.add("A rubric of an unnumbered question is left out.");
             continue;
         }
-        if (groups.has(q.number)) {
-            warnings.add(`Question ${q.number}'s own rubric is left out: its points are in its parts, which are Gradescope's questions.`);
+        if (!gradescopeNumber.has(q.number) && grouped.has(q.number)) {
+            warnings.add(
+                `Examy ${q.number}'s own rubric is left out: it has no answer boxes or points of its own, so it is not a Gradescope question (its parts are).`
+            );
             continue;
         }
         const number = gradescopeNumber.get(q.number) ?? q.number;

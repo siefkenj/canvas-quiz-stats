@@ -53,7 +53,7 @@ describe("rubricFromExamy", () => {
         expect(old).toEqual(now);
     });
 
-    it("numbers subparts as the outline does: a part with the points covers its subparts", () => {
+    it("numbers parts and subparts as the outline does: side by side in their question's group", () => {
         const sub: ExamyRubrics = {
             format: "examy-rubric",
             "exam-name": null,
@@ -64,10 +64,16 @@ describe("rubricFromExamy", () => {
             ],
         };
         const { file, warnings } = rubricFromExamy(sub, final, assignment);
-        expect(file.questions.map((q) => [q.number, q.rubric.map((e) => e.type === "item" && e.description)])).toEqual([["3.1", ["i", "ii"]]]);
-        expect(warnings).toContain("Question 3's own rubric is left out: its points are in its parts, which are Gradescope's questions.");
-        // Not on Gradescope: weighted as the outline would have it.
-        expect(file.questions[0].weight).toBe(2);
+        // 3 (a) is 3.1, and its subparts 3.2 and 3.3.
+        expect(file.questions.map((q) => [q.number, q.rubric.map((e) => e.type === "item" && e.description)])).toEqual([
+            ["3.2", ["i"]],
+            ["3.3", ["ii"]],
+        ]);
+        expect(warnings).toContain(
+            "Examy 3's own rubric is left out: it has no answer boxes or points of its own, so it is not a Gradescope question (its parts are)."
+        );
+        // Not on Gradescope: weighted as the outline would have it (the subparts have no points).
+        expect(file.questions.map((q) => q.weight)).toEqual([0, 0]);
     });
 
     it("takes a damaged file for neither kind of rubrics, and says so rather than failing on it", () => {
@@ -92,8 +98,14 @@ describe("rubricFromExamy", () => {
             },
         ];
         const { file, warnings } = rubricFromExamy(sub, final, assignment);
-        expect(file.questions.map((q) => [q.number, q.rubric.map((e) => e.type === "item" && e.description)])).toEqual([["3.1", ["i", "ii"]]]);
-        expect(warnings).toContain("Question 3's own rubric is left out: its points are in its parts, which are Gradescope's questions.");
-        expect(warnings).toContain("Examy question 3.1.1, 3.1.2 is question 3.1, which is not on Gradescope; set the outline first (Outline JSON).");
+        // 3 (a) is 3.1, and its subparts 3.2 and 3.3.
+        expect(file.questions.map((q) => [q.number, q.rubric.map((e) => e.type === "item" && e.description)])).toEqual([
+            ["3.2", ["i"]],
+            ["3.3", ["ii"]],
+        ]);
+        expect(warnings).toContain(
+            "Examy 3's own rubric is left out: it has no answer boxes or points of its own, so it is not a Gradescope question (its parts are)."
+        );
+        expect(warnings).toContain("Examy question 3.1.1 is question 3.2, which is not on Gradescope; set the outline first (Outline JSON).");
     });
 });

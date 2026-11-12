@@ -158,17 +158,18 @@ regions from the exam's name block.
 
 How the exam becomes an outline:
 
-- Each examy question is a Gradescope question. When its points are in its parts, the parts are
-  subquestions; Gradescope has no third level, so a part whose points are in its subparts gives
-  way to them (titled with examy's labels, e.g. "(a) i"), and a part with the points covers its
-  subparts. Weights are examy's points (bonus points are not counted).
-- A question's region is one rectangle per page around its answer boxes (and its parts'), 2pt past
-  their borders. A question without answer boxes (such as a multiple choice one) gets its text
-  instead, from its label to the end of everything in it, as examy measures it (in a column, the
-  column's); these are marked "text". (From `gradescope.typ`'s regions, which do not say where
-  a question ends: to the next question or part, the width of the page's text.) A part without
-  answer boxes in a question (or part) that has some elsewhere adds its text to the region the
-  same way.
+- Each examy question is a Gradescope question. A question with parts is a group, and each of its
+  parts and subparts a subquestion of it, side by side (Gradescope has no third level), titled
+  with examy's labels ("(a)", "(a) i"). A part with subparts is a subquestion itself only if it
+  has answer boxes or points of its own; so is the question, first in its group. Weights are
+  examy's points, each subquestion's own (bonus points are not counted); a group's are its
+  subquestions'.
+- Each question and subquestion has a region of its own: one rectangle per page around its own
+  answer boxes (not its parts'), 2pt past their borders. One without answer boxes (such as a
+  multiple choice part) gets its text instead, from its label to the end of its text (to its first
+  part, if it has parts), as examy measures it (in a column, the column's); these are marked
+  "text". (From `gradescope.typ`'s regions, which do not say where a question ends: to the next
+  question or part, the width of the page's text.) A group's region is around its subquestions'.
   Anything else students write in (a table, a blank in a question's own text) is not marked, so it
   is outside the regions.
 - Questions are matched to Gradescope's by number (by position: 1, 2, 2.1, ...), so they keep

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.10.0 (2026-11-12)
+
+### Changed
+
+-   The Outline JSON tool gives every part and subpart a subquestion with a region of its own,
+    instead of merging them into their question's region when the question's points were not in
+    its parts. A question with parts is always a group, its parts and subparts side by side in it
+    (Gradescope has two levels only); a part with subparts is a subquestion itself only if it has
+    answer boxes or points of its own, and so is the question, first in its group (untitled, as
+    the group is). A region is one rectangle per page around the subquestion's own answer boxes,
+    or its own text if it has none. The Rubric JSON tool numbers an exam's rubrics the same way.
+
 ## 1.9.0 (2026-11-12)
 
 ### Changed

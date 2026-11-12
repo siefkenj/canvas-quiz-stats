@@ -1,13 +1,13 @@
 /**
  * Turn a regions file (examy's `examy-regions.json`, or the older one of `gradescope.typ`) into a
- * Gradescope outline: which questions
- * and subquestions, their weights, and their regions; match it to the outline Gradescope has, so
- * that questions keep their ids (and so their rubrics and grading); and build the request that
- * saves it.
+ * Gradescope outline: which questions and subquestions, their weights, and their regions; match it
+ * to the outline Gradescope has, so that questions keep their ids (and so their rubrics and
+ * grading); and build the request that saves it.
  *
- * Gradescope has questions and subquestions only, so examy's subparts are folded in: a part with
- * points becomes a subquestion that covers its subparts too, and a part whose points are all in
- * its subparts gives way to them, each a subquestion titled with its examy label ("(a) i").
+ * A question with parts is a group, and each of its parts and subparts a subquestion with a region
+ * of its own: Gradescope has two levels only, so subparts sit beside the parts, titled with their
+ * examy labels ("(a) i"). A part with subparts is a subquestion itself only if it has answer boxes
+ * or points of its own (and so is the question, first in its group).
  */
 import {
     EXAMY_REGIONS_FORMAT,
@@ -256,10 +256,8 @@ export interface PlannedQuestion {
     title: string;
     weight: number;
     rects: CropRect[];
-    /** Its region is the text from its start to the next division's, as it has no answer boxes. */
+    /** Its region is its text, as it has no answer boxes. */
     fallback: boolean;
-    /** Its parts that have no answer boxes when others do: their text is in its region too. */
-    textParts?: string[];
     children?: PlannedQuestion[];
 }
 
@@ -438,14 +436,10 @@ export function planOutline(file: RegionsFile, template: GsOutlineProps["templat
     const childrenOf = (d: RegionsDivision) =>
         rows.filter((r) => r.level === d.level + 1 && r.number.startsWith(d.number + "."));
     const subtree = (d: RegionsDivision) => rows.filter((r) => r === d || r.number.startsWith(d.number + "."));
+    /** The points given to `d` itself, not its parts. */
     const own = (d: RegionsDivision) => d.points - sum(childrenOf(d).map((c) => c.points));
-    /** Whether the points are in `d`'s parts, so that they are graded separately. */
-    const splits = (d: RegionsDivision) => {
-        const kids = childrenOf(d);
-        return kids.length > 0 && own(d) <= 1e-9 && kids.some((c) => c.points > 0);
-    };
-    /** The divisions that become subquestions under `d`. */
-    const units = (d: RegionsDivision): RegionsDivision[] => (splits(d) ? childrenOf(d).flatMap(units) : [d]);
+    /** The bonus points given to `d` itself, not its parts. */
+    const ownBonus = (d: RegionsDivision) => (d.bonus ?? 0) - sum(childrenOf(d).map((c) => c.bonus ?? 0));
 
     /** Where the text after `d` (and its parts) starts: the next division's start, or the exam's end. */
     const after = (d: RegionsDivision): Position | null => {
@@ -455,38 +449,32 @@ export function planOutline(file: RegionsFile, template: GsOutlineProps["templat
     };
 
     /**
-     * The text of division `d` (and its parts): around everything in it, where the file says where
-     * that ends (examy's), else from its start to the next division's, the width of the page's text.
+     * The text of `d` itself: from its start to its first part's, or with no parts, to its end
+     * where the file says where that is (examy's), else to the next division's start. As wide as
+     * everything in it (examy's), else as the page's text.
      */
-    const textOf = (d: RegionsDivision) => {
-        if (d.start && d.end) {
-            return spansBetween(d.start, d.end, pages, d.start.x, d.end.x > d.start.x ? d.end.x : undefined);
+    const ownTextOf = (d: RegionsDivision) => {
+        if (!d.start) {
+            return [];
         }
-        const to = after(d);
-        return d.start && to ? spansBetween(d.start, to, pages) : [];
+        const left = d.end ? d.start.x : undefined;
+        const right = d.end && d.end.x > d.start.x ? d.end.x : undefined;
+        const firstPart = childrenOf(d).find((c) => c.start)?.start;
+        const to = firstPart ?? d.end ?? after(d);
+        return to ? spansBetween(d.start, to, pages, left, right) : [];
     };
-    const hasBoxes = (d: RegionsDivision) => subtree(d).some((x) => x.boxes.length > 0);
-    const parentOf = (d: RegionsDivision) => rows.find((r) => r.level === d.level - 1 && d.number.startsWith(r.number + "."));
 
     /**
-     * Regions for division `d` with its parts `ds`: around their answer boxes, and the text of
-     * those parts that have none (multiple choice, blanks to fill in); else, if none has a box,
-     * `d`'s text.
+     * The region of `d` alone, not its parts': one rectangle per page around its answer boxes, or,
+     * if it has none (multiple choice, blanks to fill in), around its text.
      */
-    const regionOf = (d: RegionsDivision, ds: RegionsDivision[]): { rects: CropRect[]; fallback: boolean; textParts?: string[] } => {
-        const boxes = ds.flatMap((x) => x.boxes);
-        if (!boxes.length) {
-            return { rects: toRects(textOf(d), pages, 0), fallback: true };
-        }
-        // The largest parts without boxes: those whose parent has some.
-        const bare = ds.filter((x) => x !== d && !hasBoxes(x) && hasBoxes(parentOf(x) ?? d));
-        const rects = toRects(boxes.flatMap((b) => boxSpans(b, pages)), pages, BOX_PAD);
-        if (!bare.length) {
-            return { rects, fallback: false };
-        }
-        const text = toRects(bare.flatMap(textOf), pages, 0);
-        return { rects: mergeRects([...rects, ...text]), fallback: false, textParts: bare.map((x) => x.label) };
-    };
+    const regionOf = (d: RegionsDivision): { rects: CropRect[]; fallback: boolean } =>
+        d.boxes.length
+            ? { rects: toRects(d.boxes.flatMap((b) => boxSpans(b, pages)), pages, BOX_PAD), fallback: false }
+            : { rects: toRects(ownTextOf(d), pages, 0), fallback: true };
+
+    /** Whether `d` is a Gradescope question of its own: it has no parts, or answer boxes or points of its own. */
+    const graded = (d: RegionsDivision) => childrenOf(d).length === 0 || d.boxes.length > 0 || own(d) > 1e-9;
 
     const questions: PlannedQuestion[] = [];
     rows.filter((r) => r.level === 1).forEach((q, k) => {
@@ -494,29 +482,26 @@ export function planOutline(file: RegionsFile, template: GsOutlineProps["templat
         if (q.number !== number) {
             warnings.push({ message: `Examy question ${q.number} is question ${number} on Gradescope (questions are numbered by position).`, number });
         }
-        if (!splits(q)) {
-            const ds = subtree(q);
-            questions.push({ number, covers: ds.map((d) => d.number), label: q.label, title: "", weight: q.points, ...regionOf(q, ds) });
-            if (childrenOf(q).length && own(q) > 1e-9 && childrenOf(q).some((c) => c.points > 0)) {
-                warnings.push({ message: `Question ${q.number} has points of its own and in its parts, so it is one question on Gradescope.`, number });
-            }
+        const parts = subtree(q).slice(1);
+        if (!parts.length) {
+            questions.push({ number, covers: [q.number], label: q.label, title: "", weight: q.points, ...regionOf(q) });
             return;
         }
-        const children = units(q).map((u, j): PlannedQuestion => {
-            const ds = subtree(u);
-            const title = u.label.startsWith(q.label) ? u.label.slice(q.label.length).trim() : u.label;
-            return { number: `${number}.${j + 1}`, covers: ds.map((d) => d.number), label: u.label, title, weight: u.points, ...regionOf(u, ds) };
+        // A group of its parts and subparts, side by side (Gradescope has two levels only); and of
+        // the question itself, first (untitled, as the group is), if it has answer boxes or points
+        // of its own.
+        const children = [q, ...parts].filter(graded).map((d, j): PlannedQuestion => {
+            // "3 (a) i" in question 3: "(a) i".
+            const title = d === q ? "" : d.label.startsWith(q.label + " ") ? d.label.slice(q.label.length).trim() : d.label;
+            return { number: `${number}.${j + 1}`, covers: [d.number], label: d.label, title, weight: own(d), ...regionOf(d) };
         });
-        // The group's region: around its subquestions', and its own boxes outside them.
-        const ownBoxes = q.boxes.flatMap((b) => boxSpans(b, pages));
-        const groupRects = mergeRects([...children.flatMap((c) => c.rects), ...toRects(ownBoxes, pages, BOX_PAD)]);
         questions.push({
             number,
             covers: subtree(q).map((d) => d.number),
             label: q.label,
             title: "",
             weight: sum(children.map((c) => c.weight)),
-            rects: groupRects,
+            rects: mergeRects(children.flatMap((c) => c.rects)),
             fallback: children.every((c) => c.fallback),
             children,
         });
@@ -529,16 +514,12 @@ export function planOutline(file: RegionsFile, template: GsOutlineProps["templat
         if (p.rects.length === 0) {
             errors.push({ message: `Question ${p.number} (examy ${p.label}) has no region: it has no answer boxes, and its position is unknown.`, number: p.number });
         } else if (p.fallback) {
-            warnings.push({ message: `Question ${p.number} (examy ${p.label}) has no answer boxes examy marks; its region is its text, to the next question or part.`, number: p.number });
-        } else if (p.textParts?.length) {
-            const parts = p.textParts.join(", ");
-            warnings.push({
-                message: `Question ${p.number} (examy ${p.label}): ${parts} ${p.textParts.length === 1 ? "has" : "have"} no answer boxes examy marks, so ${p.textParts.length === 1 ? "its" : "their"} text is in the region, around the answer boxes.`,
-                number: p.number,
-            });
+            warnings.push({ message: `Question ${p.number} (examy ${p.label}) has no answer boxes examy marks; its region is its text.`, number: p.number });
         }
         if (p.weight <= 0) {
-            const bonus = p.covers.some((n) => (rows.find((r) => r.number === n)?.bonus ?? 0) > 0);
+            // A subquestion is its division alone (its parts are subquestions of their own).
+            const division = rows.find((r) => r.number === p.covers[0]);
+            const bonus = !!division && ownBonus(division) > 1e-9;
             warnings.push({
                 message: bonus
                     ? `Question ${p.number} (examy ${p.label}) has only bonus points, so it is worth 0 on Gradescope.`

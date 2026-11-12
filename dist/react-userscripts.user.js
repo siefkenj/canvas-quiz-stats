@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Canvas Quiz Stats
 // @namespace https://github.com/siefkenj/crowdmark-addons
-// @version  1.9.0
+// @version  1.10.0
 // @description A sample userscript built using react
 // @include https://q.utoronto.ca/courses/*
 // @include https://www.gradescope.ca/*
@@ -24358,7 +24358,6 @@ page and sees a preview of every question before anything is changed:
     return out;
   }
   function planOutline(file, template, examIndex = 0) {
-    var _a;
     const errors = [];
     const warnings = [];
     const exam = file.exams[examIndex];
@@ -24375,66 +24374,47 @@ page and sees a preview of every question before anything is changed:
     const childrenOf = (d) => rows.filter((r2) => r2.level === d.level + 1 && r2.number.startsWith(d.number + "."));
     const subtree = (d) => rows.filter((r2) => r2 === d || r2.number.startsWith(d.number + "."));
     const own = (d) => d.points - sum(childrenOf(d).map((c) => c.points));
-    const splits = (d) => {
-      const kids = childrenOf(d);
-      return kids.length > 0 && own(d) <= 1e-9 && kids.some((c) => c.points > 0);
-    };
-    const units = (d) => splits(d) ? childrenOf(d).flatMap(units) : [d];
+    const ownBonus = (d) => (d.bonus ?? 0) - sum(childrenOf(d).map((c) => c.bonus ?? 0));
     const after = (d) => {
       const last = subtree(d).at(-1);
       const next = rows.slice(rows.indexOf(last) + 1).find((r2) => r2.start);
       return (next == null ? void 0 : next.start) ?? end;
     };
-    const textOf = (d) => {
-      if (d.start && d.end) {
-        return spansBetween(d.start, d.end, pages2, d.start.x, d.end.x > d.start.x ? d.end.x : void 0);
+    const ownTextOf = (d) => {
+      var _a;
+      if (!d.start) {
+        return [];
       }
-      const to = after(d);
-      return d.start && to ? spansBetween(d.start, to, pages2) : [];
+      const left = d.end ? d.start.x : void 0;
+      const right = d.end && d.end.x > d.start.x ? d.end.x : void 0;
+      const firstPart = (_a = childrenOf(d).find((c) => c.start)) == null ? void 0 : _a.start;
+      const to = firstPart ?? d.end ?? after(d);
+      return to ? spansBetween(d.start, to, pages2, left, right) : [];
     };
-    const hasBoxes = (d) => subtree(d).some((x2) => x2.boxes.length > 0);
-    const parentOf = (d) => rows.find((r2) => r2.level === d.level - 1 && d.number.startsWith(r2.number + "."));
-    const regionOf = (d, ds) => {
-      const boxes = ds.flatMap((x2) => x2.boxes);
-      if (!boxes.length) {
-        return { rects: toRects(textOf(d), pages2, 0), fallback: true };
-      }
-      const bare = ds.filter((x2) => x2 !== d && !hasBoxes(x2) && hasBoxes(parentOf(x2) ?? d));
-      const rects = toRects(boxes.flatMap((b) => boxSpans(b, pages2)), pages2, BOX_PAD);
-      if (!bare.length) {
-        return { rects, fallback: false };
-      }
-      const text = toRects(bare.flatMap(textOf), pages2, 0);
-      return { rects: mergeRects([...rects, ...text]), fallback: false, textParts: bare.map((x2) => x2.label) };
-    };
+    const regionOf = (d) => d.boxes.length ? { rects: toRects(d.boxes.flatMap((b) => boxSpans(b, pages2)), pages2, BOX_PAD), fallback: false } : { rects: toRects(ownTextOf(d), pages2, 0), fallback: true };
+    const graded = (d) => childrenOf(d).length === 0 || d.boxes.length > 0 || own(d) > 1e-9;
     const questions = [];
     rows.filter((r2) => r2.level === 1).forEach((q2, k) => {
       const number = String(k + 1);
       if (q2.number !== number) {
         warnings.push({ message: `Examy question ${q2.number} is question ${number} on Gradescope (questions are numbered by position).`, number });
       }
-      if (!splits(q2)) {
-        const ds = subtree(q2);
-        questions.push({ number, covers: ds.map((d) => d.number), label: q2.label, title: "", weight: q2.points, ...regionOf(q2, ds) });
-        if (childrenOf(q2).length && own(q2) > 1e-9 && childrenOf(q2).some((c) => c.points > 0)) {
-          warnings.push({ message: `Question ${q2.number} has points of its own and in its parts, so it is one question on Gradescope.`, number });
-        }
+      const parts = subtree(q2).slice(1);
+      if (!parts.length) {
+        questions.push({ number, covers: [q2.number], label: q2.label, title: "", weight: q2.points, ...regionOf(q2) });
         return;
       }
-      const children = units(q2).map((u2, j) => {
-        const ds = subtree(u2);
-        const title = u2.label.startsWith(q2.label) ? u2.label.slice(q2.label.length).trim() : u2.label;
-        return { number: `${number}.${j + 1}`, covers: ds.map((d) => d.number), label: u2.label, title, weight: u2.points, ...regionOf(u2, ds) };
+      const children = [q2, ...parts].filter(graded).map((d, j) => {
+        const title = d === q2 ? "" : d.label.startsWith(q2.label + " ") ? d.label.slice(q2.label.length).trim() : d.label;
+        return { number: `${number}.${j + 1}`, covers: [d.number], label: d.label, title, weight: own(d), ...regionOf(d) };
       });
-      const ownBoxes = q2.boxes.flatMap((b) => boxSpans(b, pages2));
-      const groupRects = mergeRects([...children.flatMap((c) => c.rects), ...toRects(ownBoxes, pages2, BOX_PAD)]);
       questions.push({
         number,
         covers: subtree(q2).map((d) => d.number),
         label: q2.label,
         title: "",
         weight: sum(children.map((c) => c.weight)),
-        rects: groupRects,
+        rects: mergeRects(children.flatMap((c) => c.rects)),
         fallback: children.every((c) => c.fallback),
         children
       });
@@ -24446,19 +24426,11 @@ page and sees a preview of every question before anything is changed:
       if (p2.rects.length === 0) {
         errors.push({ message: `Question ${p2.number} (examy ${p2.label}) has no region: it has no answer boxes, and its position is unknown.`, number: p2.number });
       } else if (p2.fallback) {
-        warnings.push({ message: `Question ${p2.number} (examy ${p2.label}) has no answer boxes examy marks; its region is its text, to the next question or part.`, number: p2.number });
-      } else if ((_a = p2.textParts) == null ? void 0 : _a.length) {
-        const parts = p2.textParts.join(", ");
-        warnings.push({
-          message: `Question ${p2.number} (examy ${p2.label}): ${parts} ${p2.textParts.length === 1 ? "has" : "have"} no answer boxes examy marks, so ${p2.textParts.length === 1 ? "its" : "their"} text is in the region, around the answer boxes.`,
-          number: p2.number
-        });
+        warnings.push({ message: `Question ${p2.number} (examy ${p2.label}) has no answer boxes examy marks; its region is its text.`, number: p2.number });
       }
       if (p2.weight <= 0) {
-        const bonus = p2.covers.some((n2) => {
-          var _a2;
-          return (((_a2 = rows.find((r2) => r2.number === n2)) == null ? void 0 : _a2.bonus) ?? 0) > 0;
-        });
+        const division = rows.find((r2) => r2.number === p2.covers[0]);
+        const bonus = !!division && ownBonus(division) > 1e-9;
         warnings.push({
           message: bonus ? `Question ${p2.number} (examy ${p2.label}) has only bonus points, so it is worth 0 on Gradescope.` : `Question ${p2.number} (examy ${p2.label}) has no points, so it is worth 0 on Gradescope.`,
           number: p2.number
@@ -24655,11 +24627,11 @@ page and sees a preview of every question before anything is changed:
     }
     const gradescopeNumber = /* @__PURE__ */ new Map();
     const plannedWeight = /* @__PURE__ */ new Map();
-    const groups = /* @__PURE__ */ new Set();
+    const grouped = /* @__PURE__ */ new Set();
     if (regions) {
       for (const q2 of flatten(planOutline(regions, null).questions)) {
         if (q2.children) {
-          groups.add(q2.covers[0]);
+          q2.covers.forEach((n2) => grouped.add(n2));
           continue;
         }
         plannedWeight.set(q2.number, q2.weight);
@@ -24705,8 +24677,10 @@ page and sees a preview of every question before anything is changed:
         warnings.add("A rubric of an unnumbered question is left out.");
         continue;
       }
-      if (groups.has(q2.number)) {
-        warnings.add(`Question ${q2.number}'s own rubric is left out: its points are in its parts, which are Gradescope's questions.`);
+      if (!gradescopeNumber.has(q2.number) && grouped.has(q2.number)) {
+        warnings.add(
+          `Examy ${q2.number}'s own rubric is left out: it has no answer boxes or points of its own, so it is not a Gradescope question (its parts are).`
+        );
         continue;
       }
       const number = gradescopeNumber.get(q2.number) ?? q2.number;
@@ -25747,16 +25721,17 @@ left.
 
 How the dialog turns it into the outline, to judge whether it is right:
 
-- Each question is a Gradescope question, worth its points and its parts' (bonus points are not
-  counted). If its points are in its parts, the parts are its subquestions; Gradescope has two
-  levels only, so a part whose points are all in its subparts gives way to them (titled "(a) i"),
-  and a part that has the points covers its subparts.
-- A question's region is a rectangle per page around its answer boxes and its parts'. One with no
-  answer boxes (multiple choice, say) gets its text instead, from its \`start\` to its \`end\`; so
-  does a part with no answer boxes in a question whose other parts have them (its text joins the
-  region). Tell the person which questions and parts have no boxes. Anything else students write
-  in that is neither an answer box nor in a part of its own (a table in a question's own text, a
-  blank beside a question's prompt) is outside the regions: mention it.
+- Each question is a Gradescope question. A question with parts is a group, and each of its parts
+  and subparts a subquestion of it, side by side (Gradescope has two levels only), titled "(a)",
+  "(a) i". A part with subparts is a subquestion itself only if it has answer boxes or points of
+  its own; so is the question, first in its group. Each is worth its own points (bonus points are
+  not counted).
+- Each question and subquestion has a region of its own: a rectangle per page around its own
+  answer boxes (not its parts'). One with no answer boxes (multiple choice, say) gets its text
+  instead, from its \`start\` to its \`end\` (to its first part's \`start\`, if it has parts). Tell
+  the person which questions and parts have no boxes. Anything else students write in that is
+  neither an answer box nor in a part of its own (a table in a question's own text, a blank
+  beside a question's prompt) is outside the regions: mention it.
 - A question or part with 0 points is worth 0 on Gradescope; mention any.
 `;
   }
