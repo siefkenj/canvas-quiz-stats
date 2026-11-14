@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.1 (2026-11-14)
+
+### Development
+
+-   Vite is updated to 6.4.6, fixing a critical remote code execution vulnerability in its dev
+    server (GHSA-p4f5-76q4-ffq7) when exposed with `--host`, as `npm run harness` does. Vitest is
+    updated to 5.1.0, which fixes critical vulnerabilities of its own.
+
 ## 1.10.0 (2026-11-12)
 
 ### Changed
